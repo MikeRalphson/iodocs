@@ -383,6 +383,72 @@ function oauth2(req, res, next){
                 }
             )
         }
+        else if (oauth_type == 'password') {
+            var apiUsername = req.body.username,
+                apiPassword = req.body.password;
+            var accessURL = oauth2_base_uri + oauth2_access_token_uri;
+            var basic_cred = apiKey + ':' + apiSecret;
+            var encoded_basic = new Buffer(basic_cred).toString('base64');
+            var http_method = (oauth2_token_location == "header" || oauth2_token_location == null) ? "POST" : "GET";
+            var header = {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            };
+            if (oauth2_token_location == "header" || !oauth2_token_location) {
+                header[ 'Authorization'] = 'Basic ' + encoded_basic;
+            }
+
+            var fillerpost = query.stringify({grant_type : "password", client_id : apiKey, client_secret : apiSecret, username : apiUsername, password : apiPassword});
+
+            db.set(key + ':apiKey', apiKey, redis.print);
+            db.set(key + ':apiSecret', apiSecret, redis.print);
+
+            // Set expiration to same as session
+            db.expire(key + ':apiKey', 1209600000);
+            db.expire(key + ':apiSecret', 1209600000);
+
+            oa._request(
+                http_method,
+                accessURL,
+                header,
+                fillerpost,
+                '',
+                function(error, data, response) {
+                    if (error) {
+                        res.send("Error getting OAuth access token : " + util.inspect(error), 500);
+                    }
+                    else {
+                        var results;
+                        try {
+                            results = JSON.parse(data);
+                        }
+                        catch(e) {
+                            results = query.parse(data)
+                        }
+                        var oauth2access_token = results["access_token"];
+                        var oauth2refresh_token = results["refresh_token"];
+
+                        if (config.debug) {
+                            console.log('results: ' + util.inspect(results));
+                        }
+                        db.mset(
+                            [
+                                key + ':access_token', oauth2access_token,
+                                key + ':refresh_token', oauth2refresh_token
+                            ],
+                            function(err, results2) {
+                                db.set(key + ':accessToken', oauth2access_token, redis.print);
+                                db.set(key + ':refreshToken', oauth2refresh_token, redis.print);
+                                db.expire(key + ':accessToken', 1209600000);
+                                db.expire(key + ':refreshToken', 1209600000);
+                                res.render('authSuccess', {
+                                    title: 'OAuth 2.0 Successful'
+                                });
+                            }
+                        );
+                    }
+                }
+            )
+        }
     }
 }
 

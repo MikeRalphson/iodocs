@@ -56,6 +56,13 @@ block content
                   - if (apiInfo.auth.signature)
                       label(for='secret') Shared Secret
                       input(id='secret', name='secret', value=defaultSecret, style='color=#EEEEEE')
+              - if (apiInfo.auth.oauth.type == 'password')
+                  div
+                      label(for='username') User Name
+                      input(id='username', name='username', style='color=#EEEEEE')
+                  div
+                      label(for='password') Password
+                      input(id='password', name='password', type='password', style='color=#EEEEEE')
               - if (oAuthVersion == '1.0' && apiInfo.auth.oauth.type !='two-legged')
                   div
                      input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth')
