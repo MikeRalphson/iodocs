@@ -1,6 +1,12 @@
 {
+  "arista": {
+    "name": "AristaMD"
+  },
+  "skyword": {
+      "name": "SkyWord"
+  },
   "linkedin": {
-    "name": "LinkedIn",
+    "name": "LinkedIn (not working)",
     "protocol": "http",
     "baseURL": "api.linkedin.com",
     "publicPath": "",
