@@ -1192,6 +1192,12 @@ app.get('/:api([^\.]+)', function(req, res) {
     res.render('api');
 });
 
+// try the old renderer, param = API shortname, all lowercase
+app.get('/old/:api([^\.]+)', function(req, res) {
+    req.params.api=req.params.api.replace(/\/$/,'');
+    res.render('oldapi');
+});
+
 // Only listen on $ node app.js
 
 if (!module.parent) {
