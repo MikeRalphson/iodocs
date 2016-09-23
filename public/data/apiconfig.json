@@ -6,7 +6,7 @@
       "name": "SkyWord"
   },
   "linkedin": {
-    "name": "LinkedIn (not working)",
+    "name": "LinkedIn (test of old spec renderer)",
     "protocol": "http",
     "baseURL": "api.linkedin.com",
     "publicPath": "",
