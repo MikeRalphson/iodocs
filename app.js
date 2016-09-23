@@ -1186,16 +1186,16 @@ app.post('/upload', function(req, res) {
   res.redirect('back');
 });
 
-// API shortname, all lowercase
-app.get('/:api([^\.]+)', function(req, res) {
-    req.params.api=req.params.api.replace(/\/$/,'');
-    res.render('api');
-});
-
 // try the old renderer, param = API shortname, all lowercase
 app.get('/old/:api([^\.]+)', function(req, res) {
     req.params.api=req.params.api.replace(/\/$/,'');
     res.render('oldapi');
+});
+
+// API shortname, all lowercase
+app.get('/:api([^\.]+)', function(req, res) {
+    req.params.api=req.params.api.replace(/\/$/,'');
+    res.render('api');
 });
 
 // Only listen on $ node app.js
