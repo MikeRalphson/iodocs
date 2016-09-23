@@ -1085,7 +1085,6 @@ function checkPathForAPI(req, res, next) {
     if (!req.params.api) {
         // If api wasn't passed in as a parameter, check the path to see if it's there
         var pathName = req.url.replace('/','');
-        pathName = pathName.replace('old/','');
         // Is it a valid API - if there's a config file we can assume so
         fs.stat(path.join(config.apiConfigDir, pathName + '.json'), function (error, stats) {
             if (stats) {
@@ -1187,16 +1186,16 @@ app.post('/upload', function(req, res) {
   res.redirect('back');
 });
 
-// try the old renderer, param = API shortname, all lowercase
-app.get('/old/:api([^\.]+)', function(req, res) {
-    req.params.api=req.params.api.replace(/\/$/,'');
-    res.render('oldapi');
-});
-
 // API shortname, all lowercase
 app.get('/:api([^\.]+)', function(req, res) {
     req.params.api=req.params.api.replace(/\/$/,'');
-    res.render('api');
+    // TODO create a view for OpenApi (Swagger) 2.0
+    if (res.locals.apiInfo.endpoints) {
+        res.render('oldapi');
+    }
+    else {
+        res.render('api');
+    }
 });
 
 // Only listen on $ node app.js
