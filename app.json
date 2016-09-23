@@ -3,5 +3,8 @@
   "description": "Mashery IO-Docs",
   "repository": "https://github.com/mikeralphson/iodocs",
   "logo": "http://developer.mashery.com/files/tibco-mashery-dev.png",
-  "keywords": ["io-docs", "iodocs", "API", "rest"]
+  "keywords": ["io-docs", "iodocs", "API", "rest"],
+  "addons": [
+    "heroku-redis"
+  ]
 }
