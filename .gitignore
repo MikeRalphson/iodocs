@@ -3,6 +3,7 @@ node_modules/*
 config.json
 logs/*
 pids/*
+*.rdb
 
 # Ignore project files
 .idea/*
