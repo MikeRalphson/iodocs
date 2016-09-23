@@ -1085,6 +1085,7 @@ function checkPathForAPI(req, res, next) {
     if (!req.params.api) {
         // If api wasn't passed in as a parameter, check the path to see if it's there
         var pathName = req.url.replace('/','');
+        pathName = pathName.replace('old/','');
         // Is it a valid API - if there's a config file we can assume so
         fs.stat(path.join(config.apiConfigDir, pathName + '.json'), function (error, stats) {
             if (stats) {
