@@ -6,6 +6,10 @@ Copyright 2011-2014 Mashery, Inc.
 
 [http://developer.mashery.com](http://developer.mashery.com)
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+<details>
+  <summary>Summer 2014 Release Feature Enhancements</summary>
 MAJOR CHANGE LOG
 ================
 ### 2014-07-22 - Summer Release Feature Enhancements
@@ -22,6 +26,7 @@ MAJOR CHANGE LOG
 * Parameter location enhancements
   * Placement in the query string, path or header
 * Method form UI generation driven by Alpaca/jQuery
+</details>
 
 SYNOPSIS
 --------
