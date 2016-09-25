@@ -616,10 +616,10 @@ function processRequest(req, res, next) {
         key = req.sessionID + ':' + apiName,
         implicitAccessToken = reqQuery.accessToken;
 
-    json = JSON.parse(json);
-    locations = JSON.parse(locations);
-    console.log("json: ", json);
-    console.log("locations: ", locations);
+    console.log("json: ", json, typeof json);
+	if (typeof json == 'string') json = JSON.parse(json);
+    console.log("locations: ", locations, typeof locations);
+    if (typeof locations == 'string') locations = JSON.parse(locations);
 
     for (var k in json) {
         var v = json[k];
@@ -645,9 +645,20 @@ function processRequest(req, res, next) {
         }
     }
 
-    var baseHostInfo = apiConfig.basePath.split(':');
-    var baseHostUrl = baseHostInfo[1].split('//')[1],
-        baseHostPort = (baseHostInfo.length > 2) ? baseHostInfo[2] : "";
+	// for version 1 specs the connection config is in the global apisConfig object, not the apiConfig object
+	var baseHostInfo;
+	var baseHostUrl;
+	var baseHostPort;
+
+	if (apiConfig.basePath) {
+        baseHostInfo = apiConfig.basePath.split(':');
+        baseHostUrl = baseHostInfo[1].split('//')[1],
+        baseHostPort = (baseHostInfo.length > 2) ? baseHostInfo[2] : '';
+	}
+	else {
+        baseHostUrl = apisConfig[apiName].baseURL;
+        baseHostPort = '';
+	}
 
     var headers = {};
     for (var configHeader in apiConfig.headers) {
@@ -669,7 +680,7 @@ function processRequest(req, res, next) {
             host: baseHostUrl,
             port: baseHostPort,
             method: httpMethod,
-            path: apiConfig.publicPath + methodURL
+            path: apiConfig.publicPath ? apiConfig.publicPath + methodURL : apisConfig[apiName].publicPath
         };
 
     if (['POST','PUT'].indexOf(httpMethod) !== -1) {
@@ -1017,7 +1028,14 @@ function processRequest(req, res, next) {
         }
 
         var doRequest;
-        if (apiConfig.basePath.split(':')[0] === 'https' || apiConfig.basePath.split(':')[0] === 'https:') {
+		var protocol;
+		if (apiConfig.basePath) {
+			protocol = apiConfig.basePath.split(':')[0];
+		}
+		else {
+			protocol = apisConfig[apiName].protocol;
+		}
+        if (protocol === 'https') {
             console.log('Protocol: HTTPS');
             options.protocol = 'https:';
             doRequest = https.request;

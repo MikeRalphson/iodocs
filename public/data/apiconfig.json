@@ -22,6 +22,14 @@
     },
     "keyParam": ""
   },
+  "alibris": {
+    "name": "Alibris API",
+    "protocol": "http",
+    "baseURL": "api.alibris.com",
+    "publicPath": "/v1/public",
+    "auth": "key",
+    "keyParam": "apikey"
+  },
   "klout": {
         "name": "Klout v2 API"
     },
