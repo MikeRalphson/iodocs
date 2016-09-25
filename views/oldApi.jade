@@ -57,13 +57,13 @@ block content
   div(id='controls')
       ul
           li
-              a#toggle-endpoints(href='#') Toggle All Endpoints
+              a#toggle-resources(href='#') Toggle All Endpoints
           li
               a#toggle-methods(href='#') Toggle All Methods
 
   ul
       - each endpoint in apiInfo.endpoints
-          li.endpoint
+          li.resource
               h3.title
                   span.name
                       a(href='#'+endpoint.name.replace(/\s/g, '-'))!=endpoint.name

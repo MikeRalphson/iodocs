@@ -1,12 +1,25 @@
 I/O Docs Community Edition in Node.js
 =====================================
-Copyright 2011-2014 Mashery, Inc.
+Copyright 2011-2016 Mashery, Inc., and others
 
 [http://www.mashery.com](http://www.mashery.com)
 
 [http://developer.mashery.com](http://developer.mashery.com)
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+### Work in Progress / TODO
+
+* ~~Updated dependencies (node 4.x and Express 4.x)~~
+* ~~Deployable to Heroku with one click~~
+* ~~Reinstate support for pre-Summer 2014 schema iodocs specs~~
+* ~~Drop support for comments in .json files, for speed~~
+* Port pull-requests from Mashery repository
+* Ability to import spec from static iodocs sites
+* If you want to use comments, yaml support is coming
+* Renderers for OpenAPI (Swagger) 2.0 specs
+* Ability to export iodocs spec as OpenAPI (Swagger)
+* Support for GraphQL 
 
 <details>
   <summary>Summer 2014 Release Feature Enhancements</summary>
@@ -17,7 +30,7 @@ MAJOR CHANGE LOG
 
 * Numerous schema changes and improvements
   * Support for references
-  * Base paths and authorization moved from apiConfig to api{name}.json files
+  * Base paths and authorization moved from apiConfig to {apiname}.json files
   * More robust/extensible auth definition block
 * POST/PUT request body capabilities added
   * Array type and interface added for use in request body
