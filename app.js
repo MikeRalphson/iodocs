@@ -152,7 +152,7 @@ if (config.redis) {
 //
 // Global basic authentication on server (applied if configured)
 //
-if (checkObjVal(config,'basicAuth').exists && checkObjVal(config, 'basicAuth', 'password').exists) {
+if (config.basicAuth && config.basicAuth.username && config.basicAuth.password) {
 	app.use(express.basicAuth(function(user, pass, callback) {
 		var result = (user === config.basicAuth.username && pass === config.basicAuth.password);
 		callback(null /* error */, result);
@@ -612,7 +612,7 @@ function processRequest(req, res, next) {
         apiKey = reqQuery.apiKey,
         apiSecret = reqQuery.apiSecret,
         apiName = reqQuery.apiName,
-        apiConfig = JSON.parse(JSON.minify(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'))),
+        apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8')), // can't we store this in redis too?
         key = req.sessionID + ':' + apiName,
         implicitAccessToken = reqQuery.accessToken;
 

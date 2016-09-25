@@ -5,7 +5,7 @@
     "apiConfigDir" : "./public/data/",
     "debug" : false,
     "sessionSecret" : "12345",
-    "noBasicAuth" : {
+    "basicAuth" : {
         "username" : "",
         "password" : ""
     },

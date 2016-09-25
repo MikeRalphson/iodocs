@@ -14,9 +14,9 @@ Copyright 2011-2016 Mashery, Inc., and others
 * ~~Deployable to Heroku with one click~~
 * ~~Reinstate support for pre-Summer 2014 schema iodocs specs~~
 * ~~Drop support for comments in .json files, for speed~~
+* If you want to use comments, yaml support is coming
 * Port pull-requests from Mashery repository
 * Ability to import spec from static iodocs sites
-* If you want to use comments, yaml support is coming
 * Renderers for OpenAPI (Swagger) 2.0 specs
 * Ability to export iodocs spec as OpenAPI (Swagger)
 * Support for GraphQL 
