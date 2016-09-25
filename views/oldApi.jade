@@ -1,9 +1,9 @@
 extends layout
 block content
   h1=apiInfo.name
-  - if (session.authed && apiInfo.oauth && apiInfo.oauth.type =='three-legged')
+  - if (session && session.authed && apiInfo.oauth && apiInfo.oauth.type =='three-legged')
       - var authed ='authed'
-  - else if (session.authed && apiInfo.oauth2)
+  - else if (session && session.authed && apiInfo.oauth2)
       - var authed ='authed'
   - else
       - var authed =''

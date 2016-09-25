@@ -25,6 +25,12 @@
 // Module dependencies
 //
 var express     = require('express'),
+    session     = require('express-session'),
+	logger      = require('express-logger'),
+	bodyParser  = require('express-busboy'),
+	cookie      = require('cookie-parser'),
+	override    = require('express-method-override'),
+	errorHndlr  = require('express-error-handler'),
     util        = require('util'),
     fs          = require('fs'),
     path        = require('path'),
@@ -37,7 +43,7 @@ var express     = require('express'),
     crypto      = require('crypto'),
     clone       = require('clone'),
     redis       = require('redis'),
-    RedisStore  = require('connect-redis')(express),
+    RedisStore  = require('connect-redis')(session),
     server;
 
 //
@@ -117,16 +123,15 @@ try {
 
 var app = module.exports = express();
 
-app.configure(function() {
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'jade');
-    app.use(express.logger());
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(express.cookieParser());
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.use(logger({path: "./iodocs.log"}));
+bodyParser.extend(app);
+app.use(override());
+app.use(cookie());
 
-if(config.redis) {
-    app.use(express.session({
+if (config.redis) {
+    app.use(session({
         secret: config.sessionSecret,
         store:  new RedisStore({
             'host':   config.redis.host,
@@ -134,38 +139,37 @@ if(config.redis) {
             'pass':   config.redis.password,
             'db'  :   config.redis.database,
             'maxAge': 1209600000
-        })
+        }),
+		resave: false,
+		saveUninitialized : true
     }));
 } else {
-    app.use(express.session({
+    app.use(session({
         secret: config.sessionSecret
     }));
-} 
+}
 
-    //
-    // Global basic authentication on server (applied if configured)
-    //
-    if (checkObjVal(config,'basicAuth').exists && checkObjVal(config, 'basicAuth', 'password').exists) {
-        app.use(express.basicAuth(function(user, pass, callback) {
-            var result = (user === config.basicAuth.username && pass === config.basicAuth.password);
-            callback(null /* error */, result);
-        }));
-    }
+//
+// Global basic authentication on server (applied if configured)
+//
+if (checkObjVal(config,'basicAuth').exists && checkObjVal(config, 'basicAuth', 'password').exists) {
+	app.use(express.basicAuth(function(user, pass, callback) {
+		var result = (user === config.basicAuth.username && pass === config.basicAuth.password);
+		callback(null /* error */, result);
+	}));
+}
 
-    app.use(checkPathForAPI);
-    app.use(dynamicHelpers);
-    app.use(app.router);
-    app.use(express.static(__dirname + '/public'));
-    app.use('/data', express.static(config.apiConfigDir));
-});
+app.use(checkPathForAPI);
+app.use(dynamicHelpers);
+app.use(express.static(__dirname + '/public'));
+app.use('/data', express.static(config.apiConfigDir));
 
-app.configure('development', function() {
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
-app.configure('production', function() {
-    app.use(express.errorHandler());
-});
+//app.configure('development', function() {
+app.use(errorHndlr({ dumpExceptions: true, showStack: true }));
+//});
+//app.configure('production', function() {
+//app.use(errorHndlr());
+//});
 
 //
 // Middleware
@@ -228,7 +232,7 @@ function oauth1(req, res, next) {
                     db.set(key + ':requestTokenSecret', oauthTokenSecret, redis.print);
 
                     // Set expiration to same as session
-                    db.expire(key + ':apiKey', 1209600000);
+                    db.expire(key + ':apiKey', 1209600000); // 14 days?
                     db.expire(key + ':apiSecret', 1209600000);
                     db.expire(key + ':requestToken', 1209600000);
                     db.expire(key + ':requestTokenSecret', 1209600000);
@@ -670,8 +674,8 @@ function processRequest(req, res, next) {
 
     if (['POST','PUT'].indexOf(httpMethod) !== -1) {
         var requestBody;
-        requestBody = (options.headers['Content-Type'] === 'application/json') 
-        ? JSON.stringify(bodyParams) 
+        requestBody = (options.headers['Content-Type'] === 'application/json')
+        ? JSON.stringify(bodyParams)
         : query.stringify(bodyParams);
     }
 
@@ -907,7 +911,7 @@ function processRequest(req, res, next) {
                             // TODO: More robust content-type matching.
                             if (response.headers['content-type'] == 'application/json') {
                                 try {
-                                    req.result = JSON.parse(data);    
+                                    req.result = JSON.parse(data);
                                 }
                                 catch(err) {
                                     req.result = data;
@@ -1082,20 +1086,20 @@ function processRequest(req, res, next) {
 
 function checkPathForAPI(req, res, next) {
     if (!req.params) req.params = {};
+    if (!req.query) req.query = {};
     if (!req.params.api) {
         // If api wasn't passed in as a parameter, check the path to see if it's there
         var pathName = req.url.replace('/','');
         // Is it a valid API - if there's a config file we can assume so
-        fs.stat(path.join(config.apiConfigDir, pathName + '.json'), function (error, stats) {
-            if (stats) {
-                req.params.api = pathName;
+        fs.stat(path.resolve(config.apiConfigDir + '/'+ pathName + '.json'), function (error, stats) {
+			if (stats) {
+				req.query.api = pathName;
             }
             next();
         });
     } else {
         next();
     }
-
 }
 
 //
@@ -1125,12 +1129,12 @@ function checkObjVal(obj /*, val, level1, level2, ... levelN*/) {
 // Replaces deprecated app.dynamicHelpers that were dropped in Express 3.x
 // Passes variables to the view
 function dynamicHelpers(req, res, next) {
-    if (req.params.api) {
-        res.locals.apiInfo = JSON.parse(JSON.minify(fs.readFileSync(path.join(config.apiConfigDir, req.params.api + '.json'), 'utf8')));
-        res.locals.apiName = req.params.api;
+    if (req.query.api) {
+        res.locals.apiInfo = JSON.parse(fs.readFileSync(path.resolve(config.apiConfigDir + '/' + req.query.api + '.json'), 'utf8')); // removed JSON.minify
+        res.locals.apiName = req.query.api;
 
         // If the cookie says we're authed for this particular API, set the session to authed as well
-        if (req.session[req.params.api] && req.session[req.params.api]['authed']) {
+        if (req.session && req.session[req.query.api] && req.session[req.query.api]['authed']) {
             req.session['authed'] = true;
         }
     } else {
@@ -1189,13 +1193,16 @@ app.post('/upload', function(req, res) {
 // API shortname, all lowercase
 app.get('/:api([^\.]+)', function(req, res) {
     req.params.api=req.params.api.replace(/\/$/,'');
-    // TODO create a view for OpenApi (Swagger) 2.0
-    if (res.locals.apiInfo.endpoints) {
-        res.render('oldapi');
-    }
-    else {
+    // TODO create a view for OpenApi (Swagger) 2.0 etc
+    if (res.locals.apiInfo.resources) {
         res.render('api');
     }
+    else if (res.locals.apiInfo.endpoints) {
+        res.render('oldApi');
+    }
+	else {
+	    res.render('error');
+	}
 });
 
 // Only listen on $ node app.js
