@@ -648,12 +648,12 @@ function processRequest(req, res, next) {
 
 	if (apiConfig.basePath) {
         baseHostInfo = apiConfig.basePath.split(':');
-        baseHostUrl = baseHostInfo[1].split('//')[1],
+        baseHostUrl = baseHostInfo.length>1 ? baseHostInfo[1].split('//')[1] : apiConfig.host,
         baseHostPort = (baseHostInfo.length > 2) ? baseHostInfo[2] : '';
 	}
 	else {
         baseHostUrl = apisConfig[apiName].baseURL;
-        baseHostPort = '';
+        baseHostPort = ''; // TODO
 	}
 
     var headers = {};
@@ -676,7 +676,8 @@ function processRequest(req, res, next) {
             host: baseHostUrl,
             port: baseHostPort,
             method: httpMethod,
-            path: apiConfig.publicPath ? apiConfig.publicPath + methodURL : apisConfig[apiName].publicPath
+            path: apiConfig.publicPath ? apiConfig.publicPath + methodURL : apiConfig.swagger ?
+				apiConfig.basePath + methodURL : apisConfig[apiName].publicPath
         };
 
     if (['POST','PUT'].indexOf(httpMethod) !== -1) {
@@ -942,7 +943,7 @@ function processRequest(req, res, next) {
     }
 
     //
-    // Unsecured API Call helper
+    // Unsecured API Call helper (function is within processRequest)
     //
     function unsecuredCall() {
         console.log('Unsecured Call');
@@ -951,7 +952,7 @@ function processRequest(req, res, next) {
 
         // Add API Key to params, if any.
         if (apiKey != '' && apiKey != 'undefined' && apiKey != undefined) {
-            if (apiConfig.auth.key.location === 'header') {
+            if (apiConfig.auth && apiConfig.auth.key && apiConfig.auth.key.location === 'header') { // TODO or...
                 options.headers = (options.headers === void 0) ? {} : options.headers;
                 options.headers[apiConfig.auth.key.param] = apiKey;
             }
@@ -962,8 +963,9 @@ function processRequest(req, res, next) {
                 else {
                     options.path += '?';
                 }
-                console.log(apiConfig.auth.key.param);
-                options.path += apiConfig.auth.key.param + '=' + apiKey;
+				var keyParam = apiConfig.auth && apiConfig.auth.key ? apiConfig.auth.key.param : 'api_key'; // TODO
+                console.log(keyParam);
+                options.path += keyParam + '=' + apiKey;
             }
         }
 
@@ -1038,6 +1040,7 @@ function processRequest(req, res, next) {
         } else {
             console.log('Protocol: HTTP');
             doRequest = http.request;
+			console.log(JSON.stringify(options,null,2));
         }
 
         // API Call. response is the response from the API, res is the response we will send back to the user.
@@ -1155,6 +1158,7 @@ function dynamicHelpers(req, res, next) {
         }
     } else {
         res.locals.apiInfo = apisConfig;
+		delete res.locals.apiName;
     }
 
     res.locals.session = req.session;

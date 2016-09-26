@@ -1,11 +1,11 @@
 !!! 5
 html
     head
-        - if (apiInfo.name)
+        -if (apiInfo.name)
             - var title = apiInfo.name + ' API Documentation'
         -else if (apiInfo.info && apiInfo.info.title)
             - var title = apiInfo.info.title + ' API Documentation'
-        -else if (apiConfig.name)
+        -else if (apiConfig && apiConfig.name)
             - var title = apiConfig.name + ' API Documentation'
         -else
             - var title = 'Live Documentation'

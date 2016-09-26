@@ -29,7 +29,7 @@
     "keyParam": ""
   },
   "alibris": {
-    "name": "Alibris API (old spec)",
+    "name": "Alibris (old spec)",
     "protocol": "http",
     "baseURL": "api.alibris.com",
     "publicPath": "/v1/public",
@@ -37,13 +37,13 @@
     "keyParam": "apikey"
   },
   "klout": {
-        "name": "Klout v2 API"
+        "name": "Klout v2"
     },
     "egnyte": {
-        "name": "Egnyte API"
+        "name": "Egnyte"
     },
     "usatoday": {
-        "name": "USA TODAY Census API"
+        "name": "USA TODAY Census"
     },
     "foursquare": {
         "name": "Foursquare (OAuth 2.0 Auth Code)"

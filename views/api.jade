@@ -7,11 +7,11 @@ block content
     var apiJson = !{JSON.stringify(apiInfo)};
   - if (apiInfo.auth && apiInfo.auth.oauth && apiInfo.auth.oauth.version && apiInfo.auth.oauth.version == "1.0" && apiInfo.auth.oauth.type =='three-legged')
       - var oAuthVersion = '1.0'
-      - if (session.authed)
+      - if (session && session.authed)
         - var authed = 'authed'
   - else if (apiInfo.auth && apiInfo.auth.oauth && apiInfo.auth.oauth.version && apiInfo.auth.oauth.version == "2.0")
       - var oAuthVersion = '2.0'
-      - if (session.authed)
+      - if (session && session.authed)
         - var authed = 'authed'
   - else
       - var authed =''
