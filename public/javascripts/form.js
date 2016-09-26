@@ -192,6 +192,11 @@ $(document).ready(function() {
                             parameterOptions["size"] = null;
                         }
 
+                        //Sets options for type file
+                        if (paramReference.type == "file") {
+                            paramReference.type = 'string';
+                        }
+
                         if (paramReference.type == "object") {
                             if ((paramReference.location && paramReference.location == "body") || !paramReference.location) addLocationBody(paramReference);
                             for (subParam in paramReference.properties) {
