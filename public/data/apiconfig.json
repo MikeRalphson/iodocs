@@ -1,6 +1,9 @@
 {
   "apitransformer": {
-    "name": "APIMatic API Transformer"
+    "name": "APIMatic API Transformer (example of Swagger2 spec)"
+  },
+  "petstore": {
+    "name": "OpenApi / Swagger 2.0 PetStore demo"
   },
   "arista": {
     "name": "AristaMD"
@@ -26,7 +29,7 @@
     "keyParam": ""
   },
   "alibris": {
-    "name": "Alibris API",
+    "name": "Alibris API (old spec)",
     "protocol": "http",
     "baseURL": "api.alibris.com",
     "publicPath": "/v1/public",

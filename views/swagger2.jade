@@ -19,7 +19,24 @@ block content
 
   h3='Version '+apiInfo.info.version
 
-  form#credentials
+  h3
+    a#externalDocs(href=apiInfo.externalDocs.url)!=apiInfo.externalDocs.description
+
+  h3
+    - if (apiInfo.info.contact.url)
+      a#contact(href=apiInfo.info.contact.url)!=apiInfo.info.contact.name
+    - if (apiInfo.info.contact.email)
+      a#email(href='mailto://'+apiInfo.info.contact.email)!='Email '+apiInfo.info.contact.email
+
+  - if (apiInfo.info.license)
+    h3
+      a#license(href=apiInfo.info.license.url)!='License '+apiInfo.info.license.name
+
+  - if (apiInfo.info.license)
+    h3
+      a#terms(href=apiInfo.info.termsOfService) Terms of service
+
+    form#credentials
       input(type='hidden', name='apiName', value=apiName)
       - if (apiInfo.auth)
           section(class='credentials ' + authed)

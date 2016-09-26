@@ -47,11 +47,6 @@ var express     = require('express'),
     server;
 
 //
-// Add minify to the JSON object
-//
-JSON.minify = JSON.minify || require("node-json-minify");
-
-//
 // Parse arguments
 //
 var yargs = require('yargs')
@@ -72,7 +67,7 @@ if (argv.help) {
 //
 var configFilePath = path.resolve(argv['config-file']);
 try {
-    var config = JSON.parse(JSON.minify(fs.readFileSync(configFilePath, 'utf8')));
+    var config = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
 } catch(e) {
     console.error("File " + configFilePath + " not found or is invalid.  Try: `cp config.json.sample config.json`");
     process.exit(1);
@@ -112,7 +107,7 @@ if (!fs.existsSync(config.apiConfigDir)) {
 }
 
 try {
-    var apisConfig = JSON.parse(JSON.minify(fs.readFileSync(path.join(config.apiConfigDir, 'apiconfig.json'), 'utf8')));
+    var apisConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, 'apiconfig.json'), 'utf8'));
     if (config.debug) {
         console.log(util.inspect(apisConfig));
     }
@@ -177,7 +172,7 @@ app.use(errorHndlr({ dumpExceptions: true, showStack: true }));
 function oauth1(req, res, next) {
     console.log('OAuth process started');
     var apiName = req.body.apiName,
-        apiConfig = JSON.parse(JSON.minify(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8')));
+        apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'));
 
     var oauth1_type = checkObjVal(apiConfig,"auth","oauth","type").value,
         oauth1_request_url = checkObjVal(apiConfig,"auth","oauth","requestURL").value,
@@ -256,7 +251,7 @@ function oauth2(req, res, next){
     console.log('OAuth2 process started');
 
     var apiName = req.body.apiName,
-        apiConfig = JSON.parse(JSON.minify(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8')));
+        apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'));
 
     var oauth2_base_uri = checkObjVal(apiConfig,"auth","oauth","base_uri").value,
         oauth2_authorize_uri = checkObjVal(apiConfig,"auth","oauth","authorize_uri").value,
@@ -396,7 +391,7 @@ function oauth2Success(req, res, next) {
         var apiKey,
             apiSecret,
             apiName = req.params.api,
-            apiConfig = JSON.parse(JSON.minify(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'))),
+            apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8')),
             key = req.sessionID + ':' + apiName,
             basePath;
 
@@ -508,7 +503,7 @@ function oauth1Success(req, res, next) {
         apiKey,
         apiSecret,
         apiName = req.params.api,
-        apiConfig = JSON.parse(JSON.minify(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'))),
+        apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8')),
         key = req.sessionID + ':' + apiName; // Unique key using the sessionID and API name to store tokens and secrets
 
     var oauth1_request_url = checkObjVal(apiConfig,"auth","oauth","requestURL").value,
@@ -1148,7 +1143,7 @@ function checkObjVal(obj /*, val, level1, level2, ... levelN*/) {
 // Passes variables to the view
 function dynamicHelpers(req, res, next) {
     if (req.query.api) {
-        res.locals.apiInfo = JSON.parse(fs.readFileSync(path.resolve(config.apiConfigDir + '/' + req.query.api + '.json'), 'utf8')); // removed JSON.minify
+        res.locals.apiInfo = JSON.parse(fs.readFileSync(path.resolve(config.apiConfigDir + '/' + req.query.api + '.json'), 'utf8'));
         res.locals.apiName = req.query.api;
 
         // If the cookie says we're authed for this particular API, set the session to authed as well

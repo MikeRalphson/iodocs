@@ -1,5 +1,5 @@
-I/O Docs Community Edition in Node.js
-=====================================
+I/O Docs Community Fork in Node.js
+==================================
 Copyright 2011-2016 Mashery, Inc., and others
 
 [http://www.mashery.com](http://www.mashery.com)
