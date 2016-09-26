@@ -1,14 +1,10 @@
 $.ajaxSetup({
-    async:false
+    async:true
 });
 
 $(document).ready(function() {
     var apiName = $('.apiName').attr('id');
-    if (apiName) {
-        // Loads the proper JSON file
-        $.getJSON("../data/"+apiName+".json", function(json) {
-            apiJson = json;
-        });
+    if (apiName && apiJson) {
 
         // Adds definitions to all references to enable alpaca.js references
         function changeObj(obj) {

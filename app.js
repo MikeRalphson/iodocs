@@ -1211,13 +1211,15 @@ app.post('/upload', function(req, res) {
 // API shortname, all lowercase
 app.get('/:api([^\.]+)', function(req, res) {
     req.params.api=req.params.api.replace(/\/$/,'');
-    // TODO create a view for OpenApi (Swagger) 2.0 etc
     if (res.locals.apiInfo.resources) {
         res.render('api');
     }
     else if (res.locals.apiInfo.endpoints) {
         res.render('oldApi');
     }
+	else if (res.locals.apiInfo.swagger) {
+		res.render('swagger2');
+	}
 	else {
 	    res.render('error');
 	}

@@ -1,4 +1,7 @@
 {
+  "apitransformer": {
+    "name": "APIMatic API Transformer"
+  },
   "arista": {
     "name": "AristaMD"
   },

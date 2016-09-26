@@ -4,7 +4,6 @@ block content
   .apiName(id=apiName)
   script.
     count = 0;
-    var apiJson = !{JSON.stringify(apiInfo)};
   - if (apiInfo.auth && apiInfo.auth.oauth && apiInfo.auth.oauth.version && apiInfo.auth.oauth.version == "1.0" && apiInfo.auth.oauth.type =='three-legged')
       - var oAuthVersion = '1.0'
       - if (session.authed)
@@ -80,7 +79,7 @@ block content
               a#toggle-methods(href='#') Toggle All Methods
 
   ul
-      - each resource, resourceName in apiInfo.resources
+      - each resource, resourceName in apiInfo.paths
           li.resource
               h3.title
                   span.name
@@ -92,9 +91,9 @@ block content
                           a(href='#') Expand Methods
               - if (Object.keys(resource).length)
               ul.methods.hidden
-                  - each method, methodKey in resource.methods
+                  - each method, methodKey in resource
                       div(id = method.httpMethod)
-                      - var httpmethod = method.httpMethod.toLowerCase()
+                      - var httpmethod = methodKey.toLowerCase()
                       li(class='method ' + httpmethod + ' ' + secure)
                           div.title.clickable
                               - var methodLink = (resourceName + '-' + method.httpMethod + '-' + method.name).replace(/\s/g, '-')

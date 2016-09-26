@@ -13,6 +13,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 * ~~Updated dependencies (node 4.x and Express 4.x)~~
 * ~~Deployable to Heroku with one click~~
 * ~~Reinstate support for pre-Summer 2014 schema iodocs specs~~
+* ~~Improve speed by not fetching {apiname}.json via AJAX~~
 * ~~Drop support for comments in .json files, for speed~~
 * If you want to use comments, yaml support is coming
 * Port pull-requests from Mashery repository
