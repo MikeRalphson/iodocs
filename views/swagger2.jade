@@ -124,7 +124,8 @@ block content
                               span.http-method !{methodKey}
                               span.name !{method.operationId}
                               span.uri !{resourceName}
-                              span.summary(class='f-right') !{method.summary ? method.summary : method.description}
+                              div(class='f-right')
+                                span.summary !{method.summary ? method.summary : method.description}
                           form.hidden(class='container')
                               input(type='hidden', name='httpMethod', value=methodKey)
                               input(type='hidden', name='oauth', value=secure)

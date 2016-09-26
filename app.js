@@ -1146,6 +1146,7 @@ function dynamicHelpers(req, res, next) {
     if (req.query.api) {
         res.locals.apiInfo = JSON.parse(fs.readFileSync(path.resolve(config.apiConfigDir + '/' + req.query.api + '.json'), 'utf8'));
         res.locals.apiName = req.query.api;
+		res.locals.apiConfig = apisConfig[req.query.api];
 		res.locals.md = markdown;
 
         // If the cookie says we're authed for this particular API, set the session to authed as well
