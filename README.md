@@ -13,13 +13,13 @@ Copyright 2011-2016 Mashery, Inc., and others
 * ~~Updated dependencies (node 4.x and Express 4.x)~~
 * ~~Deployable to Heroku with one click~~
 * ~~Reinstate support for pre-Summer 2014 schema iodocs specs~~
-* ~~Improve speed by not fetching {apiname}.json via AJAX~~
+* ~~Improve speed by not fetching {apiname}.json again via AJAX~~
+* ~~Ability to import spec from static iodocs sites~~ (see [mashery2openapi](https://github.com/mermade/mashery2openapi))
+* ~~Renderer for OpenAPI (Swagger) 2.0 specs~~
 * ~~Markdown support in descriptions~~
 * ~~Drop support for comments in .json files, for speed~~
 * If you want to use comments, yaml support is coming
 * Port pull-requests from Mashery repository
-* Ability to import spec from static iodocs sites
-* Renderer for OpenAPI (Swagger) 2.0 specs
 * Ability to export iodocs spec as OpenAPI (Swagger)
 * Support for GraphQL APIs
 

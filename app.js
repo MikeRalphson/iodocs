@@ -1222,8 +1222,6 @@ app.get('/:api([^\.]+)', function(req, res) {
 	else if (res.locals.apiInfo.swagger) {
         res.locals.apiInfo.resources = {};
         for (var p in res.locals.apiInfo.paths) {
-            res.locals.apiInfo.resources[p] = {};
-            res.locals.apiInfo.resources[p].methods = {};
             for (var m in res.locals.apiInfo.paths[p]) {
                 var sMethod = res.locals.apiInfo.paths[p][m];
                 var ioMethod = {};
@@ -1240,7 +1238,24 @@ app.get('/:api([^\.]+)', function(req, res) {
                     ioMethod.parameters[param.name] = param;
                 }
                 ioMethod.path = p;
-                res.locals.apiInfo.resources[p].methods[sMethodUniqueName] = ioMethod;
+                var tagName = 'Default';
+                if (sMethod.tags && sMethod.tags.length>0) {
+                    tagName = sMethod.tags[0];
+                }
+                if (!res.locals.apiInfo.resources[tagName]) {
+                    res.locals.apiInfo.resources[tagName] = {};
+                    if (res.locals.apiInfo.tags) {
+                        for (var t in res.locals.apiInfo.tags) {
+                            var tag = res.locals.apiInfo.tags[t];
+                            if (tag.name == tagName) {
+                                res.locals.apiInfo.resources[tagName].description = tag.description;
+                                res.locals.apiInfo.resources[tagName].externalDocs = tag.externalDocs;
+                            }
+                        }
+                    }
+                }
+                if (!res.locals.apiInfo.resources[tagName].methods) res.locals.apiInfo.resources[tagName].methods = {};
+                res.locals.apiInfo.resources[tagName].methods[sMethodUniqueName] = ioMethod;
             }
         }
         delete res.locals.apiInfo.paths; // to keep size down

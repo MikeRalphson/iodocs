@@ -25,9 +25,9 @@ block content
 
   h3
     - if (apiInfo.info.contact.url)
-      a#contact(href=apiInfo.info.contact.url)!=apiInfo.info.contact.name
+      a#contact(href=apiInfo.info.contact.url)!=apiInfo.info.contact.name+'&nbsp;'
     - if (apiInfo.info.contact.email)
-      a#email(href='mailto://'+apiInfo.info.contact.email)!='&nbsp;Email '+apiInfo.info.contact.email
+      a#email(href='mailto://'+apiInfo.info.contact.email)!='Email '+apiInfo.info.contact.email
 
   - if (apiInfo.info.license)
     h3
@@ -106,7 +106,7 @@ block content
           li.resource
               h3.title
                   span.name
-                      a(href='#'+resourceName.replace(/\s/g, '-'))!=resourceName
+                      a(href='#'+resourceName.replace(/\s/g, '-'))!=resourceName+' '+md.render(resource.description)
                   ul.actions
                       li.list-methods
                           a(href='#') List Methods
