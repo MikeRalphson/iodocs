@@ -1220,6 +1220,31 @@ app.get('/:api([^\.]+)', function(req, res) {
         res.render('oldApi');
     }
 	else if (res.locals.apiInfo.swagger) {
+        res.locals.apiInfo.resources = {};
+        for (var p in res.locals.apiInfo.paths) {
+            res.locals.apiInfo.resources[p] = {};
+            res.locals.apiInfo.resources[p].methods = {};
+            for (var m in res.locals.apiInfo.paths[p]) {
+                var sMethod = res.locals.apiInfo.paths[p][m];
+                var ioMethod = {};
+                ioMethod.httpMethod = m.toUpperCase();
+                var sMethodUniqueName = sMethod.operationId ? sMethod.operationId : m+'_'+p;
+                ioMethod.name = sMethodUniqueName;
+                ioMethod.summary = sMethod.summary;
+                ioMethod.description = sMethod.description;
+                ioMethod.parameters = {};
+                for (var p2 in sMethod.parameters) {
+                    var param = sMethod.parameters[p2];
+                    param.location = param["in"];
+                    delete param["in"];
+                    ioMethod.parameters[param.name] = param;
+                }
+                ioMethod.path = p;
+                res.locals.apiInfo.resources[p].methods[sMethodUniqueName] = ioMethod;
+            }
+        }
+        delete res.locals.apiInfo.paths; // to keep size down
+        //console.log(JSON.stringify(res.locals.apiInfo.resources,null,2));
 		res.render('swagger2');
 	}
 	else {

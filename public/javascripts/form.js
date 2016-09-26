@@ -13,7 +13,7 @@ $(document).ready(function() {
                     if ("object" == typeof(obj[key])) {
                         changeObj(obj[key]);
                     } else if (key == '$ref') {
-                        obj[key] = '#/definitions/' + obj[key];
+                        if (!obj[key].startsWith('#/definitions/')) obj[key] = '#/definitions/' + obj[key];
                     }
                 }
             }
@@ -49,7 +49,7 @@ $(document).ready(function() {
                 // Adds request properties in the schemas to parameters to render
                 if (apiJson.resources[resource].methods[method].request) {
                     if (apiJson.resources[resource].methods[method].request.$ref) {
-                        requestParamRef = apiJson.resources[resource].methods[method].request.$ref.split("/")[2];    
+                        requestParamRef = apiJson.resources[resource].methods[method].request.$ref.split("/")[2];
 
                         //Adds a referenced parameter container to the schema from schemas
                         if (apiJson.schemas[requestParamRef].properties) {
@@ -87,7 +87,7 @@ $(document).ready(function() {
                             }
                         }
                     }
-                }           
+                }
 
                 var paramCount = 0;
                 for (parameter in apiJson.resources[resource].methods[method].parameters) {
@@ -121,12 +121,12 @@ $(document).ready(function() {
                             paramReference = apiJson.schemas[apiJson.resources[resource].methods[method].parameters[parameter].$ref.split("/")[2]].items;
                             paramContainerRef = apiJson.schemas[apiJson.resources[resource].methods[method].parameters[parameter].$ref.split("/")[2]];
                         }
-                        else { 
+                        else {
                             paramReference = apiJson.resources[resource].methods[method].parameters[parameter].items;
                             paramContainerRef = apiJson.resources[resource].methods[method].parameters[parameter];
                         }
 
-                        //Sets location 
+                        //Sets location
                         if (paramContainerRef.location) {
                             paramReference.location = paramContainerRef.location;
                         }
@@ -173,7 +173,7 @@ $(document).ready(function() {
 
                         //Sets placeholder if parameter is required
                         if (paramReference.required == true || paramReference.required == "Y") {
-                            parameterOptions["placeholder"] = "required";    
+                            parameterOptions["placeholder"] = "required";
                         }
 
                         //Sets options to textarea if necessary
@@ -183,7 +183,7 @@ $(document).ready(function() {
                             paramReference.type = "string";
                         }
 
-                        //Sets options to type boolean 
+                        //Sets options to type boolean
                         if (paramReference.type == "boolean") {
                             parameterOptions["type"] = "select";
                             paramReference.enum = (paramReference.booleanValues) ? paramReference.booleanValues : [true, false];
@@ -256,7 +256,7 @@ $(document).ready(function() {
                                 locations[i] = form.schema.properties[i].location;
                             }
                             for (j in form.schema.definitions) {
-                                locations[j] = form.schema.definitions[j].location;   
+                                locations[j] = form.schema.definitions[j].location;
                             }
                             $("#" + form.schema.methodKey + "json").val(JSON.stringify(json));
                             $("#" + form.schema.methodKey + "locations").val(JSON.stringify(locations));

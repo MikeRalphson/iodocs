@@ -4,6 +4,7 @@ block content
   .apiName(id=apiName)
   script.
     count = 0;
+    var apiJson = !{JSON.stringify(apiInfo)};
   - if (apiInfo.auth && apiInfo.auth.oauth && apiInfo.auth.oauth.version && apiInfo.auth.oauth.version == "1.0" && apiInfo.auth.oauth.type =='three-legged')
       - var oAuthVersion = '1.0'
       - if (session.authed)
@@ -20,13 +21,13 @@ block content
   h3='Version '+apiInfo.info.version
 
   h3
-    a#externalDocs(href=apiInfo.externalDocs.url)!=apiInfo.externalDocs.description
+    a#externalDocs(href=apiInfo.externalDocs.url)!=md.render(apiInfo.externalDocs.description)
 
   h3
     - if (apiInfo.info.contact.url)
       a#contact(href=apiInfo.info.contact.url)!=apiInfo.info.contact.name
     - if (apiInfo.info.contact.email)
-      a#email(href='mailto://'+apiInfo.info.contact.email)!='Email '+apiInfo.info.contact.email
+      a#email(href='mailto://'+apiInfo.info.contact.email)!='&nbsp;Email '+apiInfo.info.contact.email
 
   - if (apiInfo.info.license)
     h3
@@ -101,7 +102,7 @@ block content
               a#toggle-methods(href='#') Toggle All Methods
 
   ul
-      - each resource, resourceName in apiInfo.paths
+      - each resource, resourceName in apiInfo.resources
           li.resource
               h3.title
                   span.name
@@ -113,28 +114,28 @@ block content
                           a(href='#') Expand Methods
               - if (Object.keys(resource).length)
               ul.methods.hidden
-                  - each method, methodKey in resource
-                      div(id = methodKey)
-                      - var httpmethod = methodKey.toLowerCase()
+                  - each method, methodKey in resource.methods
+                      div(id = method.httpMethod)
+                      - var httpmethod = method.httpMethod.toLowerCase()
                       li(class='method ' + httpmethod + ' ' + secure)
                           div.title.clickable
-                              - var methodLink = (resourceName + '-' + methodKey + '-' + method.operationId).replace(/\s/g, '-')
+                              - var methodLink = (resourceName + '-' + method.httpMethod + '-' + method.name).replace(/\s/g, '-')
                               div(id = methodLink)
                               a(href='#'+methodLink)
-                              span.http-method !{methodKey}
-                              span.name !{method.operationId}
-                              span.uri !{resourceName}
+                              span.http-method !{method.httpMethod}
+                              span.name !{method.name}
+                              span.uri !{method.path}
                               div(class='f-right')
                                 span.summary !{method.summary ? method.summary : method.description}
                           form.hidden(class='container')
-                              input(type='hidden', name='httpMethod', value=methodKey)
+                              input(type='hidden', name='httpMethod', value=method.httpMethod)
                               input(type='hidden', name='oauth', value=secure)
-                              input(type='hidden', name='methodUri', value=resourceName)
+                              input(type='hidden', name='methodUri', value=method.path)
                               input(type='hidden', name='accessToken', id='accessToken')
                               input(type='hidden', name='json', id=methodKey + 'json')
                               input(type='hidden', name='locations', id=methodKey + 'locations')
 
-                              span.description !{method.description ? method.description : method.summary}
+                              span.description !{method.description ? md.render(method.description) : method.summary}
                               - if (method.deprecated)
                                 h3 Warning: deprecated
                               br
@@ -148,4 +149,4 @@ block content
                                   .col-name.header Parameter
                               table(id=methodKey)
                               - if (!method['read-only'])
-                                  input(type='submit', id=method.operationId, value='Try it!', class=methodKey)
+                                  input(type='submit', id=method.name, value='Try it!', class=methodKey)
