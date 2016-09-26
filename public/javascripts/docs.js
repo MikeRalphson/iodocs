@@ -17,7 +17,7 @@
         $('form', this.parentNode).slideToggle();
     });
 
-    // Toggle an resource
+    // Toggle a resource
     $('li.resource > h3.title span.name').click(function() {
         $('ul.methods', this.parentNode.parentNode).slideToggle();
         $(this.parentNode.parentNode).toggleClass('expanded')
@@ -235,6 +235,7 @@
             // Call that was made, add pre elements
             resultContainer.append($(document.createElement('h4')).text('Call'));
             resultContainer.append($(document.createElement('pre')).addClass('call'));
+            $('pre.call', resultContainer).text('Loading...');
 
             // Request Headers
             resultContainer.append($(document.createElement('h4')).addClass('reqHeadText').text('Request Headers'));
