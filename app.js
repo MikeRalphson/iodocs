@@ -1144,6 +1144,48 @@ function checkObjVal(obj /*, val, level1, level2, ... levelN*/) {
     }
 }
 
+function convertSwagger(apiInfo){
+    apiInfo.resources = {};
+    for (var p in apiInfo.paths) {
+        for (var m in apiInfo.paths[p]) {
+            var sMethod = apiInfo.paths[p][m];
+            var ioMethod = {};
+            ioMethod.httpMethod = m.toUpperCase();
+            var sMethodUniqueName = sMethod.operationId ? sMethod.operationId : m+'_'+p;
+            ioMethod.name = sMethodUniqueName;
+            ioMethod.summary = sMethod.summary;
+            ioMethod.description = sMethod.description;
+            ioMethod.parameters = {};
+            for (var p2 in sMethod.parameters) {
+                var param = sMethod.parameters[p2];
+                param.location = param["in"];
+                delete param["in"];
+                ioMethod.parameters[param.name] = param;
+            }
+            ioMethod.path = p;
+            var tagName = 'Default';
+            if (sMethod.tags && sMethod.tags.length>0) {
+                tagName = sMethod.tags[0];
+            }
+            if (!apiInfo.resources[tagName]) {
+                apiInfo.resources[tagName] = {};
+                if (apiInfo.tags) {
+                    for (var t in apiInfo.tags) {
+                        var tag = apiInfo.tags[t];
+                        if (tag.name == tagName) {
+                            apiInfo.resources[tagName].description = tag.description;
+                            apiInfo.resources[tagName].externalDocs = tag.externalDocs;
+                        }
+                    }
+                }
+            }
+            if (!apiInfo.resources[tagName].methods) apiInfo.resources[tagName].methods = {};
+            apiInfo.resources[tagName].methods[sMethodUniqueName] = ioMethod;
+        }
+    }
+    return apiInfo.resources;
+}
+
 // Replaces deprecated app.dynamicHelpers that were dropped in Express 3.x
 // Passes variables to the view
 function dynamicHelpers(req, res, next) {
@@ -1221,44 +1263,7 @@ app.get('/:api([^\.]+)', function(req, res) {
         res.render('oldApi');
     }
 	else if (res.locals.apiInfo.swagger) {
-        res.locals.apiInfo.resources = {};
-        for (var p in res.locals.apiInfo.paths) {
-            for (var m in res.locals.apiInfo.paths[p]) {
-                var sMethod = res.locals.apiInfo.paths[p][m];
-                var ioMethod = {};
-                ioMethod.httpMethod = m.toUpperCase();
-                var sMethodUniqueName = sMethod.operationId ? sMethod.operationId : m+'_'+p;
-                ioMethod.name = sMethodUniqueName;
-                ioMethod.summary = sMethod.summary;
-                ioMethod.description = sMethod.description;
-                ioMethod.parameters = {};
-                for (var p2 in sMethod.parameters) {
-                    var param = sMethod.parameters[p2];
-                    param.location = param["in"];
-                    delete param["in"];
-                    ioMethod.parameters[param.name] = param;
-                }
-                ioMethod.path = p;
-                var tagName = 'Default';
-                if (sMethod.tags && sMethod.tags.length>0) {
-                    tagName = sMethod.tags[0];
-                }
-                if (!res.locals.apiInfo.resources[tagName]) {
-                    res.locals.apiInfo.resources[tagName] = {};
-                    if (res.locals.apiInfo.tags) {
-                        for (var t in res.locals.apiInfo.tags) {
-                            var tag = res.locals.apiInfo.tags[t];
-                            if (tag.name == tagName) {
-                                res.locals.apiInfo.resources[tagName].description = tag.description;
-                                res.locals.apiInfo.resources[tagName].externalDocs = tag.externalDocs;
-                            }
-                        }
-                    }
-                }
-                if (!res.locals.apiInfo.resources[tagName].methods) res.locals.apiInfo.resources[tagName].methods = {};
-                res.locals.apiInfo.resources[tagName].methods[sMethodUniqueName] = ioMethod;
-            }
-        }
+        res.locals.apiInfo.resources = convertSwagger(res.locals.apiInfo);
         delete res.locals.apiInfo.paths; // to keep size down
         //console.log(JSON.stringify(res.locals.apiInfo.resources,null,2));
 		res.render('swagger2');
