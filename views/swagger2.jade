@@ -1,6 +1,6 @@
 extends layout
 block content
-  h1=apiInfo.name
+  h1=apiInfo.info.title
   .apiName(id=apiName)
   script.
     count = 0;
@@ -14,6 +14,10 @@ block content
         - var authed = 'authed'
   - else
       - var authed =''
+
+  h2=apiInfo.info.description
+
+  h3='Version '+apiInfo.info.version
 
   form#credentials
       input(type='hidden', name='apiName', value=apiName)
@@ -92,18 +96,18 @@ block content
               - if (Object.keys(resource).length)
               ul.methods.hidden
                   - each method, methodKey in resource
-                      div(id = method.httpMethod)
+                      div(id = methodKey)
                       - var httpmethod = methodKey.toLowerCase()
                       li(class='method ' + httpmethod + ' ' + secure)
                           div.title.clickable
-                              - var methodLink = (resourceName + '-' + method.httpMethod + '-' + method.name).replace(/\s/g, '-')
+                              - var methodLink = (resourceName + '-' + methodKey + '-' + method.operationId).replace(/\s/g, '-')
                               div(id = methodLink)
                               a(href='#'+methodLink)
-                              span.http-method !{method.httpMethod}
-                              span.name !{method.name}
-                              span.uri !{method.path}
+                              span.http-method !{methodKey}
+                              span.name !{method.operationId}
+                              span.uri !{resourceName}
                           form.hidden(class='container')
-                              input(type='hidden', name='httpMethod', value=method.httpMethod)
+                              input(type='hidden', name='httpMethod', value=methodKey)
                               input(type='hidden', name='oauth', value=secure)
                               input(type='hidden', name='methodUri', value=method.path)
                               input(type='hidden', name='accessToken', id='accessToken')
@@ -122,4 +126,4 @@ block content
                                   .col-name.header Parameter
                               table(id=methodKey)
                               - if (!method['read-only'])
-                                  input(type='submit', id=method.name, value='Try it!', class=methodKey)
+                                  input(type='submit', id=method.operationId, value='Try it!', class=methodKey)
