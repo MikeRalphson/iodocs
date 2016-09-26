@@ -139,14 +139,15 @@ block content
                               - if (method.deprecated)
                                 h3 Warning: deprecated
                               br
-                              br
-                              .container.header
-                                .row
-                                  .col-description.header Description !{method.MethodName}
-                                  .location.header Location
-                                  .col-type.header Type
-                                  .col-parameter.header Value
-                                  .col-name.header Parameter
+                              - if (Object.keys(method.parameters).length>0)
+                                br
+                                .container.header
+                                  .row
+                                    .col-description.header Description !{method.MethodName}
+                                    .location.header Location
+                                    .col-type.header Type
+                                    .col-parameter.header Value
+                                    .col-name.header Parameter
                               table(id=methodKey)
                               - if (!method['read-only'])
                                   input(type='submit', id=method.name, value='Try it!', class=methodKey)
