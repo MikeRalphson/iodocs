@@ -149,10 +149,9 @@ block content
                                                             input(type='password', name='params[' + parameter.Name + ']', value=parameter.Default)
                                                             input(type='hidden', name='locations['+parameter.Name+']', value=parameter.Location || 'query')
                                                         - else
-                                                            input(name=input_name, value=parameter.Default, placeholder=className)
+                                                            input(name=input_name, value=parameter.Default, placeholder=className, required=(parameter.Required =='Y'))
                                                     td.type!=parameter.Type
-                                                    td.location
-                                                        p!=parameter.Location || 'query'
+                                                    td.col-locn!=parameter.Location || 'query'
                                                     td.description
                                                         p!=parameter.Description || 'No description'
                                                         - if (parameter.Type =='enumerated' && parameter.EnumeratedDescription)

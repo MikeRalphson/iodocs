@@ -13,7 +13,7 @@
 
 .row  {
 	display: table-row;
-	width: 82%;
+	width: 99%;
 	float: left;
 }
 
@@ -55,7 +55,7 @@
 	width: 40%;
 }
 
-.ui-widget-content { 
+.ui-widget-content {
 	border: none;
 	background: none;
 	color: none;

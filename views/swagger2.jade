@@ -106,7 +106,7 @@ block content
           li.resource
               h3.title
                   span.name
-                      a(href='#'+resourceName.replace(/\s/g, '-'))!=resourceName+' '+md.render(resource.description)
+                      a(href='#'+resourceName.replace(/\s/g, '-'))!=resourceName+' '+(resource.description ? md.render(resource.description) : '')
                   ul.actions
                       li.list-methods
                           a(href='#') List Methods
