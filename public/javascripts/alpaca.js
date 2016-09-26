@@ -3,17 +3,17 @@ Alpaca Version 1.1.3
 
 Copyright 2014 Gitana Software, Inc.
 
-Licensed under the Apache License, Version 2.0 (the "License"); 
-you may not use this file except in compliance with the License. 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
 
-You may obtain a copy of the License at 
-	http://www.apache.org/licenses/LICENSE-2.0 
+You may obtain a copy of the License at
+	http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software 
-distributed under the License is distributed on an "AS IS" BASIS, 
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-See the License for the specific language governing permissions and 
-limitations under the License. 
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 For more information, please contact Gitana Software, Inc. at this
 address:
@@ -68,17 +68,17 @@ Alpaca Version 1.1.3
 
 Copyright 2014 Gitana Software, Inc.
 
-Licensed under the Apache License, Version 2.0 (the "License"); 
-you may not use this file except in compliance with the License. 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
 
-You may obtain a copy of the License at 
-	http://www.apache.org/licenses/LICENSE-2.0 
+You may obtain a copy of the License at
+	http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software 
-distributed under the License is distributed on an "AS IS" BASIS, 
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-See the License for the specific language governing permissions and 
-limitations under the License. 
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 For more information, please contact Gitana Software, Inc. at this
 address:
@@ -1014,7 +1014,7 @@ if (typeof JSON !== 'object') {
 function hoozit(o) {
     if (o.constructor === String) {
         return "string";
-        
+
     } else if (o.constructor === Boolean) {
         return "boolean";
 
@@ -1036,7 +1036,7 @@ function hoozit(o) {
     // consider: typeof [] === object
     } else if (o instanceof Array) {
         return "array";
-    
+
     // consider: typeof new Date() === object
     } else if (o instanceof Date) {
         return "date";
@@ -1087,7 +1087,7 @@ var equiv = function () {
     var innerEquiv; // the real equiv function
     var callers = []; // stack to decide between skip/abort functions
 
-    
+
     var callbacks = function () {
 
         // for string, boolean, number and null
@@ -7366,9 +7366,9 @@ var equiv = function () {
 })(jQuery);
 /*jshint -W014 */ // bad line breaking
 (function($) {
-    
+
     var Alpaca = $.alpaca;
-    
+
     Alpaca.registerView({
         "id":"VIEW_WEB_EDIT_INLINE",
         "parent":"VIEW_WEB_EDIT",
@@ -7380,7 +7380,7 @@ var equiv = function () {
         "displayReadonly":true,
         "templates": {
             "fieldSetOuterEl": '<fieldset class="{{if options.inline}}alpaca-inline{{/if}}">{{html this.html}}</fieldset>',
-            "fieldSetItemContainer": '<div class="alpaca-inline-item-container"></div>',            
+            "fieldSetItemContainer": '<div class="alpaca-inline-item-container"></div>',
             "arrayItemToolbar": '<div class="alpaca-fieldset-array-item-toolbar" data-role="controlgroup" data-type="horizontal" data-mini="true">'
                 +'<span class="alpaca-fieldset-array-item-toolbar-add" data-role="button" data-icon="add" data-iconpos="notext">Add</span>'
                 +'<span class="alpaca-fieldset-array-item-toolbar-remove" data-role="button" data-icon="delete" data-iconpos="notext">Delete</span>'
@@ -8330,6 +8330,7 @@ var equiv = function () {
                 // optional
                 if (this.schema.required) {
                     this.getEl().addClass("alpaca-field-required");
+                    $(':input', this.getEl()).attr('required','true'); // iodocs
                 } else {
                     this.getEl().addClass("alpaca-field-optional");
                 }
@@ -11614,7 +11615,7 @@ var equiv = function () {
          */
         setup: function() {
             this.base();
-            
+
             if (!this.options.size) {
                 this.options.size = 20;
             }
@@ -11656,7 +11657,7 @@ var equiv = function () {
                 onSuccess();
             }
         },
-        
+
         /**
          * @see Alpaca.ControlField#postRender
          */
@@ -11842,7 +11843,7 @@ var equiv = function () {
 
             return value;
         },
-        
+
         /**
          * @see Alpaca.Field#setValue
          */
@@ -11875,21 +11876,21 @@ var equiv = function () {
             // be sure to call into base method
             this.base(value);
         },
-        
+
         /**
          * @see Alpaca.ControlField#handleValidate
          */
         handleValidate: function() {
             var baseStatus = this.base();
-            
+
             var valInfo = this.validation;
-			
+
 			var status =  this._validatePattern();
             valInfo["invalidPattern"] = {
                 "message": status ? "" : Alpaca.substituteTokens(this.view.getMessage("invalidPattern"), [this.schema.pattern]),
                 "status": status
             };
- 
+
             status = this._validateMaxLength();
 			valInfo["stringTooLong"] = {
                 "message": status ? "" : Alpaca.substituteTokens(this.view.getMessage("stringTooLong"), [this.schema.maxLength]),
@@ -11904,7 +11905,7 @@ var equiv = function () {
 
             return baseStatus && valInfo["invalidPattern"]["status"] && valInfo["stringTooLong"]["status"] && valInfo["stringTooShort"]["status"];
         },
-        
+
         /**
          * Validates against the schema pattern property.
          *
@@ -11923,10 +11924,10 @@ var equiv = function () {
                     return false;
                 }
             }
-            
+
             return true;
         },
-        
+
         /**
          * Validates against the schema minLength property.
          *
@@ -11947,7 +11948,7 @@ var equiv = function () {
 			}
 			return true;
 		},
-        
+
         /**
          * Validates against the schema maxLength property.
          *
@@ -11968,7 +11969,7 @@ var equiv = function () {
 			}
             return true;
         },
-        
+
         /**
          * @see Alpaca.Field#disable
          */
@@ -11978,7 +11979,7 @@ var equiv = function () {
                 this.field.disabled = true;
             }
         },
-        
+
         /**
          * @see Alpaca.Field#enable
          */
@@ -11988,7 +11989,7 @@ var equiv = function () {
                 this.field.disabled = false;
             }
         },
-        
+
         /**
          * @see Alpaca.Field#focus
          */
@@ -11998,14 +11999,14 @@ var equiv = function () {
                 this.field.focus();
             }
         },//__BUILDER_HELPERS
-        
+
         /**
          * @private
          * @see Alpaca.ControlField#getSchemaOfSchema
          */
         getSchemaOfSchema: function() {
             return Alpaca.merge(this.base(), {
-                "properties": {                
+                "properties": {
                     "minLength": {
                         "title": "Minimal Length",
                         "description": "Minimal length of the property value.",
@@ -12048,14 +12049,14 @@ var equiv = function () {
                 }
             });
         },
-		
+
         /**
          * @private
          * @see Alpaca.ControlField#getSchemaOfOptions
          */
         getSchemaOfOptions: function() {
             return Alpaca.merge(this.base(), {
-                "properties": {                
+                "properties": {
                     "size": {
                         "title": "Field Size",
                         "description": "Field size.",
@@ -12082,15 +12083,15 @@ var equiv = function () {
                     }
                 }
             });
-        },    
-		
+        },
+
         /**
          * @private
          * @see Alpaca.ControlField#getOptionsForOptions
          */
         getOptionsForOptions: function() {
             return Alpaca.merge(this.base(), {
-                "fields": {                
+                "fields": {
                     "size": {
                         "type": "integer"
                     },
@@ -12106,7 +12107,7 @@ var equiv = function () {
                     }
                 }
             });
-        },    
+        },
 
         /**
          * @see Alpaca.Field#getTitle
@@ -12114,28 +12115,28 @@ var equiv = function () {
         getTitle: function() {
             return "Single-Line Text";
         },
-        
+
         /**
          * @see Alpaca.Field#getDescription
          */
         getDescription: function() {
             return "Text field for single-line text.";
         },
-        
+
         /**
          * @see Alpaca.Field#getType
          */
         getType: function() {
             return "string";
         },
-		
+
         /**
          * @see Alpaca.Field#getFieldType
          */
         getFieldType: function() {
             return "text";
         }//__END_OF_BUILDER_HELPERS
-        
+
     });
 
     Alpaca.registerTemplate("controlFieldText", '<input type="text" id="${id}" {{if options.placeholder}}placeholder="${options.placeholder}"{{/if}} {{if options.size}}size="${options.size}"{{/if}} {{if options.readonly}}readonly="readonly"{{/if}} {{if name}}name="${name}"{{/if}} {{each(i,v) options.data}}data-${i}="${v}"{{/each}}/>');
@@ -12813,10 +12814,10 @@ var equiv = function () {
          * @see Alpaca.Fields.TextField#setup
          */
         setup: function() {
-            this.base();            
+            this.base();
             this.controlFieldTemplateDescriptor = this.view.getTemplateDescriptor("controlFieldFile");
         },
-                
+
         /**
          * @see Alpaca.Fields.TextField#setValue
          */
@@ -12877,7 +12878,7 @@ var equiv = function () {
             }
         },
 
-        
+
         /**
          * @see Alpaca.Fields.TextField#postRender
          */
@@ -12935,7 +12936,7 @@ var equiv = function () {
 		getTitle: function() {
 			return "File Field";
 		},
-		
+
 		/**
          * @see Alpaca.Fields.TextField#getDescription
 		 */
@@ -12950,7 +12951,7 @@ var equiv = function () {
             return "file";
         }//__END_OF_BUILDER_HELPERS
     });
-    
+
     Alpaca.registerTemplate("controlFieldFile", '<input type="file" id="${id}" {{if options.size}}size="${options.size}"{{/if}} {{if options.readonly}}readonly="readonly"{{/if}} {{if name}}name="${name}"{{/if}} {{each(i,v) options.data}}data-${i}="${v}"{{/each}}/>');
     Alpaca.registerFieldClass("file", Alpaca.Fields.FileField);
 })(jQuery);
@@ -13262,7 +13263,7 @@ var equiv = function () {
          */
         setup: function(){
             this.base();
-            
+
             if (this.options.name) {
 				this.name = this.options.name;
 			}
@@ -13289,7 +13290,7 @@ var equiv = function () {
             });
             return val;
         },
-        
+
         /**
          * @see Alpaca.Field#setValue
          */
@@ -13312,7 +13313,7 @@ var equiv = function () {
                 this.base(val);
             }
         },
-        
+
         /**
          * @private
          */
@@ -13351,12 +13352,12 @@ var equiv = function () {
 
                 this.injectField(this.field);
             }
-            
+
             if (onSuccess) {
                 onSuccess();
             }
         },
-        
+
         /**
          * @see Alpaca.ControlField#postRender
          */
@@ -13373,22 +13374,22 @@ var equiv = function () {
                 callback();
             });
         },
-        
+
         /**
          * @see Alpaca.ControlField#onClick
          */
         onClick: function(e){
             this.base(e);
-            
+
             var _this = this;
-            
+
             Alpaca.later(25, this, function(){
                 var v = _this.getValue();
                 _this.setValue(v);
                 _this.refreshValidationState();
             });
         },//__BUILDER_HELPERS
-		
+
         /**
          * @private
          * @see Alpaca.Fields.ListField#getSchemaOfOptions
@@ -13423,7 +13424,7 @@ var equiv = function () {
 		getTitle: function() {
 			return "Radio Group Field";
 		},
-		
+
 		/**
          * @see Alpaca.Field#getDescription
 		 */
@@ -13437,13 +13438,13 @@ var equiv = function () {
         getFieldType: function() {
             return "radio";
         }//__END_OF_BUILDER_HELPERS
-        
+
     });
-    
+
     Alpaca.registerTemplate("controlFieldRadio", '<div id="${id}" class="alpaca-controlfield-radio">{{if !required && !removeDefaultNone}}<span class="alpaca-controlfield-radio-item"><input type="radio" {{if options.readonly}}readonly="readonly"{{/if}} name="${name}" id="${id}_radio_nonevalue" value=""/><label class="alpaca-controlfield-radio-label" for="${id}_radio_nonevalue">None</label></span>{{/if}}{{each selectOptions}}<span class="alpaca-controlfield-radio-item"><input type="radio" {{if options.readonly}}readonly="readonly"{{/if}} name="${name}" value="${value}" id="${id}_radio_${$index}" {{if value == data}}checked="checked"{{/if}}/><label class="alpaca-controlfield-radio-label" for="${id}_radio_${$index}">${text}</label></span>{{/each}}</div>');
 
     Alpaca.registerFieldClass("radio", Alpaca.Fields.RadioField);
-    
+
 })(jQuery);
 (function($) {
 
@@ -13813,7 +13814,7 @@ var equiv = function () {
                 return parseFloat(textValue);
             }
         },
-        
+
         /**
          * @see Alpaca.Fields.TextField#postRender
          */
@@ -13830,15 +13831,15 @@ var equiv = function () {
                 callback();
             });
         },
-				
+
         /**
          * @see Alpaca.Fields.TextField#handleValidate
          */
         handleValidate: function() {
             var baseStatus = this.base();
-            
+
             var valInfo = this.validation;
-			
+
 			var status = this._validateNumber();
             valInfo["stringNotANumber"] = {
                 "message": status ? "" : this.view.getMessage("stringNotANumber"),
@@ -13863,7 +13864,7 @@ var equiv = function () {
                     valInfo["stringValueTooLarge"]["message"] = Alpaca.substituteTokens(this.view.getMessage("stringValueTooLarge"), [this.schema.maximum]);
                 }
             }
-			
+
 			status = this._validateMinimum();
             valInfo["stringValueTooSmall"] = {
                 "message": "",
@@ -13890,7 +13891,7 @@ var equiv = function () {
             // hand back a true/false
             return baseStatus && valInfo["stringNotANumber"]["status"] && valInfo["stringDivisibleBy"]["status"] && valInfo["stringValueTooLarge"]["status"] && valInfo["stringValueTooSmall"]["status"] && valInfo["stringValueNotMultipleOf"]["status"];
         },
-        
+
         /**
          * Validates if it is a float number.
          * @returns {Boolean} true if it is a float number
@@ -13902,20 +13903,20 @@ var equiv = function () {
                 return true;
             }
             var floatValue = this.getValue();
-            
+
             // quick check to see if what they entered was a number
             if (isNaN(floatValue)) {
                 return false;
             }
-            
+
             // check if valid number format
             if (!textValue.match(Alpaca.regexps.number)) {
                 return false;
             }
-            
+
             return true;
         },
-        
+
         /**
          * Validates divisibleBy constraint.
          * @returns {Boolean} true if it passes the divisibleBy constraint.
@@ -13932,29 +13933,29 @@ var equiv = function () {
             }
             return true;
         },
-        
+
         /**
          * Validates maximum constraint.
          * @returns {Boolean} true if it passes the maximum constraint.
          */
         _validateMaximum: function() {
             var floatValue = this.getValue();
-            
+
             if (!Alpaca.isEmpty(this.schema.maximum)) {
                 if (floatValue > this.schema.maximum) {
                     return false;
                 }
-                
+
                 if (!Alpaca.isEmpty(this.schema.exclusiveMaximum)) {
                     if (floatValue == this.schema.maximum && this.schema.exclusiveMaximum) {
                         return false;
                     }
                 }
             }
-            
+
             return true;
         },
-        
+
         /**
          * Validates maximum constraint.
          * @returns {Boolean} true if it passes the minimum constraint.
@@ -13966,14 +13967,14 @@ var equiv = function () {
                 if (floatValue < this.schema.minimum) {
                     return false;
                 }
-                
+
                 if (!Alpaca.isEmpty(this.schema.exclusiveMinimum)) {
                     if (floatValue == this.schema.minimum && this.schema.exclusiveMinimum) {
                         return false;
                     }
                 }
             }
-            
+
             return true;
         },
 
@@ -14076,7 +14077,7 @@ var equiv = function () {
 		getTitle: function() {
 			return "Number Field";
 		},
-		
+
 		/**
          * @see Alpaca.Fields.TextField#getDescription
 		 */
@@ -14098,7 +14099,7 @@ var equiv = function () {
             return "number";
         }//__END_OF_BUILDER_HELPERS
     });
-    
+
     // Additional Registrations
     Alpaca.registerMessages({
         "stringValueTooSmall": "The minimum value for this field is {0}",
@@ -17048,14 +17049,14 @@ var equiv = function () {
 
         },
 
-        
+
         /**
          * @see Alpaca.Field#getValue
          */
         getValue: function() {
             return this.field.val();
         },
-        
+
         /**
          * @see Alpaca.Field#setValue
          */
@@ -17065,7 +17066,7 @@ var equiv = function () {
             } else {
                 this.field.val(value);
             }
-            
+
             // be sure to call into base method
             this.base(value);
         },
@@ -17076,28 +17077,28 @@ var equiv = function () {
         getTitle: function() {
             return "Hidden";
         },
-        
+
         /**
          * @see Alpaca.Field#getDescription
          */
         getDescription: function() {
             return "Field for a hidden HTML input";
         },
-        
+
         /**
          * @see Alpaca.Field#getType
          */
         getType: function() {
             return "string";
         },
-		
+
         /**
          * @see Alpaca.Field#getFieldType
          */
         getFieldType: function() {
             return "hidden";
         }//__END_OF_BUILDER_HELPERS
-        
+
     });
 
     Alpaca.registerTemplate("controlFieldHidden", '<input type="hidden" id="${id}" {{if name}}name="${name}"{{/if}} {{each(i,v) options.data}}data-${i}="${v}"{{/each}}/>');
@@ -17145,7 +17146,7 @@ var equiv = function () {
 				"invalidPattern": "&#27492;&#22495;&#39035;&#26377;&#26684;&#24335; {0}",
 				"stringTooShort": "&#27492;&#22495;&#33267;&#23569;&#38271;&#24230; {0}",
 				"stringTooLong": "&#27492;&#22495;&#26368;&#22810;&#38271;&#24230; {0}"
-			
+
 			}
         }
     });
@@ -17339,17 +17340,17 @@ Alpaca Version 1.1.3
 
 Copyright 2014 Gitana Software, Inc.
 
-Licensed under the Apache License, Version 2.0 (the "License"); 
-you may not use this file except in compliance with the License. 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
 
-You may obtain a copy of the License at 
-	http://www.apache.org/licenses/LICENSE-2.0 
+You may obtain a copy of the License at
+	http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software 
-distributed under the License is distributed on an "AS IS" BASIS, 
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-See the License for the specific language governing permissions and 
-limitations under the License. 
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 For more information, please contact Gitana Software, Inc. at this
 address:
@@ -19127,7 +19128,7 @@ address:
          */
         setup: function() {
             this.base();
-            
+
             if (!this.schema.pattern) {
                 this.schema.pattern = Alpaca.regexps.ipv4;
             }
@@ -19156,13 +19157,13 @@ address:
          */
         handleValidate: function() {
             var baseStatus = this.base();
-            
+
             var valInfo = this.validation;
-            
+
             if (!valInfo["invalidPattern"]["status"]) {
                 valInfo["invalidPattern"]["message"] = this.view.getMessage("invalidIPv4");
             }
-            
+
             return baseStatus;
         },//__BUILDER_HELPERS
 
@@ -19180,7 +19181,7 @@ address:
                         "type": "string",
                         "default": pattern,
                         "readonly": true
-                    },                    
+                    },
 					"format": {
                         "title": "Format",
                         "description": "Property data format",
@@ -19206,14 +19207,14 @@ address:
 				}
 			});
         },
-        
+
         /**
          * @see Alpaca.Fields.TextField#getTitle
          */
         getTitle: function() {
             return "IP Address Field";
         },
-        
+
         /**
          * @see Alpaca.Fields.TextField#getDescription
          */
@@ -19228,7 +19229,7 @@ address:
             return "ipv4";
         }//__END_OF_BUILDER_HELPERS
     });
-    
+
     Alpaca.registerMessages({
         "invalidIPv4": "Invalid IPv4 address, e.g. 192.168.0.1"
     });
@@ -20114,11 +20115,11 @@ address:
          */
         setup: function() {
             this.base();
-            
+
             if (!this.schema.pattern) {
                 this.schema.pattern = Alpaca.regexps.password;
             }
-            
+
             this.controlFieldTemplateDescriptor = this.view.getTemplateDescriptor("controlFieldPassword");
         },
 
@@ -20144,13 +20145,13 @@ address:
          */
         handleValidate: function() {
             var baseStatus = this.base();
-            
+
             var valInfo = this.validation;
-            
+
             if (!valInfo["invalidPattern"]["status"]) {
                 valInfo["invalidPattern"]["message"] = this.view.getMessage("invalidPassword");
             }
-            
+
             return baseStatus;
         },//__BUILDER_HELPERS
 
@@ -20169,7 +20170,7 @@ address:
                         "default": this.schema.pattern,
                         "enum":[pattern],
                         "readonly": true
-                    },                    
+                    },
 					"format": {
                         "title": "Format",
                         "description": "Property data format",
@@ -20195,14 +20196,14 @@ address:
 				}
 			});
         },
-        
+
         /**
          * @see Alpaca.Fields.TextField#getTitle
          */
         getTitle: function() {
             return "Password Field";
         },
-        
+
         /**
          * @see Alpaca.Fields.TextField#getDescription
          */
@@ -21025,7 +21026,7 @@ address:
             // instantiated plugin reference
             this.plugin = null;
         },
-        
+
         /**
          * @see Alpaca.Fields.TextAreaField#postRender
          */
@@ -21091,7 +21092,7 @@ address:
             });
 
         },//__BUILDER_HELPERS
-		
+
         /**
          * @private
          * @see Alpaca.ControlField#getSchemaOfOptions
@@ -21138,7 +21139,7 @@ address:
 		getTitle: function() {
 			return "Wysiwyg Editor";
 		},
-		
+
 		/**
          * @see Alpaca.Fields.TextAreaField#getDescription
 		 */
@@ -21153,9 +21154,9 @@ address:
             return "wysiwyg";
         }//__END_OF_BUILDER_HELPERS
     });
-    
+
     Alpaca.registerFieldClass("wysiwyg", Alpaca.Fields.WysiwygField);
-    
+
 })(jQuery);
 (function($) {
 

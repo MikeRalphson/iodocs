@@ -652,8 +652,9 @@ function processRequest(req, res, next) {
         baseHostPort = (baseHostInfo.length > 2) ? baseHostInfo[2] : '';
 	}
 	else {
-        baseHostUrl = apisConfig[apiName].baseURL;
-        baseHostPort = ''; // TODO
+        baseHostInfo = apisConfig[apiName].baseURL.split(':');
+        baseHostUrl = baseHostInfo[0];
+        baseHostPort = (baseHostInfo.length > 1) ? baseHostInfo[1] : '';
 	}
 
     var headers = {};
@@ -952,7 +953,7 @@ function processRequest(req, res, next) {
 
         // Add API Key to params, if any.
         if (apiKey != '' && apiKey != 'undefined' && apiKey != undefined) {
-            if (apiConfig.auth && apiConfig.auth.key && apiConfig.auth.key.location === 'header') { // TODO or...
+            if (apiConfig.auth && apiConfig.auth.key && apiConfig.auth.key.location === 'header') { // TODO swagger auth in headers
                 options.headers = (options.headers === void 0) ? {} : options.headers;
                 options.headers[apiConfig.auth.key.param] = apiKey;
             }
@@ -963,7 +964,7 @@ function processRequest(req, res, next) {
                 else {
                     options.path += '?';
                 }
-				var keyParam = apiConfig.auth && apiConfig.auth.key ? apiConfig.auth.key.param : 'api_key'; // TODO
+				var keyParam = apiConfig.auth && apiConfig.auth.key ? apiConfig.auth.key.param : 'api_key'; // TODO swagger key param name
                 console.log(keyParam);
                 options.path += keyParam + '=' + apiKey;
             }

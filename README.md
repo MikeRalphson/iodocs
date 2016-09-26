@@ -17,11 +17,15 @@ Copyright 2011-2016 Mashery, Inc., and others
 * ~~Ability to import spec from static iodocs sites~~ (see [mashery2openapi](https://github.com/mermade/mashery2openapi))
 * ~~Renderer for OpenAPI (Swagger) 2.0 specs~~
 * ~~Markdown support in descriptions~~
+* ~~Required parameter validation~~
 * ~~Drop support for comments in .json files, for speed~~
 * If you want to use comments, yaml support is coming
+* Load from URL mode
+* Server-side cacheing of specs
 * Port pull-requests from Mashery repository
 * Ability to export iodocs spec as OpenAPI (Swagger)
 * Support for GraphQL APIs
+* Support for OpenApi 3.x when ratified
 
 <details>
   <summary>Summer 2014 Release Feature Enhancements</summary>
@@ -47,7 +51,7 @@ SYNOPSIS
 --------
 I/O Docs is a live interactive documentation system for RESTful web APIs. By defining APIs at the resource, method and parameter levels in a JSON schema, I/O Docs will generate a JavaScript client interface. API calls can be executed from this interface, which are then proxied through the I/O Docs server with payload data cleanly formatted (pretty-printed if JSON or XML). Basic HTML text tags are enabled in the JSON schema.
 
-You can find the latest version here: [https://github.com/mashery/iodocs](https://github.com/mashery/iodocs)
+You can find the latest version here: [https://github.com/MikeRalphson/iodocs](https://github.com/MikeRalphson/iodocs)
 
 However, we recommend that you install I/O Docs with *npm*, the Node package manager. See instructions below.
 
@@ -70,7 +74,7 @@ INSTALLATION INSTRUCTIONS FOR NODE, NPM & REDIS
 INSTALLATION INSTRUCTIONS FOR I/O DOCS
 --------------------------------------
 From the command line type in:
-<pre>  git clone http://github.com/mashery/iodocs.git
+<pre>  git clone http://github.com/MikeRalphson/iodocs.git
   cd iodocs
   npm install
 </pre>
@@ -682,4 +686,4 @@ Line:
 SUPPORT
 =======
 If you need any help with I/O Docs, you can reach out to us via the GitHub Issues page at:
-<code>[http://github.com/mashery/iodocs/issues](http://github.com/mashery/iodocs/issues)</code>
+<code>[http://github.com/MikeRalphson/iodocs/issues](http://github.com/MikeRalphson/iodocs/issues)</code>

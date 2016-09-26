@@ -148,6 +148,7 @@ $(document).ready(function() {
                                 }
                             }
                             parameterOptions["fields"] = fieldsOptions;
+                            paramReference["required"] = true;
                         }
 
                         //Accounts for whether the parameter has an enum
@@ -174,6 +175,7 @@ $(document).ready(function() {
                         //Sets placeholder if parameter is required
                         if (paramReference.required == true || paramReference.required == "Y") {
                             parameterOptions["placeholder"] = "required";
+                            paramReference.required = true;
                         }
 
                         //Sets options to textarea if necessary
