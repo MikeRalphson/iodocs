@@ -35,22 +35,23 @@ block content
   - if (apiInfo.info.license)
     h3
       a#terms(href=apiInfo.info.termsOfService) Terms of service
+    br
 
     form#credentials
       input(type='hidden', name='apiName', value=apiName)
-      - if (apiInfo.auth)
+      - if (apiInfo.securityDefinitions)
           section(class='credentials ' + authed)
               - if (oAuthVersion == '1.0')
                   input(type='hidden', name='oauth', value='authrequired')
               - else if (oAuthVersion == '2.0')
                   input(type='hidden', name='oauth2', value='authrequired')
 
-              - if (apiInfo.auth.defaultKey)
+              - if (apiInfo.auth && apiInfo.auth.defaultKey)
                   - var defaultKey =apiInfo.auth.defaultKey
               - else
                   - var defaultKey =''
 
-              - if (apiInfo.auth.defaultSecret)
+              - if (apiInfo.auth && apiInfo.auth.defaultSecret)
                   - var defaultSecret =apiInfo.auth.defaultSecret
               - else
                   - var defaultSecret =''
@@ -74,7 +75,7 @@ block content
                       label(for='password') Password
                       input(id='password', name='password', type='password', value=defaultKey, style='color=#EEEEEE')
 
-                  - if (apiInfo.auth.signature)
+                  - if (apiInfo.auth && apiInfo.auth.signature)
                       label(for='secret') Shared Secret
                       input(id='secret', name='secret', value=defaultSecret, style='color=#EEEEEE')
               - if (oAuthVersion == '1.0' && apiInfo.auth.oauth.type !='two-legged')
