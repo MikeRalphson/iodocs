@@ -15,7 +15,7 @@ block content
   - else
       - var authed =''
 
-  h2=apiInfo.info.description
+  h2!=md.render(apiInfo.info.description)
 
   h3='Version '+apiInfo.info.version
 

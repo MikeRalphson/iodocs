@@ -34,6 +34,7 @@
     "express-method-override": "0.0.3",
     "express-session": "^1.14.1",
     "jade": "^0.32.0",
+    "markdown-it": "^8.0.0",
     "oauth": "0.9.14",
     "querystring": "0.1.0",
     "redis": "^2.6.2",
