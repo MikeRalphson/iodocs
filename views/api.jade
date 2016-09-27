@@ -113,7 +113,7 @@ block content
 
                               span.description !{method.description}
                               br
-                              - if (Object.keys(method.parameters).length>0)
+                              - if (method.parameters && Object.keys(method.parameters).length)
                                 br
                                 .container.header
                                   .row

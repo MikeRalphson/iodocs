@@ -5,5 +5,5 @@ block content
   h2 Choose an API
 
   ul
-     - for (var api in apiInfo)
-         li: a(href = api) #{apiInfo[api].name}
+     - for (var api in apiConfig)
+         li: a(href = api) #{apiConfig[api].name}

@@ -1160,7 +1160,7 @@ function dynamicHelpers(req, res, next) {
             req.session['authed'] = true;
         }
     } else {
-        res.locals.apiInfo = apisConfig;
+        res.locals.apiConfig = apisConfig;
 		delete res.locals.apiName;
     }
 

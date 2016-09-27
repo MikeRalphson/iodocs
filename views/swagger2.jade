@@ -145,7 +145,7 @@ block content
                               - if (method.deprecated)
                                 h3 Warning: deprecated
                               br
-                              - if (Object.keys(method.parameters).length>0)
+                              - if (method.parameters && Object.keys(method.parameters).length)
                                 br
                                 .container.header
                                   .row
