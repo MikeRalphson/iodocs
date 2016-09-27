@@ -43,6 +43,7 @@ var express     = require('express'),
     crypto      = require('crypto'),
     clone       = require('clone'),
 	markdown    = require('markdown-it')(),
+    yaml        = require('js-yaml'),
     redis       = require('redis'),
     RedisStore  = require('connect-redis')(session),
     server;
@@ -115,6 +116,7 @@ try {
         console.log(util.inspect(apisConfig));
     }
 } catch(e) {
+    console.log(e);
     console.error("File apiconfig.json not found or is invalid.");
     process.exit(1);
 }
@@ -175,7 +177,7 @@ app.use(errorHndlr({ dumpExceptions: true, showStack: true }));
 function oauth1(req, res, next) {
     console.log('OAuth process started');
     var apiName = req.body.apiName,
-        apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'));
+        apiConfig = loadApi(apiName);
 
     var oauth1_type = checkObjVal(apiConfig,"auth","oauth","type").value,
         oauth1_request_url = checkObjVal(apiConfig,"auth","oauth","requestURL").value,
@@ -254,7 +256,7 @@ function oauth2(req, res, next){
     console.log('OAuth2 process started');
 
     var apiName = req.body.apiName,
-        apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'));
+        apiConfig = loadApi(apiName);
 
     var oauth2_base_uri = checkObjVal(apiConfig,"auth","oauth","base_uri").value,
         oauth2_authorize_uri = checkObjVal(apiConfig,"auth","oauth","authorize_uri").value,
@@ -388,13 +390,25 @@ function oauth2(req, res, next){
     }
 }
 
+function loadApi(apiName){
+    // TODO cache
+    var stat;
+    try {
+        stat = fs.statSync(path.resolve(config.apiConfigDir + '/' + apiName + '.json'));
+    }
+    catch (ex) {}
+    if (stat && stat.isFile()) {
+        return JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'));
+    }
+    else return yaml.safeLoad(fs.readFileSync(path.resolve(config.apiConfigDir + '/' + apiName + '.yaml'), 'utf8'));
+}
 
 function oauth2Success(req, res, next) {
     console.log('oauth2Success started');
         var apiKey,
             apiSecret,
             apiName = req.params.api,
-            apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8')),
+            apiConfig = loadApi(apiName),
             key = req.sessionID + ':' + apiName,
             basePath;
 
@@ -506,7 +520,7 @@ function oauth1Success(req, res, next) {
         apiKey,
         apiSecret,
         apiName = req.params.api,
-        apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8')),
+        apiConfig = loadApi(apiName),
         key = req.sessionID + ':' + apiName; // Unique key using the sessionID and API name to store tokens and secrets
 
     var oauth1_request_url = checkObjVal(apiConfig,"auth","oauth","requestURL").value,
@@ -610,7 +624,7 @@ function processRequest(req, res, next) {
         apiKey = reqQuery.apiKey,
         apiSecret = reqQuery.apiSecret,
         apiName = reqQuery.apiName,
-        apiConfig = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8')), // can't we store this in redis too?
+        apiConfig = loadApi(apiName),
         key = req.sessionID + ':' + apiName,
         implicitAccessToken = reqQuery.accessToken;
 
@@ -1103,7 +1117,6 @@ function processRequest(req, res, next) {
     }
 }
 
-
 function checkPathForAPI(req, res, next) {
     if (!req.params) req.params = {};
     if (!req.query) req.query = {};
@@ -1114,8 +1127,14 @@ function checkPathForAPI(req, res, next) {
         fs.stat(path.resolve(config.apiConfigDir + '/'+ pathName + '.json'), function (error, stats) {
 			if (stats) {
 				req.query.api = pathName;
+                next();
             }
-            next();
+            else fs.stat(path.resolve(config.apiConfigDir + '/'+ pathName + '.yaml'), function (error, stats) {
+                if (stats) {
+                    req.query.api = pathName;
+                }
+                next();
+            });
         });
     } else {
         next();
@@ -1150,7 +1169,7 @@ function checkObjVal(obj /*, val, level1, level2, ... levelN*/) {
 // Passes variables to the view
 function dynamicHelpers(req, res, next) {
     if (req.query.api) {
-        res.locals.apiInfo = JSON.parse(fs.readFileSync(path.resolve(config.apiConfigDir + '/' + req.query.api + '.json'), 'utf8'));
+        res.locals.apiInfo = loadApi(req.query.api);
         res.locals.apiName = req.query.api;
 		res.locals.apiConfig = apisConfig[req.query.api];
 		res.locals.md = markdown;

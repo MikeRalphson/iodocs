@@ -8,6 +8,9 @@
   "livedocs-adbank": {
     "name": "AdBank (example of LiveDocs spec)"
   },
+  "omdb": {
+    "name": "oMDB (Swagger in Yaml)"
+  },
   "arista": {
     "name": "AristaMD",
 	"css": "arista.css"

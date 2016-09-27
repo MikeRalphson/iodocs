@@ -11,6 +11,7 @@ function convertSwagger(apiInfo){
             var ioMethod = {};
             ioMethod.httpMethod = m.toUpperCase();
             var sMethodUniqueName = sMethod.operationId ? sMethod.operationId : m+'_'+p;
+            sMethodUniqueName = sMethodUniqueName.split(' ').join('_');
             ioMethod.name = sMethodUniqueName;
             ioMethod.summary = sMethod.summary;
             ioMethod.description = sMethod.description;
@@ -42,7 +43,7 @@ function convertSwagger(apiInfo){
             apiInfo.resources[tagName].methods[sMethodUniqueName] = ioMethod;
         }
     }
-    delete res.locals.apiInfo.paths; // to keep size down
+    delete apiInfo.paths; // to keep size down
     rename(apiInfo,'definitions','schemas');
     return apiInfo;
 }

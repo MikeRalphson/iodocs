@@ -21,7 +21,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 * ~~Variable CSS /logos per specification hosted~~
 * ~~Support for LiveDocs specification format~~
 * ~~Drop support for comments in .json files, for speed~~
-* If you want to use comments, yaml support is coming
+* ~~If you want to use comments, use yaml (support added)~~
 * Load from URL mode
 * Server-side cacheing of specs
 * Port pull-requests from Mashery repository
