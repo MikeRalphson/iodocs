@@ -160,7 +160,7 @@
                 if (result && result.signin) {
                     window.open(result.signin,"_blank","height=900,width=800,menubar=0,resizable=1,scrollbars=1,status=0,titlebar=0,toolbar=0");
                 }
-            })
+            });
         } else if (params[1].name == 'oauth2') {
             $.post('auth2', params, function(result) {
                 if (result && result.signin) {

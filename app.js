@@ -171,6 +171,7 @@ app.use(errorHndlr({ dumpExceptions: true, showStack: true }));
 //app.use(errorHndlr());
 //});
 
+
 //
 // Middleware
 //
@@ -179,12 +180,13 @@ function oauth1(req, res, next) {
     var apiName = req.body.apiName,
         apiConfig = loadApi(apiName);
 
-    var oauth1_type = checkObjVal(apiConfig,"auth","oauth","type").value,
-        oauth1_request_url = checkObjVal(apiConfig,"auth","oauth","requestURL").value,
-        oauth1_access_url = checkObjVal(apiConfig,"auth","oauth","accessURL").value,
-        oauth1_version = checkObjVal(apiConfig,"auth","oauth","version").value,
-        oauth1_crypt = checkObjVal(apiConfig,"auth","oauth","crypt").value,
-        oauth1_signin_url = checkObjVal(apiConfig,"auth","oauth","signinURL").value;
+    var auth = apiConfig.auth ? apiConfig.auth : apisConfig[apiName];
+    var oauth1_type = checkObjVal(auth,"oauth","type").value,
+        oauth1_request_url = checkObjVal(auth,"oauth","requestURL").value,
+        oauth1_access_url = checkObjVal(auth,"oauth","accessURL").value,
+        oauth1_version = checkObjVal(auth,"oauth","version").value,
+        oauth1_crypt = checkObjVal(auth,"oauth","crypt").value,
+        oauth1_signin_url = checkObjVal(auth,"oauth","signinURL").value;
 
     if (oauth1_version == "1.0") {
         var apiKey = req.body.apiKey || req.body.key,
@@ -220,7 +222,7 @@ function oauth1(req, res, next) {
 
             oa.getOAuthRequestToken(function(err, oauthToken, oauthTokenSecret, results) {
                 if (err) {
-                    res.send("Error getting OAuth request token : " + util.inspect(err), 500);
+                    res.status(500).send("Error getting OAuth request token : " + util.inspect(err));
                 } else {
                     // Unique key using the sessionID and API name to store tokens and secrets
                     var key = req.sessionID + ':' + apiName;
@@ -252,18 +254,20 @@ function oauth1(req, res, next) {
 
 }
 
+
 function oauth2(req, res, next){
     console.log('OAuth2 process started');
 
     var apiName = req.body.apiName,
         apiConfig = loadApi(apiName);
 
-    var oauth2_base_uri = checkObjVal(apiConfig,"auth","oauth","base_uri").value,
-        oauth2_authorize_uri = checkObjVal(apiConfig,"auth","oauth","authorize_uri").value,
-        oauth2_access_token_uri = checkObjVal(apiConfig,"auth","oauth","access_token_uri").value,
-        oauth2_token_location = checkObjVal(apiConfig,"auth","oauth","token","location").value,
-        oauth2_version = checkObjVal(apiConfig,"auth","oauth","version").value,
-        oauth2_token_param = checkObjVal(apiConfig,"auth","oauth","token","param").value;
+    var auth = apiConfig.auth ? apiConfig.auth : apisConfig[apiName];
+    var oauth2_base_uri = checkObjVal(auth,"oauth","base_uri").value,
+        oauth2_authorize_uri = checkObjVal(auth,"oauth","authorize_uri").value,
+        oauth2_access_token_uri = checkObjVal(auth,"oauth","access_token_uri").value,
+        oauth2_token_location = checkObjVal(auth,"oauth","token","location").value,
+        oauth2_version = checkObjVal(auth,"oauth","version").value,
+        oauth2_token_param = checkObjVal(auth,"oauth","token","param").value;
 
     if (oauth2_version == "2.0") {
         var apiKey = req.body.apiKey || req.body.key,
@@ -354,7 +358,7 @@ function oauth2(req, res, next){
                 '',
                 function(error, data, response) {
                     if (error) {
-                        res.send("Error getting OAuth access token : " + util.inspect(error), 500);
+                        res.status(500).send("Error getting OAuth access token : " + util.inspect(error));
                     }
                     else {
                         var results;
@@ -390,18 +394,119 @@ function oauth2(req, res, next){
     }
 }
 
+
 function loadApi(apiName){
-    // TODO cache
+    // TODO cacheing with redis would make us entirely async
+    // TODO this looks like the way to go for loading from URLs too
     var stat;
     try {
         stat = fs.statSync(path.resolve(config.apiConfigDir + '/' + apiName + '.json'));
     }
     catch (ex) {}
     if (stat && stat.isFile()) {
-        return JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'));
+        obj = JSON.parse(fs.readFileSync(path.join(config.apiConfigDir, apiName + '.json'), 'utf8'));
     }
-    else return yaml.safeLoad(fs.readFileSync(path.resolve(config.apiConfigDir + '/' + apiName + '.yaml'), 'utf8'));
+    else {
+        obj = yaml.safeLoad(fs.readFileSync(path.resolve(config.apiConfigDir + '/' + apiName + '.yaml'), 'utf8'));
+    }
+    return obj;
 }
+
+
+//
+// OAuth Success!
+//
+function oauth1Success(req, res, next) {
+    console.log('oauthSuccess 1.0 started');
+    var oauthRequestToken,
+        oauthRequestTokenSecret,
+        apiKey,
+        apiSecret,
+        apiName = req.params.api,
+        apiConfig = loadApi(apiName),
+        key = req.sessionID + ':' + apiName; // Unique key using the sessionID and API name to store tokens and secrets
+
+    var auth = apiConfig.auth ? apiConfig.auth : apisConfig[apiName];
+    var oauth1_request_url = checkObjVal(auth,"oauth","requestURL").value,
+        oauth1_access_url = checkObjVal(auth,"oauth","accessURL").value,
+        oauth1_version = checkObjVal(auth,"oauth","version").value,
+        oauth1_crypt = checkObjVal(auth,"oauth","crypt").value;
+
+    if (config.debug) {
+        console.log('apiName: ' + apiName);
+        console.log('key: ' + key);
+        console.log(util.inspect(req.params));
+    }
+
+    db.mget(
+        [
+            key + ':requestToken',
+            key + ':requestTokenSecret',
+            key + ':apiKey',
+            key + ':apiSecret'
+        ],
+        function(err, result) {
+            if (err) {
+                console.log(util.inspect(err));
+            }
+            oauthRequestToken = result[0];
+            oauthRequestTokenSecret = result[1];
+            apiKey = result[2];
+            apiSecret = result[3];
+
+            if (config.debug) {
+                console.log(util.inspect(">>"+oauthRequestToken));
+                console.log(util.inspect(">>"+oauthRequestTokenSecret));
+                console.log(util.inspect(">>"+req.query.oauth_verifier));
+            }
+
+            var oa = new OAuth(
+                oauth1_request_url,
+                oauth1_access_url,
+                apiKey,
+                apiSecret,
+                oauth1_version,
+                null,
+                oauth1_crypt
+            );
+
+
+            if (config.debug) {
+                console.log(util.inspect(oa));
+            }
+
+            oa.getOAuthAccessToken(
+                oauthRequestToken,
+                oauthRequestTokenSecret,
+                req.query.oauth_verifier,
+                function (error, oauthAccessToken, oauthAccessTokenSecret, results) {
+                    if (error) {
+                        res.status(500).send("Error getting OAuth access token : " + util.inspect(error) + "[" + oauthAccessToken + "]" + "[" + oauthAccessTokenSecret + "]" + "[" + util.inspect(results) + "]");
+                    } else {
+                        if (config.debug) {
+                            console.log('results: ' + util.inspect(results));
+                        }
+                        db.mset(
+                            [
+                                key + ':accessToken', oauthAccessToken,
+                                key + ':accessTokenSecret', oauthAccessTokenSecret
+                            ],
+                            function (err, results2) {
+                                req.session[apiName] = {};
+                                req.session[apiName].authed = true;
+                                if (config.debug) {
+                                    console.log('session[apiName].authed: ' + util.inspect(req.session));
+                                }
+                                next();
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    );
+}
+
 
 function oauth2Success(req, res, next) {
     console.log('oauth2Success started');
@@ -412,11 +517,12 @@ function oauth2Success(req, res, next) {
             key = req.sessionID + ':' + apiName,
             basePath;
 
+        var auth = apiConfig.auth ? apiConfig.auth : apisConfig[apiName];
         var oauth2_type = checkObjVal(apiConfig,'auth','oauth','type').value || "authorization_code",
-            oauth2_base_uri = checkObjVal(apiConfig,"auth","oauth","base_uri").value,
-            oauth2_authorize_uri = checkObjVal(apiConfig,"auth","oauth","authorize_uri").value,
-            oauth2_access_token_uri = checkObjVal(apiConfig,"auth","oauth","access_token_uri").value,
-            oauth2_token_param = checkObjVal(apiConfig,"auth","oauth","token","param").value;
+            oauth2_base_uri = checkObjVal(auth,"oauth","base_uri").value,
+            oauth2_authorize_uri = checkObjVal(auth,"oauth","authorize_uri").value,
+            oauth2_access_token_uri = checkObjVal(auth,"oauth","access_token_uri").value,
+            oauth2_token_param = checkObjVal(auth,"oauth","token","param").value;
 
         if (config.debug) {
             console.log('apiName: ' + apiName);
@@ -480,7 +586,7 @@ function oauth2Success(req, res, next) {
                         },
                         function(error, oauth2access_token, oauth2refresh_token, results) {
                             if (error) {
-                                res.send("Error getting OAuth access token : " + util.inspect(error) + "["+oauth2access_token+"]"+ "["+oauth2refresh_token+"]", 500);
+                                res.status(500).send("Error getting OAuth access token : " + util.inspect(error) + "["+oauth2access_token+"]"+ "["+oauth2refresh_token+"]";
                             } else {
                                 if (config.debug) {
                                     console.log('results: ' + util.inspect(results));
@@ -507,100 +613,6 @@ function oauth2Success(req, res, next) {
                 }
             }
         );
-}
-
-
-//
-// OAuth Success!
-//
-function oauth1Success(req, res, next) {
-    console.log('oauthSuccess 1.0 started');
-    var oauthRequestToken,
-        oauthRequestTokenSecret,
-        apiKey,
-        apiSecret,
-        apiName = req.params.api,
-        apiConfig = loadApi(apiName),
-        key = req.sessionID + ':' + apiName; // Unique key using the sessionID and API name to store tokens and secrets
-
-    var oauth1_request_url = checkObjVal(apiConfig,"auth","oauth","requestURL").value,
-        oauth1_access_url = checkObjVal(apiConfig,"auth","oauth","accessURL").value,
-        oauth1_version = checkObjVal(apiConfig,"auth","oauth","version").value,
-        oauth1_crypt = checkObjVal(apiConfig,"auth","oauth","crypt").value;
-
-    if (config.debug) {
-        console.log('apiName: ' + apiName);
-        console.log('key: ' + key);
-        console.log(util.inspect(req.params));
-    }
-
-    db.mget(
-        [
-            key + ':requestToken',
-            key + ':requestTokenSecret',
-            key + ':apiKey',
-            key + ':apiSecret'
-        ],
-        function(err, result) {
-            if (err) {
-                console.log(util.inspect(err));
-            }
-            oauthRequestToken = result[0];
-            oauthRequestTokenSecret = result[1];
-            apiKey = result[2];
-            apiSecret = result[3];
-
-            if (config.debug) {
-                console.log(util.inspect(">>"+oauthRequestToken));
-                console.log(util.inspect(">>"+oauthRequestTokenSecret));
-                console.log(util.inspect(">>"+req.query.oauth_verifier));
-            }
-
-            var oa = new OAuth(
-                oauth1_request_url,
-                oauth1_access_url,
-                apiKey,
-                apiSecret,
-                oauth1_version,
-                null,
-                oauth1_crypt
-            );
-
-
-            if (config.debug) {
-                console.log(util.inspect(oa));
-            }
-
-            oa.getOAuthAccessToken(
-                oauthRequestToken,
-                oauthRequestTokenSecret,
-                req.query.oauth_verifier,
-                function (error, oauthAccessToken, oauthAccessTokenSecret, results) {
-                    if (error) {
-                        res.send("Error getting OAuth access token : " + util.inspect(error) + "[" + oauthAccessToken + "]" + "[" + oauthAccessTokenSecret + "]" + "[" + util.inspect(results) + "]", 500);
-                    } else {
-                        if (config.debug) {
-                            console.log('results: ' + util.inspect(results));
-                        }
-                        db.mset(
-                            [
-                                key + ':accessToken', oauthAccessToken,
-                                key + ':accessTokenSecret', oauthAccessTokenSecret
-                            ],
-                            function (err, results2) {
-                                req.session[apiName] = {};
-                                req.session[apiName].authed = true;
-                                if (config.debug) {
-                                    console.log('session[apiName].authed: ' + util.inspect(req.session));
-                                }
-                                next();
-                            }
-                        );
-                    }
-                }
-            );
-        }
-    );
 }
 
 
@@ -704,14 +716,15 @@ function processRequest(req, res, next) {
         : query.stringify(bodyParams);
     }
 
-    if (checkObjVal(apiConfig,"auth","oauth","version").value == "1.0") {
+    var auth = apiConfig.auth ? apiConfig.auth : apisConfig[apiName];
+    if (checkObjVal(auth,"oauth","version").value == "1.0") {
         console.log('Using OAuth 1.0');
 
-        var oauth1_type = checkObjVal(apiConfig,"auth","oauth","type").value || "three-legged",
-            oauth1_request_url = checkObjVal(apiConfig,"auth","oauth","requestURL").value,
-            oauth1_access_url = checkObjVal(apiConfig,"auth","oauth","accessURL").value,
-            oauth1_version = checkObjVal(apiConfig,"auth","oauth","version").value,
-            oauth1_crypt = checkObjVal(apiConfig,"auth","oauth","crypt").value;
+        var oauth1_type = checkObjVal(auth,"oauth","type").value || "three-legged",
+            oauth1_request_url = checkObjVal(auth,"oauth","requestURL").value,
+            oauth1_access_url = checkObjVal(auth,"oauth","accessURL").value,
+            oauth1_version = checkObjVal(auth,"oauth","version").value,
+            oauth1_crypt = checkObjVal(auth,"oauth","crypt").value;
 
         // Three legged OAuth
         if (oauth1_type == 'three-legged' && (reqQuery.oauth == 'authrequired' || (req.session[apiName] && req.session[apiName].authed))) {
@@ -852,15 +865,15 @@ function processRequest(req, res, next) {
             // API uses OAuth, but this call doesn't require auth and the user isn't already authed, so just call it.
             unsecuredCall();
         }
-    } else if (checkObjVal(apiConfig,"auth","oauth","version").value == "2.0") {
+    } else if (checkObjVal(auth,"oauth","version").value == "2.0") {
         console.log('Using OAuth 2.0');
 
-        var oauth2_base_uri = checkObjVal(apiConfig,"auth","oauth","base_uri").value,
-            oauth2_authorize_uri = checkObjVal(apiConfig,"auth","oauth","authorize_uri").value,
-            oauth2_access_token_uri = checkObjVal(apiConfig,"auth","oauth","access_token_uri").value,
-            oauth2_token_location = checkObjVal(apiConfig,"auth","oauth","token","location").value,
-            oauth2_token_param = checkObjVal(apiConfig,"auth","oauth","token","param").value;
-
+        var auth = apiConfig.auth ? apiConfig.auth : apisConfig[apiName];
+        var oauth2_base_uri = checkObjVal(auth,"oauth","base_uri").value,
+            oauth2_authorize_uri = checkObjVal(auth,"oauth","authorize_uri").value,
+            oauth2_access_token_uri = checkObjVal(auth,"oauth","access_token_uri").value,
+            oauth2_token_location = checkObjVal(auth,"oauth","token","location").value,
+            oauth2_token_param = checkObjVal(auth,"oauth","token","param").value;
 
         if (implicitAccessToken) {
             db.mset([key + ':access_token', implicitAccessToken
@@ -1117,6 +1130,7 @@ function processRequest(req, res, next) {
     }
 }
 
+
 function checkPathForAPI(req, res, next) {
     if (!req.params) req.params = {};
     if (!req.query) req.query = {};
@@ -1141,6 +1155,7 @@ function checkPathForAPI(req, res, next) {
     }
 }
 
+
 //
 // Check for nested value within object.
 // Inspired by CMS on StackOverflow
@@ -1164,6 +1179,7 @@ function checkObjVal(obj /*, val, level1, level2, ... levelN*/) {
         value: obj
     }
 }
+
 
 // Replaces deprecated app.dynamicHelpers that were dropped in Express 3.x
 // Passes variables to the view
@@ -1212,7 +1228,6 @@ app.post('/processReq', processRequest, function(req, res) {
 // Just auth
 app.all('/auth', oauth1);
 app.all('/auth2', oauth2);
-
 
 // OAuth callback page, closes the window immediately after storing access token/secret
 app.get('/authSuccess/:api', oauth1Success, function(req, res) {
