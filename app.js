@@ -1216,6 +1216,12 @@ app.post('/upload', function(req, res) {
 // API shortname, all lowercase
 app.get('/:api([^\.]+)', function(req, res) {
     req.params.api=req.params.api.replace(/\/$/,'');
+
+    if (res.locals.apiInfo.server && res.locals.apiInfo.prefix) {
+        res.locals.apiInfo = converters.convertLiveDocs(res.locals.apiInfo);
+        // falls through into rendering api
+    }
+
     if (res.locals.apiInfo.resources) {
         res.render('api');
     }

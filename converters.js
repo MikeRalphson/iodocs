@@ -47,6 +47,58 @@ function convertSwagger(apiInfo){
     return apiInfo;
 }
 
+function convertLiveDocs(apiInfo){
+    rename(apiInfo,'title','name');
+    rename(apiInfo,'prefix','basePath');
+    apiInfo.basePath = 'http://'+apiInfo.server+apiInfo.basePath;
+    apiInfo.resources = {};
+    for (var e in apiInfo.endpoints) {
+        var ep = apiInfo.endpoints[e];
+        var eName = ep.name ? ep.name : 'Default';
+
+        if (!apiInfo.resources[eName]) apiInfo.resources[eName] = {};
+        apiInfo.resources[eName].description = ep.description;
+
+        for (var m in ep.methods) {
+            var lMethod = ep.methods[m];
+            if (!apiInfo.resources[eName].methods) apiInfo.resources[eName].methods = {};
+            var mName = lMethod.MethodName ? lMethod.MethodName : 'Default';
+            if (mName.endsWith('.')) mName = mName.substr(0,mName.length-1);
+            mName = mName.split(' ').join('_');
+            rename(lMethod,'HTTPMethod','httpMethod');
+            rename(lMethod,'URI','path');
+            rename(lMethod,'Synopsis','description');
+            rename(lMethod,'MethodName','name');
+
+            var params = {};
+            for (var p in lMethod.parameters) {
+                var lParam = lMethod.parameters[p];
+                if (!lParam.type) lParam.type = 'string';
+                if (lParam.type == 'json') lParam.type = 'string';
+                if (!lParam.location) {
+                    if (lMethod.path.indexOf(':'+lParam.name)>=0) {
+                        lParam.location = 'path';
+                    }
+                    else {
+                        lParam.location = 'query';
+                    }
+                }
+                params[lParam.name] = lParam;
+                delete lParam.name;
+            }
+            lMethod.parameters = params;
+            if (Object.keys(params).length==0) delete lMethod.parameters;
+
+            apiInfo.resources[eName].methods[mName] = lMethod;
+        }
+
+    }
+    delete apiInfo.endpoints; // to keep size down
+    //console.log(JSON.stringify(apiInfo,null,2));
+    return apiInfo;
+}
+
 module.exports = {
-    convertSwagger : convertSwagger
+    convertSwagger : convertSwagger,
+    convertLiveDocs : convertLiveDocs
 };

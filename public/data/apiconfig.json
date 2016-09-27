@@ -5,6 +5,9 @@
   "petstore": {
     "name": "OpenApi / Swagger 2.0 PetStore demo"
   },
+  "livedocs-adbank": {
+    "name": "AdBank (example of LiveDocs spec)"
+  },
   "arista": {
     "name": "AristaMD",
 	"css": "arista.css"
