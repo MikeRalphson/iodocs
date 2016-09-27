@@ -60,25 +60,25 @@ block content
                   - if (oAuthVersion)
                       label(for='key') Client ID
                       - var secure ='authrequired'
-                      input(id='key', name='key', value=defaultKey, style='color=#EEEEEE')
+                      input(id='key', name='key', value=defaultKey, class='auth-entry')
                   - else if (apiInfo.auth == 'basicAuth')
                     label(for='username') User name
-                    input(id='username', name='username', value=defaultKey, style='color=#EEEEEE')
+                    input(id='username', name='username', value=defaultKey, class='auth-entry')
                   - else
                     label(for='key') API Key
                     - var secure =''
-                    input(id='key', name='key', value=defaultKey, style='color=#EEEEEE')
+                    input(id='key', name='key', value=defaultKey, class='auth-entry')
               div
                   - if (oAuthVersion)
                       label(for='secret') Client Secret
-                      input(id='secret', name='secret', value=defaultSecret, style='color=#EEEEEE')
+                      input(id='secret', name='secret', value=defaultSecret, class='auth-entry')
                   - else if (apiInfo.auth == 'basicAuth')
                       label(for='password') Password
-                      input(id='password', name='password', type='password', value=defaultKey, style='color=#EEEEEE')
+                      input(id='password', name='password', type='password', value=defaultKey, class='auth-entry')
 
                   - if (apiInfo.auth && apiInfo.auth.signature)
                       label(for='secret') Shared Secret
-                      input(id='secret', name='secret', value=defaultSecret, style='color=#EEEEEE')
+                      input(id='secret', name='secret', value=defaultSecret, class='auth-entry')
               - if (oAuthVersion == '1.0' && apiInfo.auth.oauth.type !='two-legged')
                   div
                      input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth')
@@ -107,11 +107,17 @@ block content
               h3.title
                   span.name
                       a(href='#'+resourceName.replace(/\s/g, '-'))!=resourceName+' '+(resource.description ? md.render(resource.description) : '')
+
                   ul.actions
                       li.list-methods
                           a(href='#') List Methods
                       li.expand-methods
                           a(href='#') Expand Methods
+
+                  - if (resource.externalDocs)
+                    h4
+                      a#tagDocs(href=resource.externalDocs.url)!=md.render(resource.externalDocs.description)
+
               - if (Object.keys(resource).length)
               ul.methods.hidden
                   - each method, methodKey in resource.methods

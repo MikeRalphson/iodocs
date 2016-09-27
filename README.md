@@ -18,12 +18,14 @@ Copyright 2011-2016 Mashery, Inc., and others
 * ~~Renderer for OpenAPI (Swagger) 2.0 specs~~
 * ~~Markdown support in descriptions~~
 * ~~Required parameter validation~~
+* ~~Variable CSS /logos per specification hosted~~
 * ~~Drop support for comments in .json files, for speed~~
 * If you want to use comments, yaml support is coming
 * Load from URL mode
 * Server-side cacheing of specs
 * Port pull-requests from Mashery repository
 * Ability to export iodocs spec as OpenAPI (Swagger)
+* Support for LiveDocs specification format
 * Support for GraphQL APIs
 * Support for OpenApi 3.x when ratified
 

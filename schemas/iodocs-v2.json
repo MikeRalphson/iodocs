@@ -1,0 +1,543 @@
+{
+  "properties": {
+    "resources": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "properties": {
+            "methods": {
+              "required": [],
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {
+                  "properties": {
+                    "parameters": {
+                      "required": [],
+                      "type": "object",
+                      "patternProperties": {
+                        "^.*$": {
+                          "properties": {
+                            "location": {
+                              "type": "string"
+                            },
+                            "default": {},
+                            "required": {},
+                            "type": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "items": {
+                              "properties": {
+                                "properties": {
+                                  "properties": {},
+                                  "required": {},
+                                  "type": {}
+                                },
+                                "required": {
+                                  "type": {}
+                                },
+                                "type": {
+                                  "type": {}
+                                },
+                                "title": {
+                                  "type": {}
+                                },
+                                "description": {
+                                  "type": {}
+                                },
+                                "default": {
+                                  "type": {}
+                                },
+                                "enum": {
+                                  "items": {},
+                                  "type": {}
+                                }
+                              },
+                              "required": [
+                                "required",
+                                "type"
+                              ],
+                              "type": "object"
+                            },
+                            "enum": {
+                              "items": {
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "properties": {
+                              "required": [],
+                              "type": "object",
+                              "patternProperties": {
+                                "^.*$": {
+                                  "properties": {},
+                                  "type": {}
+                                }
+                              }
+                            },
+                            "$ref": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      }
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "httpMethod": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "read-only": {
+                      "type": "boolean"
+                    },
+                    "request": {
+                      "properties": {
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "properties": {
+                          "properties": {
+                            "arrayRefExample": {
+                              "properties": {
+                                "$ref": {
+                                  "type": {}
+                                }
+                              },
+                              "required": [
+                                "$ref"
+                              ],
+                              "type": "object"
+                            },
+                            "objectExample": {
+                              "properties": {
+                                "properties": {
+                                  "properties": {},
+                                  "required": {},
+                                  "type": {}
+                                },
+                                "type": {
+                                  "type": {}
+                                }
+                              },
+                              "required": [
+                                "properties",
+                                "type"
+                              ],
+                              "type": "object"
+                            },
+                            "arrayExample": {
+                              "properties": {
+                                "items": {
+                                  "properties": {},
+                                  "required": {},
+                                  "type": {}
+                                },
+                                "type": {
+                                  "type": {}
+                                }
+                              },
+                              "required": [
+                                "items",
+                                "type"
+                              ],
+                              "type": "object"
+                            },
+                            "referencedObject": {
+                              "properties": {
+                                "$ref": {
+                                  "type": {}
+                                }
+                              },
+                              "required": [
+                                "$ref"
+                              ],
+                              "type": "object"
+                            },
+                            "textareaEx": {
+                              "properties": {
+                                "title": {
+                                  "type": {}
+                                },
+                                "required": {
+                                  "type": {}
+                                },
+                                "type": {
+                                  "type": {}
+                                },
+                                "description": {
+                                  "type": {}
+                                },
+                                "default": {
+                                  "type": {}
+                                }
+                              },
+                              "required": [
+                                "default",
+                                "description",
+                                "required",
+                                "title",
+                                "type"
+                              ],
+                              "type": "object"
+                            }
+                          },
+                          "required": [
+                            "arrayExample",
+                            "arrayRefExample",
+                            "objectExample",
+                            "referencedObject",
+                            "textareaEx"
+                          ],
+                          "type": "object"
+                        }
+                      },
+                      "required": [],
+                      "type": "object"
+                    },
+                    "path2": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "type": "object"
+        }
+      }
+    },
+    "description": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "headers": {
+      "properties": {
+        "Content-Type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "Content-Type"
+      ],
+      "type": "object"
+    },
+    "protocol": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "publicPath": {
+      "type": "string"
+    },
+    "schemas": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "properties": {
+            "properties": {
+              "required": [],
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "default": {},
+                    "required": {
+                      "type": "boolean"
+                    },
+                    "format": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "properties": {
+                      "properties": {
+                        "middleEl1": {
+                          "properties": {
+                            "title": {
+                              "type": "string"
+                            },
+                            "required": {
+                              "type": "boolean"
+                            },
+                            "type": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "default": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "default",
+                            "description",
+                            "required",
+                            "title",
+                            "type"
+                          ],
+                          "type": "object"
+                        },
+                        "middleEl2": {
+                          "properties": {
+                            "title": {
+                              "type": "string"
+                            },
+                            "required": {
+                              "type": "boolean"
+                            },
+                            "type": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "default": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "default",
+                            "description",
+                            "required",
+                            "title",
+                            "type"
+                          ],
+                          "type": "object"
+                        },
+                        "subSubObjectEx": {
+                          "properties": {
+                            "properties": {
+                              "properties": {
+                                "innerEl2": {
+                                  "properties": {},
+                                  "required": {},
+                                  "type": {}
+                                },
+                                "innerEl1": {
+                                  "properties": {},
+                                  "required": {},
+                                  "type": {}
+                                }
+                              },
+                              "required": [
+                                "innerEl1",
+                                "innerEl2"
+                              ],
+                              "type": "object"
+                            },
+                            "type": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "properties",
+                            "type"
+                          ],
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "middleEl1",
+                        "middleEl2",
+                        "subSubObjectEx"
+                      ],
+                      "type": "object"
+                    },
+                    "items": {
+                      "properties": {
+                        "title": {
+                          "type": "string"
+                        },
+                        "required": {
+                          "type": "boolean"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "default": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "default",
+                        "description",
+                        "required",
+                        "title",
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    "$ref": {
+                      "type": "string"
+                    },
+                    "enum": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "type": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "items": {
+              "properties": {
+                "default": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "default",
+                "description",
+                "location",
+                "required",
+                "title",
+                "type"
+              ],
+              "type": "object"
+            },
+            "title": {
+              "type": "string"
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "description": {
+              "type": "string"
+            },
+            "default": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      }
+    },
+    "privatePath": {
+      "type": "string"
+    },
+    "basePath": {
+      "type": "string"
+    },
+    "auth": {
+      "properties": {
+        "key": {
+          "properties": {
+            "param": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "param"
+          ],
+          "type": "object"
+        },
+        "oauth": {
+          "properties": {
+            "token": {
+              "properties": {
+                "location": {
+                  "type": "string"
+                },
+                "param": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "location"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            },
+            "authorize_uri": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "base_uri": {
+              "type": "string"
+            },
+            "access_token_uri": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "access_token_uri",
+            "base_uri",
+            "type",
+            "version"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "basePath",
+    "name",
+    "protocol",
+    "resources"
+  ],
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-04/schema#"
+}

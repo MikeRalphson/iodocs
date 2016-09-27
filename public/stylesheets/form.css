@@ -70,3 +70,7 @@ button.ui-button-icon-only {
 	width: 2em;
 	height: 2em;
 }
+
+.auth-entry {
+    color: #222222;
+}

@@ -1,0 +1,356 @@
+{
+  "type": "object",
+  "properties": {
+    "endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "methods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "outputVariables": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Description": {
+                        "type": "string"
+                      },
+                      "Name": {
+                        "type": "string"
+                      },
+                      "Values": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "Description",
+                      "Name",
+                      "Values"
+                    ]
+                  }
+                },
+                "RequiresOAuth": {
+                  "type": "string"
+                },
+                "URLVariables": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "ExpectResponses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Format": {
+                        "type": "string"
+                      },
+                      "Schema": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "properties": {
+                            "type": "object",
+                            "properties": {
+                              "result": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string"
+                                  },
+                                  "properties": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "object",
+                                        "properties": {
+                                          "type": {
+                                            "type": "string"
+                                          },
+                                          "description": {
+                                            "type": "string"
+                                          },
+                                          "required": {
+                                            "type": "boolean"
+                                          }
+                                        },
+                                        "required": [
+                                          "description",
+                                          "required",
+                                          "type"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "id"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "properties",
+                                  "type"
+                                ]
+                              },
+                              "status": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string"
+                                  },
+                                  "description": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "description",
+                                  "type"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "result",
+                              "status"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "properties",
+                          "type"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "Format",
+                      "Schema"
+                    ]
+                  }
+                },
+                "content": {
+                  "type": "object",
+                  "properties": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ]
+                    },
+                    "contentType": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "parameters": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Description": {
+                            "type": "string"
+                          },
+                          "Type": {
+                            "type": "string"
+                          },
+                          "parameters": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "Description": {
+                                  "type": "string"
+                                },
+                                "Type": {
+                                  "type": "string"
+                                },
+                                "parameters": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "Description": {
+                                        "type": "string"
+                                      },
+                                      "Name": {
+                                        "type": "string"
+                                      },
+                                      "Default": {
+                                        "type": "string"
+                                      },
+                                      "Type": {
+                                        "type": "string"
+                                      },
+                                      "Required": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "Default",
+                                      "Description",
+                                      "Name",
+                                      "Required",
+                                      "Type"
+                                    ]
+                                  }
+                                },
+                                "Name": {
+                                  "type": "string"
+                                },
+                                "Default": {
+                                  "type": "string"
+                                },
+                                "EnumeratedList": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "Required": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "Description",
+                                "Name",
+                                "Required",
+                                "Type"
+                              ]
+                            }
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Default": {
+                            "type": "string"
+                          },
+                          "Required": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "Description",
+                          "Name",
+                          "Required",
+                          "Type"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "contentType",
+                    "parameters",
+                    "schema"
+                  ]
+                },
+                "URI": {
+                  "type": "string"
+                },
+                "parameters": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Description": {
+                        "type": [
+                          "null",
+                          "string"
+                        ]
+                      },
+                      "Type": {
+                        "type": "string"
+                      },
+                      "Name": {
+                        "type": "string"
+                      },
+                      "EnumeratedDescription": {
+                        "type": "object",
+                        "patternProperties": {
+                          "^.*$": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "Location": {
+                        "type": "string"
+                      },
+                      "Default": {
+                        "type": [
+                          "boolean",
+                          "integer",
+                          "null",
+                          "string"
+                        ]
+                      },
+                      "EnumeratedList": {
+                        "type": "array",
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null",
+                            "string"
+                          ]
+                        }
+                      },
+                      "Required": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "Description",
+                      "Name",
+                      "Type"
+                    ]
+                  }
+                },
+                "MethodName": {
+                  "type": "string"
+                },
+                "Synopsis": {
+                  "type": "string"
+                },
+                "HTTPMethod": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "HTTPMethod",
+                "MethodName",
+                "Synopsis",
+                "URI",
+                "parameters"
+              ]
+            }
+          },
+          "path": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "methods",
+          "name"
+        ]
+      }
+    }
+  },
+  "required": [
+    "endpoints"
+  ],
+  "$schema": "http://json-schema.org/draft-04/schema#"
+}

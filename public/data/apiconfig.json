@@ -6,7 +6,8 @@
     "name": "OpenApi / Swagger 2.0 PetStore demo"
   },
   "arista": {
-    "name": "AristaMD"
+    "name": "AristaMD",
+	"css": "arista.css"
   },
   "skyword": {
       "name": "SkyWord"

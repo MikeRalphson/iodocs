@@ -15,8 +15,10 @@ html
 
         link(type='text/css', href='stylesheets/jquery-ui-latest.custom.css', rel='stylesheet')
         link(type='text/css', href='stylesheets/alpaca.css')
-        link(type="text/css", href="stylesheets/form.css", rel="stylesheet")
-        link(type="text/css", href="stylesheets/alpaca-jqueryui.css", rel="stylesheet")
+        link(type='text/css', href='stylesheets/form.css', rel='stylesheet')
+        link(type='text/css', href='stylesheets/alpaca-jqueryui.css', rel='stylesheet')
+        -if (apiConfig && apiConfig.css)
+          link(type='text/css', href='stylesheets/'+apiConfig.css, rel='stylesheet')
 
     body
         block content
@@ -29,7 +31,7 @@ html
         script(type='text/javascript', src='javascripts/jquery.tmpl.js')
         script(type='text/javascript', src='javascripts/jquery-ui-latest.custom.min.js')
         script(type='text/javascript', src='javascripts/alpaca.js')
-        script(type="text/javascript", src="javascripts/form.js")
+        script(type='text/javascript', src='javascripts/form.js')
         script(src='javascripts/json2.js')
         script(src='javascripts/prettify.js')
         script(src='javascripts/utilities.js')
