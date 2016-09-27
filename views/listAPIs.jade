@@ -6,4 +6,5 @@ block content
 
   ul
      - for (var api in apiConfig)
-         li: a(href = api) #{apiConfig[api].name}
+       - if (apiConfig[api].name != 'remote')
+           li: a(href = api) #{apiConfig[api].name}

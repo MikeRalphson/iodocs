@@ -121,7 +121,7 @@ try {
     process.exit(1);
 }
 
-function loadDynamicUrl(dynamicUrl,dynName,callback){
+function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
     if (dynamicUrl) {
         var u = url.parse(dynamicUrl);
         var doRequest = (u.protocol && u.protocol.startsWith('https')) ? https.get : http.get;
@@ -149,11 +149,18 @@ function loadDynamicUrl(dynamicUrl,dynName,callback){
                     catch (ex) {}
                 }
                 if (obj) {
-                    apisConfig[dynName] = {};
-                    apisConfig[dynName].name = dynName;
-                    apisConfig[dynName].definition = obj;
-                    apisConfig[dynName].converted = convertApi(obj);
-                    if (callback) callback(apisConfig[dynName]);
+                    var result = {};
+                    result.name = dynName;
+                    result.definition = obj;
+                    result.converted = convertApi(obj);
+                    if (sessionID) {
+                        db.set(sessionID+':remote',result); // for when we have async loadApi
+                        apisConfig[sessionID] = result;
+                    }
+                    else {
+                        apisConfig[dynName] = result;
+                    }
+                    if (callback) callback(result);
                 }
             });
         }).on('error', function(e) {
@@ -170,7 +177,7 @@ function loadDynamicUrl(dynamicUrl,dynName,callback){
 //
 // Remote API config
 //
-loadDynamicUrl(process.env["IODOCS_DYNAMIC_URL"] || config.dynamicUrl, process.env["IODOCS_DYNAMIC_NAME"] || 'dynamic');
+loadDynamicUrl(process.env["IODOCS_DYNAMIC_URL"] || config.dynamicUrl, process.env["IODOCS_DYNAMIC_NAME"] || 'dynamic',false);
 
 var app = module.exports = express();
 
@@ -458,8 +465,6 @@ function convertApi(obj){
 
 function loadApi(apiName){
     // TODO cacheing with redis would make us entirely async
-    // TODO this looks like the way to go for loading from URLs too
-    // TODO allow loading from a dynamic URL set in an environment variable (for Heroku one-click)
     if (apisConfig[apiName].definition) {
         console.log('Cache hit');
         return apisConfig[apiName].definition;
@@ -1210,8 +1215,8 @@ function processRequest(req, res, next) {
 
 function loadUrl(req,res,next){
     console.log('Into loadUrl with '+JSON.stringify(req.body));
-    loadDynamicUrl(req.body.userLoadUrl,'remote',function(obj){
-       res.redirect('/remote');
+    loadDynamicUrl(req.body.userLoadUrl,'remote',req.sessionID,function(obj){
+       res.redirect('/'+req.sessionID);
     });
 }
 
@@ -1266,6 +1271,7 @@ function checkObjVal(obj /*, val, level1, level2, ... levelN*/) {
 // Passes variables to the view
 function dynamicHelpers(req, res, next) {
     if (req.query.api) {
+        if (req.query.api == 'remote') req.query.api = req.sessionID;
         res.locals.apiInfo = loadApi(req.query.api);
         res.locals.apiName = req.query.api;
 		res.locals.apiConfig = apisConfig[req.query.api];
