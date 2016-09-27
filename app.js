@@ -26,7 +26,7 @@
 //
 var express     = require('express'),
     session     = require('express-session'),
-	logger      = require('express-logger'),
+	logger      = require('express-logger'), // the official express middleware is 'morgan'
 	bodyParser  = require('express-busboy'),
 	cookie      = require('cookie-parser'),
 	override    = require('express-method-override'),
@@ -1220,6 +1220,15 @@ function loadUrl(req,res,next){
     });
 }
 
+function exportSpec(req,res,next){
+    if (req.body.exportApi && apisConfig[req.body.exportApi] && apisConfig[req.body.exportApi].definition) {
+        res.send(JSON.stringify(converters.exportIodocs(apisConfig[req.body.exportApi].definition),null,2));
+    }
+    else {
+        res.render('error');
+    }
+}
+
 function checkPathForAPI(req, res, next) {
     // BUG? This gets called for all requests for stylesheets, scripts and images
     if (!req.params) req.params = {};
@@ -1317,6 +1326,7 @@ app.all('/auth', oauth1);
 app.all('/auth2', oauth2);
 
 app.all('/load', loadUrl);
+app.all('/export', exportSpec);
 
 // OAuth callback page, closes the window immediately after storing access token/secret
 app.get('/authSuccess/:api', oauth1Success, function(req, res) {
@@ -1339,6 +1349,10 @@ app.post('/upload', function(req, res) {
 // API shortname, all lowercase
 app.get('/:api([^\.]+)', function(req, res) {
     req.params.api=req.params.api.replace(/\/$/,'');
+
+    if (!res.locals.apiInfo) {
+        res.render('error');
+    }
 
     if (res.locals.apiInfo.server && res.locals.apiInfo.prefix) {
         res.locals.apiInfo = apisConfig[res.locals.apiName].converted;

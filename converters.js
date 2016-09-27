@@ -1,8 +1,14 @@
+var url = require('url');
+var clone = require('clone');
+
 function rename(obj,key,newKey){
     obj[newKey] = obj[key];
     delete obj[key];
 }
 
+/**
+* function to reformat swagger paths object into an iodocs-style resources object
+*/
 function convertSwagger(apiInfo){
     apiInfo.resources = {};
     for (var p in apiInfo.paths) {
@@ -48,6 +54,9 @@ function convertSwagger(apiInfo){
     return apiInfo;
 }
 
+/**
+* function to convert LiveDocs spec into modern iodocs format
+*/
 function convertLiveDocs(apiInfo){
     rename(apiInfo,'title','name');
     rename(apiInfo,'prefix','basePath');
@@ -95,11 +104,71 @@ function convertLiveDocs(apiInfo){
 
     }
     delete apiInfo.endpoints; // to keep size down
-    //console.log(JSON.stringify(apiInfo,null,2));
     return apiInfo;
+}
+
+/**
+* function to convert modern iodocs format to swagger 2.0
+*/
+function exportIodocs(src){
+    var obj = clone(src);
+    obj.swagger = '2.0';
+    obj.info = {};
+    obj.info.version = obj.version;
+    obj.info.title = obj.name;
+    obj.paths = {};
+
+    var u = url.parse(obj.basePath);
+    obj.schemes = [];
+    obj.schemes.push(u.protocol.replace(':',''));
+    obj.host = u.host;
+    obj.basePath = u.path;
+
+    delete obj.version;
+    delete obj.publicPath;
+    delete obj.protocol;
+    delete obj.name;
+    delete obj.auth; // TODO
+
+    for (var r in obj.resources) {
+        var resource = obj.resources[r];
+        // do tags
+        for (var m in resource.methods) {
+            var method = resource.methods[m];
+
+            if (!obj.paths[method.path]) obj.paths[method.path] = {};
+            var path = obj.paths[method.path];
+            var httpMethod = method.httpMethod.toLowerCase();
+            if (!path[httpMethod]) path[httpMethod] = {};
+            var op = path[httpMethod];
+            op.operationId = m;
+            op.description = method.description;
+            op.parameters = [];
+            for (var p in method.parameters) {
+                var param = method.parameters[p];
+                param.name = p;
+                rename(param,'location','in');
+                if (!param["in"]) {
+                    param["in"] = 'path';
+                }
+                op.parameters.push(param);
+            }
+            op.tags = [];
+            op.tags.push(r);
+
+            op.responses = {};
+            op.responses["200"] = {};
+            op.responses["200"].description = 'Success';
+
+        }
+    }
+
+    delete obj.resources;
+    return obj;
 }
 
 module.exports = {
     convertSwagger : convertSwagger,
-    convertLiveDocs : convertLiveDocs
+    convertLiveDocs : convertLiveDocs,
+    exportIodocs : exportIodocs
 };

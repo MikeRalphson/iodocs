@@ -717,6 +717,32 @@ li {
   border-bottom: 1px solid #d6a1a1;
 }
 
+.head {
+  background: #fce9e3;
+  border-color: #f5d5c3;
+}
+
+.head .http-method {
+  background-color: #d38042;
+}
+
+.head th, .head td {
+  border-bottom: 1px solid #e3c399;
+}
+
+.options {
+  background: #fce9e3;
+  border-color: #f5d5c3;
+}
+
+.options .http-method {
+  background-color: #d38042;
+}
+
+.options th, .options td {
+  border-bottom: 1px solid #e3c399;
+}
+
 .ir {
   display: block;
   text-indent: -999em;

@@ -1,0 +1,160 @@
+{
+    "server": "http://example.com",
+    "title": "My Well Documented API",
+    "prefix": "/api/v1",
+    "endpoints": [
+        {
+            "methods": [
+                {
+                    "name": "GET an asset",
+                    "synopsis": "GET an asset by its ID",
+                    "method": "get",
+                    "middleware": [],
+                    "url": "/animals/:id",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "location": "query",
+                            "type": "string",
+                            "description": "A JSON object."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "methods": [
+                {
+                    "name": "Create an asset",
+                    "synopsis": "Create a new AdBank asset.",
+                    "method": "post",
+                    "url": "/big/fat/beagle",
+                    "middleware": [],
+                    "parameters": [
+                        {
+                            "name": "images",
+                            "label": "Images",
+                            "input": "checkbox",
+                            "location": "body",
+                            "type": "boolean",
+                            "description": "Include links to images in the response"
+                        },
+                        {
+                            "name": "mediaTypes",
+                            "location": "query",
+                            "type": "string",
+                            "input": "checkbox",
+                            "options": {
+                                "video": "Video",
+                                "audio": "Audio",
+                                "digital": "Digital",
+                                "image": "Images",
+                                "print": "Print",
+                                "document": "Document"
+                            },
+                            "description": "The media types which should be returned"
+                        },
+                        {
+                            "name": "size",
+                            "location": "query",
+                            "default": 10,
+                            "type": "number",
+                            "description": "The number of results to be returned in a page."
+                        },
+                        {
+                            "name": "fromDate",
+                            "location": "query",
+                            "type": "date",
+                            "description": "Only return results from this date onwards."
+                        },
+                        {
+                            "name": "order",
+                            "location": "query",
+                            "default": "ASC",
+                            "input": "select",
+                            "type": "string",
+                            "options": {
+                                "ASC": "Ascending",
+                                "DESC": "Descending"
+                            },
+                            "description": "How to order the fields, ASC or DESC."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "methods": [
+                {
+                    "name": "Create an some food",
+                    "synopsis": "Create a food object.",
+                    "middleware": [],
+                    "parameters": [
+                        {
+                            "name": "body",
+                            "location": "body",
+                            "type": "json",
+                            "input": "textarea",
+                            "description": "A JSON object."
+                        }
+                    ],
+                    "method": "POST",
+                    "url": "/food"
+                },
+                {
+                    "name": "Delete some food",
+                    "synopsis": "Delete some food based on an ID.",
+                    "middleware": [],
+                    "url": "/food/:id",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "location": "query",
+                            "type": "string",
+                            "description": "The id of the food item you wish to delete."
+                        }
+                    ],
+                    "method": "DEL"
+                },
+                {
+                    "name": "Get food item",
+                    "synopsis": "Get the details of a food item based on an ID.",
+                    "middleware": [],
+                    "url": "/food/:id",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "location": "query",
+                            "type": "string",
+                            "description": "The id of the food item you wish to GET."
+                        }
+                    ],
+                    "method": "GET"
+                },
+                {
+                    "name": "Update a food item",
+                    "synopsis": "Update a food item by ID.",
+                    "middleware": [],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "location": "query",
+                            "type": "string",
+                            "description": "The id of the food item you wish to delete."
+                        },
+                        {
+                            "name": "body",
+                            "location": "body",
+                            "type": "json",
+                            "input": "textarea",
+                            "description": "A JSON object representing the JSON body."
+                        }
+                    ],
+                    "method": "PUT",
+                    "url": "/food"
+                }
+            ]
+        }
+    ],
+    "version": "0.0.0"
+}

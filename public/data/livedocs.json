@@ -1,0 +1,30 @@
+{
+  "server": "api.mydomain.com",
+  "title": "My API Page Title",
+  "prefix": "/api/v1",
+  "version": "3.2.1",
+  "endpoints" : [
+    {
+      "name": "Assets",
+      "description": "All the asset methods",
+      "methods": [
+        {
+          "name": "Create an Asset",
+          "synopsis": "Create a new asset.",
+          "method": "GET",
+          "url": "/assets",
+          "parameters": [
+            {
+              "name": "assetId",
+              "required": true,
+              "type": "string",
+              "location": "query",
+              "default": "1",
+              "description": "The ID of the asset you wish to create."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

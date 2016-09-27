@@ -125,3 +125,7 @@ block content
                               table(id=methodKey)
                               - if (!method['read-only'])
                                   input(type='submit', id=method.name, value='Try it!', class=methodKey)
+  br
+  form.export(method='post', action='/export')
+    input(type='hidden', name='exportApi', id='exportApi', value=apiName)
+    input(type='submit', value='Export to OpenApi')
