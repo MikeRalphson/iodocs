@@ -457,7 +457,7 @@ function convertApi(obj){
     if (obj.server && obj.prefix) {
         return converters.convertLiveDocs(obj);
     }
-    if (obj.swagger) {
+    if (obj.swagger || obj.openapi) {
         return converters.convertSwagger(obj);
     }
     return {};
@@ -778,7 +778,7 @@ function processRequest(req, res, next) {
             host: baseHostUrl,
             port: baseHostPort,
             method: httpMethod,
-            path: apiConfig.publicPath ? apiConfig.publicPath + methodURL : apiConfig.swagger ?
+            path: apiConfig.publicPath ? apiConfig.publicPath + methodURL : apiConfig.info ?
 				apiConfig.basePath + methodURL : apisConfig[apiName].publicPath
         };
 
@@ -1056,19 +1056,19 @@ function processRequest(req, res, next) {
         // Add API Key to params, if any.
         if (apiKey != '' && apiKey != 'undefined' && apiKey != undefined) {
 
-            var swaggerSec = {};
-            if (apiConfig.swagger && apiConfig.securityDefinitions) {
+            var openapiSec = {};
+            if ((apiConfig.swagger || apiConfig.openapi) && apiConfig.securityDefinitions) {
                 for (var s in apiConfig.securityDefinitions) {
                     if (apiConfig.securityDefinitions[s].type == 'apiKey') {
-                        swaggerSec = apiConfig.securityDefinitions[s];
+                        openapiSec = apiConfig.securityDefinitions[s];
                     }
                 }
             }
 
             if ((apiConfig.auth && apiConfig.auth.key && apiConfig.auth.key.location === 'header') ||
-                (swaggerSec && swaggerSec["in"] == 'header')) {
+                (openapiSec && openapiSec["in"] == 'header')) {
                 options.headers = (options.headers === void 0) ? {} : options.headers;
-                options.headers[apiConfig.auth ? apiConfig.auth.key.param : swaggerSec.name] = apiKey;
+                options.headers[apiConfig.auth ? apiConfig.auth.key.param : openapiSec.name] = apiKey;
             }
             else {
                 if (options.path.indexOf('?') !== -1) {
@@ -1077,7 +1077,7 @@ function processRequest(req, res, next) {
                 else {
                     options.path += '?';
                 }
-				var keyParam = apiConfig.auth && apiConfig.auth.key ? apiConfig.auth.key.param : swaggerSec.name;
+				var keyParam = apiConfig.auth && apiConfig.auth.key ? apiConfig.auth.key.param : openapiSec.name;
                 options.path += keyParam + '=' + apiKey;
             }
         }
@@ -1345,7 +1345,7 @@ app.get('/:api([^\.]+)', function(req, res) {
         // falls through into rendering api
     }
 
-	if (res.locals.apiInfo.swagger) {
+	if (res.locals.apiInfo.swagger || res.locals.apiInfo.openapi) {
         res.locals.apiInfo = apisConfig[res.locals.apiName].converted;
 		res.render('swagger2');
 	}
