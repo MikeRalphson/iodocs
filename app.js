@@ -121,6 +121,57 @@ try {
     process.exit(1);
 }
 
+function loadDynamicUrl(dynamicUrl,dynName,callback){
+    if (dynamicUrl) {
+        var u = url.parse(dynamicUrl);
+        var doRequest = (u.protocol && u.protocol.startsWith('https')) ? https.get : http.get;
+        var options = {};
+        options.hostname = u.host;
+        options.port = u.port;
+        options.path = u.path;
+        console.log('Loading dynamic API from %s',dynamicUrl);
+        doRequest(options, function(response){
+            var body = '';
+
+            response.on('data', function(data) {
+                body += data;
+            });
+
+            response.on('end', function() {
+                var obj = {};
+                try {
+                    obj = JSON.parse(body);
+                }
+                catch (ex) {
+                    try {
+                        obj = yaml.safeLoad(body);
+                    }
+                    catch (ex) {}
+                }
+                if (obj) {
+                    apisConfig[dynName] = {};
+                    apisConfig[dynName].name = dynName;
+                    apisConfig[dynName].definition = obj;
+                    apisConfig[dynName].converted = convertApi(obj);
+                    if (callback) callback(apisConfig[dynName]);
+                }
+            });
+        }).on('error', function(e) {
+            console.log('error: ' + e.message);
+            if (config.debug) {
+                console.log('HEADERS: ' + JSON.stringify(res.headers));
+                console.log("Got error: " + e.message);
+                console.log("Error: " + util.inspect(e));
+            }
+        });
+    }
+}
+
+//
+// Remote API config
+//
+loadDynamicUrl(process.env["IODOCS_DYNAMIC_URL"] || config.dynamicUrl, process.env["IODOCS_DYNAMIC_NAME"] || 'dynamic');
+
 var app = module.exports = express();
 
 app.set('views', __dirname + '/views');
@@ -395,10 +446,25 @@ function oauth2(req, res, next){
 }
 
 
+function convertApi(obj){
+    if (obj.server && obj.prefix) {
+        return converters.convertLiveDocs(obj);
+    }
+    if (obj.swagger) {
+        return converters.convertSwagger(obj);
+    }
+    return {};
+}
+
 function loadApi(apiName){
     // TODO cacheing with redis would make us entirely async
     // TODO this looks like the way to go for loading from URLs too
-    var stat;
+    // TODO allow loading from a dynamic URL set in an environment variable (for Heroku one-click)
+    if (apisConfig[apiName].definition) {
+        console.log('Cache hit');
+        return apisConfig[apiName].definition;
+    }
+    var stat, obj;
     try {
         stat = fs.statSync(path.resolve(config.apiConfigDir + '/' + apiName + '.json'));
     }
@@ -409,6 +475,8 @@ function loadApi(apiName){
     else {
         obj = yaml.safeLoad(fs.readFileSync(path.resolve(config.apiConfigDir + '/' + apiName + '.yaml'), 'utf8'));
     }
+    apisConfig[apiName].definition = obj;
+    apisConfig[apiName].converted = convertApi(obj);
     return obj;
 }
 
@@ -586,7 +654,7 @@ function oauth2Success(req, res, next) {
                         },
                         function(error, oauth2access_token, oauth2refresh_token, results) {
                             if (error) {
-                                res.status(500).send("Error getting OAuth access token : " + util.inspect(error) + "["+oauth2access_token+"]"+ "["+oauth2refresh_token+"]";
+                                res.status(500).send("Error getting OAuth access token : " + util.inspect(error) + "["+oauth2access_token+"]"+ "["+oauth2refresh_token+"]");
                             } else {
                                 if (config.debug) {
                                     console.log('results: ' + util.inspect(results));
@@ -660,7 +728,7 @@ function processRequest(req, res, next) {
 
                 // If the param is actually a part of the URL, put it in the URL
                 if (!!regx.test(methodURL)) {
-                    methodURL = methodURL.replace(regx, v);
+                    methodURL = methodURL.replace(regx, encodeURIComponent(v));
                 } else {
                     // Stores param in params to later put into the query
                     params[k] = v;
@@ -778,7 +846,7 @@ function processRequest(req, res, next) {
                                     req.result = error.data;
                                 }
 
-                                res.statusCode = error.statusCode;
+                                res.statusCode = error.statusCode ? error.statusCode : 500;
 
                                 next();
                             } else {
@@ -817,7 +885,7 @@ function processRequest(req, res, next) {
                             body = error.data;
                         }
 
-                        res.statusCode = error.statusCode;
+                        res.statusCode = error.statusCode ? error.statusCode : 500;
 
                     } else {
                         var responseContentType = response.headers['content-type'];
@@ -940,7 +1008,7 @@ function processRequest(req, res, next) {
                                 req.result = error.data;
                             }
 
-                            res.statusCode = error.statusCode;
+                            res.statusCode = error.statusCode ? error.statusCode : 500;
 
                             next();
                         } else {
@@ -982,9 +1050,20 @@ function processRequest(req, res, next) {
 
         // Add API Key to params, if any.
         if (apiKey != '' && apiKey != 'undefined' && apiKey != undefined) {
-            if (apiConfig.auth && apiConfig.auth.key && apiConfig.auth.key.location === 'header') { // TODO swagger auth in headers
+
+            var swaggerSec = {};
+            if (apiConfig.swagger && apiConfig.securityDefinitions) {
+                for (var s in apiConfig.securityDefinitions) {
+                    if (apiConfig.securityDefinitions[s].type == 'apiKey') {
+                        swaggerSec = apiConfig.securityDefinitions[s];
+                    }
+                }
+            }
+
+            if ((apiConfig.auth && apiConfig.auth.key && apiConfig.auth.key.location === 'header') ||
+                (swaggerSec && swaggerSec["in"] == 'header')) {
                 options.headers = (options.headers === void 0) ? {} : options.headers;
-                options.headers[apiConfig.auth.key.param] = apiKey;
+                options.headers[apiConfig.auth ? apiConfig.auth.key.param : swaggerSec.name] = apiKey;
             }
             else {
                 if (options.path.indexOf('?') !== -1) {
@@ -993,8 +1072,7 @@ function processRequest(req, res, next) {
                 else {
                     options.path += '?';
                 }
-				var keyParam = apiConfig.auth && apiConfig.auth.key ? apiConfig.auth.key.param : 'api_key'; // TODO swagger key param name
-                console.log(keyParam);
+				var keyParam = apiConfig.auth && apiConfig.auth.key ? apiConfig.auth.key.param : swaggerSec.name;
                 options.path += keyParam + '=' + apiKey;
             }
         }
@@ -1130,27 +1208,30 @@ function processRequest(req, res, next) {
     }
 }
 
+function loadUrl(req,res,next){
+    console.log('Into loadUrl with '+JSON.stringify(req.body));
+    loadDynamicUrl(req.body.userLoadUrl,'remote',function(obj){
+       res.redirect('/remote');
+    });
+}
 
 function checkPathForAPI(req, res, next) {
+    // BUG? This gets called for all requests for stylesheets, scripts and images
     if (!req.params) req.params = {};
     if (!req.query) req.query = {};
     if (!req.params.api) {
         // If api wasn't passed in as a parameter, check the path to see if it's there
-        var pathName = req.url.replace('/','');
-        // Is it a valid API - if there's a config file we can assume so
-        fs.stat(path.resolve(config.apiConfigDir + '/'+ pathName + '.json'), function (error, stats) {
-			if (stats) {
+        var pathName = req.url.replace('/','').split('?')[0];
+        // Is it a valid API - if there's a config entry we can assume so
+        for (var a in apisConfig) {
+            if (a == pathName) {
 				req.query.api = pathName;
-                next();
+                break;
             }
-            else fs.stat(path.resolve(config.apiConfigDir + '/'+ pathName + '.yaml'), function (error, stats) {
-                if (stats) {
-                    req.query.api = pathName;
-                }
-                next();
-            });
-        });
-    } else {
+        }
+        next();
+    }
+    else {
         next();
     }
 }
@@ -1229,6 +1310,8 @@ app.post('/processReq', processRequest, function(req, res) {
 app.all('/auth', oauth1);
 app.all('/auth2', oauth2);
 
+app.all('/load', loadUrl);
+
 // OAuth callback page, closes the window immediately after storing access token/secret
 app.get('/authSuccess/:api', oauth1Success, function(req, res) {
     res.render('authSuccess', {
@@ -1252,20 +1335,20 @@ app.get('/:api([^\.]+)', function(req, res) {
     req.params.api=req.params.api.replace(/\/$/,'');
 
     if (res.locals.apiInfo.server && res.locals.apiInfo.prefix) {
-        res.locals.apiInfo = converters.convertLiveDocs(res.locals.apiInfo);
+        res.locals.apiInfo = apisConfig[res.locals.apiName].converted;
         // falls through into rendering api
     }
 
-    if (res.locals.apiInfo.resources) {
+	if (res.locals.apiInfo.swagger) {
+        res.locals.apiInfo = apisConfig[res.locals.apiName].converted;
+		res.render('swagger2');
+	}
+    else if (res.locals.apiInfo.resources) {
         res.render('api');
     }
     else if (res.locals.apiInfo.endpoints) {
         res.render('oldApi');
     }
-	else if (res.locals.apiInfo.swagger) {
-        res.locals.apiInfo = converters.convertSwagger(res.locals.apiInfo);
-		res.render('swagger2');
-	}
 	else {
 	    res.render('error');
 	}

@@ -22,12 +22,17 @@ Copyright 2011-2016 Mashery, Inc., and others
 * ~~Support for LiveDocs specification format~~
 * ~~Drop support for comments in .json files, for speed~~
 * ~~If you want to use comments, use yaml (support added)~~
-* Load from URL mode
-* Server-side cacheing of specs
+* ~~Load from URL mode, from env. var or user input~~
+* ~~Server-side cacheing of specs~~
 * Port pull-requests from Mashery repository
 * Ability to export iodocs spec as OpenAPI (Swagger)
 * Support for GraphQL APIs
 * Support for OpenApi 3.x when ratified
+
+<details>
+	<summary>Other forks of interest</summary>
+* https://github.com/funmachine/iodocs
+</details>
 
 <details>
   <summary>Summer 2014 Release Feature Enhancements</summary>

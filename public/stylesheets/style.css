@@ -309,7 +309,7 @@ li {
   margin-left: 0;
 }
 
-.credentials {
+.credentials, .userload {
   background-color: #f4f4e1;
   border: 1px solid #cbcb71;
   -moz-border-radius: 5px;
@@ -350,18 +350,25 @@ li {
   margin-top: 10px;
 }
 
-.credentials label {
+.credentials label, .userload label {
   font-weight: bold;
   display: block;
   margin-bottom: 3px;
 }
 
-.credentials input {
+.credentials input{
   width: 200px;
 }
 
 .credentials #oauth-auth {
   margin-top: 20px;
+}
+
+.userload input {
+  margin: 5px;
+}
+#userLoadUrl {
+  width: 300px;
 }
 
 #controls {
@@ -452,11 +459,12 @@ li {
   -khtml-border-radius: 5px;
   border-radius: 5px;
   margin: 10px 0;
-  /*    &.authrequired .http-method {
-          background-image: url(images/lock.png);
-          background-repeat: no-repeat;
-          background-position: 7px 50%;
-      }*/
+}
+
+.method.authrequired .http-method {
+  background-image: url(/images/lock.png);
+  background-repeat: no-repeat;
+  background-position: 7px 50%;
 }
 
 .method div.headers {
