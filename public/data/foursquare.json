@@ -220,7 +220,7 @@
                             "default": "100",
                             "description": "Number of results to return, up to 500.",
                             "required": false,
-                            "title": "USER_ID",
+                            "title": "results",
                             "type": "integer"
                         },
                         "offset": {
