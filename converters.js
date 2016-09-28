@@ -1,6 +1,8 @@
 var url = require('url');
 var clone = require('clone');
 
+var recurseotron = require('openapi_optimise/common.js');
+
 function rename(obj,key,newKey){
     obj[newKey] = obj[key];
     delete obj[key];
@@ -8,6 +10,8 @@ function rename(obj,key,newKey){
 
 /**
 * function to reformat swagger paths object into an iodocs-style resources object
+* this is purely to render the schema, but could be the start of a spec converter if needed
+* auth is handled server side TODO check client-side knows auth requirements
 */
 function convertSwagger(apiInfo){
     apiInfo.resources = {};
@@ -108,14 +112,47 @@ function convertLiveDocs(apiInfo){
 }
 
 /**
+* function to fixup converted iodocs schemas into JSON-schema compatible form
+*/
+function fixSchema(schema){
+    recurseotron.recurse(schema,{},function(obj,state){
+        if ((state.key == 'id') && (typeof obj == 'string')) delete state.parent.id;
+        if ((state.key == 'title') && (typeof obj == 'string')) delete state.parent.title;
+        if ((state.key == 'description') && (typeof obj == 'string')) delete state.parent.description;
+        if ((state.key == 'location') && (typeof obj == 'string')) delete state.parent.location;
+        if ((state.key == 'type') && (typeof obj == 'string')) {
+            if (obj == 'textarea') {
+                state.parent.type = 'string';
+            }
+        }
+        if ((state.key == '$ref') && (typeof obj == 'string') && !obj.startsWith('#/')) {
+            state.parent["$ref"] = '#/definitions/'+obj;
+        }
+        if ((state.key == 'required') && (typeof obj == 'boolean')) {
+            if (obj === true) {
+                var greatgrandparent = state.parents[state.parents.length-3];
+                if (greatgrandparent) {
+                    if (state.keys[state.keys.length-2] != 'items') { // TODO better check for arrays
+                        if (!greatgrandparent.required) greatgrandparent.required = [];
+                        greatgrandparent.required.push(state.keys[state.keys.length-2]);
+                    }
+                }
+            }
+            delete state.parent.required;
+        }
+    });
+}
+
+/**
 * function to convert modern iodocs format to swagger 2.0
 */
 function exportIodocs(src){
     var obj = clone(src);
     obj.swagger = '2.0';
     obj.info = {};
-    obj.info.version = obj.version;
+    obj.info.version = obj.version || '1';
     obj.info.title = obj.name;
+    obj.info.description = obj.description;
     obj.paths = {};
 
     var u = url.parse(obj.basePath);
@@ -125,10 +162,16 @@ function exportIodocs(src){
     obj.basePath = u.path;
 
     delete obj.version;
-    delete obj.publicPath;
+    delete obj.title;
+    delete obj.description;
+    delete obj.publicPath; // needs appending?
+    delete obj.privatePath; // for oauth etc
     delete obj.protocol;
     delete obj.name;
     delete obj.auth; // TODO
+    delete obj.headers; // TODO
+    rename(obj,'schemas','definitions');
+    if (obj.definitions) fixSchema(obj.definitions);
 
     for (var r in obj.resources) {
         var resource = obj.resources[r];
@@ -136,10 +179,20 @@ function exportIodocs(src){
         for (var m in resource.methods) {
             var method = resource.methods[m];
 
+            if (!method.path.startsWith('/')) method.path = '/'+method.path;
+            method.path = method.path + '/';
+            method.path = method.path.replace(/:(.+?)([\.\/:\{])/g,function(match,group1,group2){
+                group1 = '{'+group1.replace(':','')+'}';
+                return group1+group2;
+            });
+            method.path = method.path.substr(0,method.path.length-1);
+
             if (!obj.paths[method.path]) obj.paths[method.path] = {};
             var path = obj.paths[method.path];
+
             var httpMethod = method.httpMethod.toLowerCase();
             if (!path[httpMethod]) path[httpMethod] = {};
+
             var op = path[httpMethod];
             op.operationId = m;
             op.description = method.description;
@@ -147,10 +200,39 @@ function exportIodocs(src){
             for (var p in method.parameters) {
                 var param = method.parameters[p];
                 param.name = p;
+                if (param.title) rename(param,'title','name');
+                if (param.type == 'textarea') param.type = 'string';
                 rename(param,'location','in');
                 if (!param["in"]) {
+                    if (method.path.indexOf('{'+param.name+'}')>=0) {
+                        param["in"] = 'path';
+                    }
+                    else {
+                        param["in"] = 'query';
+                    }
+                }
+                if ((param["in"] == 'body') && (param.type != 'object')) {
+                    param["in"] = 'formData'; // revalidate
+                }
+                if (param["in"] == 'pathReplace') {
                     param["in"] = 'path';
                 }
+                if (param["in"] == 'path') {
+                    param.required = true;
+                }
+                if (typeof param.required == 'string') {
+                    param.required = (param.required === 'true');
+                }
+                if (param.properties) {
+                    delete param.type;
+                    param.schema = {};
+                    param.schema.type = 'object';
+                    param.schema.properties = param.properties;
+                    delete param.properties;
+                    delete param["default"];
+                    fixSchema(param.schema);
+                }
+                if (param.items) fixSchema(param.items);
                 op.parameters.push(param);
             }
             op.tags = [];

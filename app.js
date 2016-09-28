@@ -1221,7 +1221,11 @@ function loadUrl(req,res,next){
 }
 
 function exportSpec(req,res,next){
-    if (req.body.exportApi && apisConfig[req.body.exportApi] && apisConfig[req.body.exportApi].definition) {
+    if (req.body.exportApi && apisConfig[req.body.exportApi]) {
+        if (!apisConfig[req.body.exportApi].definition) {
+            loadApi(req.body.exportApi);
+        }
+        // TODO upgrade old iodocs to new format first, for LiveDocs used .converteds
         res.send(JSON.stringify(converters.exportIodocs(apisConfig[req.body.exportApi].definition),null,2));
     }
     else {

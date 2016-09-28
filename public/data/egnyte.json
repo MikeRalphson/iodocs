@@ -247,7 +247,7 @@
                     "name": "CreateFile",
                     "description": "Creates or updates a file",
                     "httpMethod": "POST",
-                    "path": "/pubapi/v1/fs-content/Path",
+                    "path": "/pubapi/v1/fs-content/:Path",
                     "parameters": {
                         "Authorization": {
                             "title": "Authorization",
@@ -291,7 +291,7 @@
                     "name": "Move File or Folder",
                     "description": "Moves a file or folder",
                     "httpMethod": "POST",
-                    "path": "/pubapi/v1/fs/Path",
+                    "path": "/pubapi/v1/fs/:Path",
                     "request": {
                         "$ref": "MoveFileOrFolder"
                     },
@@ -323,7 +323,7 @@
                     "name": "Copy File or Folder",
                     "description": "Copies a file or folder",
                     "httpMethod": "POST",
-                    "path": "/pubapi/v1/fs/Path",
+                    "path": "/pubapi/v1/fs/:Path",
                     "request": {
                         "$ref": "CopyFileorFolder"
                     },
@@ -355,7 +355,7 @@
                     "name": "List File or Folder",
                     "description": "Obtains file metadata or folder listing",
                     "httpMethod": "GET",
-                    "path": "/pubapi/v1/fs/Path",
+                    "path": "/pubapi/v1/fs/:Path",
                     "parameters": {
                         "Authorization": {
                             "required": "Y",
@@ -377,7 +377,7 @@
                     "name": "Download File",
                     "description": "Downloads a file",
                     "httpMethod": "GET",
-                    "path": "/pubapi/v1/fs-content/Path",
+                    "path": "/pubapi/v1/fs-content/:Path",
                     "parameters": {
                         "Authorization": {
                             "required": "Y",
@@ -399,7 +399,7 @@
                     "name": "Delete File or Folder",
                     "description": "Deletes a file or folder",
                     "httpMethod": "DELETE",
-                    "path": "/pubapi/v1/fs/Path",
+                    "path": "/pubapi/v1/fs/:Path",
                     "parameters": {
                         "Authorization": {
                             "required": "Y",

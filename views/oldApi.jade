@@ -187,3 +187,7 @@ block content
                                       // Create header fields and button to add/remove headers.
                               - if (!method['read-only'])
                                   input(type='submit', id=method.MethodName, value='Try it!')
+  br
+  form.export(method='post', action='/export')
+    input(type='hidden', name='exportApi', id='exportApi', value=apiName)
+    input(type='submit', value='Export to OpenApi')

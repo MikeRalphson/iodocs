@@ -40,7 +40,8 @@
     "querystring": "0.1.0",
     "redis": "^2.6.2",
     "supervisor": ">= 0.5.x",
-    "yargs": ">= 1.2.1"
+    "yargs": ">= 1.2.1",
+	"openapi_optimise": "latest"
   },
   "devDependencies": {},
   "main": "index",

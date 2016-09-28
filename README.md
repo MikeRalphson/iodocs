@@ -24,14 +24,15 @@ Copyright 2011-2016 Mashery, Inc., and others
 * ~~If you want to use comments, use yaml (support added)~~
 * ~~Load from URL mode, from env. var or user input~~
 * ~~Server-side cacheing of specs~~
+* ~~Ability to export iodocs spec as OpenAPI (Swagger)~~ auth needs translating
 * Port pull-requests from Mashery repository
-* Ability to export iodocs spec as OpenAPI (Swagger)
 * Support for GraphQL APIs
 * Support for OpenApi 3.x when ratified
 
 <details>
 	<summary>Other forks of interest</summary>
 * https://github.com/funmachine/iodocs
+* https://github.com/adzerk/ratatoskr
 </details>
 
 <details>
