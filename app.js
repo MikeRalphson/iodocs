@@ -219,17 +219,17 @@ if (config.basicAuth && config.basicAuth.username && config.basicAuth.password) 
 	}));
 }
 
-app.use(checkPathForAPI);
-app.use(dynamicHelpers);
 app.use(express.static(__dirname + '/public'));
-app.use('/data', express.static(config.apiConfigDir));
+app.use('/data', express.static(config.apiConfigDir)); // we could remove this now I think...
+app.use(checkPathForAPI); // moved after static middleware so it doesn't get called so often
+app.use(dynamicHelpers);
 
-//app.configure('development', function() {
-app.use(errorHndlr({ dumpExceptions: true, showStack: true }));
-//});
-//app.configure('production', function() {
-//app.use(errorHndlr());
-//});
+if (config.debug) {
+    app.use(errorHndlr({ dumpExceptions: true, showStack: true }));
+}
+else {
+    app.use(errorHndlr());
+};
 
 
 //
@@ -455,11 +455,11 @@ function oauth2(req, res, next){
 }
 
 function isLiveDocs(obj){
-    return (obj.server && obj.prefix);
+    return (obj && obj.server && obj.prefix);
 }
 
 function isOpenApi(obj){
-    return (obj.swagger || obj.openapi);
+    return (obj && (obj.swagger || obj.openapi));
 }
 
 function convertApi(obj){
@@ -1260,7 +1260,6 @@ function exportSpec(req,res,next){
 }
 
 function checkPathForAPI(req, res, next) {
-    // BUG? This gets called for all requests for stylesheets, scripts and images
     if (!req.params) req.params = {};
     if (!req.query) req.query = {};
     if (!req.params.api) {
@@ -1380,10 +1379,6 @@ app.post('/upload', function(req, res) {
 app.get('/:api([^\.]+)', function(req, res) {
     req.params.api=req.params.api.replace(/\/$/,'');
 
-    if (!res.locals.apiInfo) {
-        res.render('error');
-    }
-
     if (isLiveDocs(res.locals.apiInfo)) {
         res.locals.apiInfo = apisConfig[res.locals.apiName].converted;
         // falls through into rendering api
@@ -1393,10 +1388,10 @@ app.get('/:api([^\.]+)', function(req, res) {
         res.locals.apiInfo = apisConfig[res.locals.apiName].converted;
 		res.render('swagger2');
 	}
-    else if (res.locals.apiInfo.resources) {
+    else if (res.locals.apiInfo && res.locals.apiInfo.resources) {
         res.render('api');
     }
-    else if (res.locals.apiInfo.endpoints) {
+    else if (res.locals.apiInfo && res.locals.apiInfo.endpoints) {
         res.render('oldApi');
     }
 	else {
