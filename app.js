@@ -737,7 +737,7 @@ function processRequest(req, res, next) {
             } else if (locations[k] == 'body') {
                 bodyParams[k] = v;
             } else {
-                // URL params are contained within "{param}"
+                // URL params are contained within "{param}" TODO what about :param format ?
                 var regx = new RegExp('{' + k + '}');
 
                 // If the param is actually a part of the URL, put it in the URL
