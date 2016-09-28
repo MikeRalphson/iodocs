@@ -27,10 +27,10 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Ability to export iodocs/LiveDocs spec as OpenAPI (Swagger). *auth needs translating*
 * Report meaningful text for HTTP status codes
 * Update jQuery
+* Fix -1 on optional numeric parameters [#208](https://github.com/mashery/iodocs/issues/208)
 
 ### TODO / work in progress items
 
-* Fix -1 on optional numeric parameters [#208](https://github.com/mashery/iodocs/issues/208)
 * Port pull-requests from Mashery repository
 * Support for GraphQL APIs
 * Support for OpenApi 3.x when ratified

@@ -18883,7 +18883,7 @@ address:
         getValue: function() {
             var textValue = this.field.val();
             if (Alpaca.isValEmpty(textValue)) {
-                return -1;
+                return '';
             } else {
                 return parseInt(textValue, 10);
             }
@@ -19580,7 +19580,7 @@ address:
         getValue: function() {
             var textValue = this.field.val();
             if (Alpaca.isValEmpty(textValue)) {
-                return -1;
+                return '';
             } else {
                 return parseInt(textValue, 10);
             }
