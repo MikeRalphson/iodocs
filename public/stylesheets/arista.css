@@ -1,4 +1,745 @@
-body, form, .resource {
-  background-color: #883311 !important;
-  color: #000000;
+/**
+ *
+ * THEME TEMPLATE
+ *
+ * Use this as a template for your custom theme. Only the backgrounds are defined to help you see where each element
+ * goes. Set this as your custom theme and then view your Mashery site. Then start customizing to implement your own
+ * theme!
+ *
+ * Check out http://support.mashery.com/public/Mashery/styles/masherycssfw.src.css to see the base structural defaults.
+ * You can find documentation on customizing your portal at http://support.mashery.com/docs/Customizing_Your_Portal
+ * We discourage making major changes to the layout since it has a standard structure to it which is easy for users
+ * to use.
+ *
+ */
+
+
+ /*__font-family__*/
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Oswald Light'), local('Oswald-Light'), url(files/HqHm7BVC_nzzTui2lzQTDT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
+@font-face {
+  font-family: 'Oswald400';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Oswald Regular'), local('Oswald-Regular'), url(files/-g5pDUSRgvxvOl5u-a_WHw.woff) format('woff');
+}
+@font-face {
+  font-family: 'Oswald700';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Oswald Bold'), local('Oswald-Bold'), url(files/oswald/v7/bH7276GfdCjMjApa_dkG6T8E0i7KZn-EPnyo3HZu7kw.html) format('woff');
+}
+/*__end font-family__*/
+h1,h2,h3,h4,h5,h6 {
+	margin:10px 0 24px;
+	font-family: 'Oswald400', Arial, sans-serif;
+	color:#444;
+	font-weight:400;
+	text-rendering: optimizelegibility;
+}
+h1,h2,h3 {
+	text-transform: uppercase;
+}
+h1.first {
+	border-bottom:1px solid #DEDEDE;
+	color: #444444;
+    font-family: 'Oswald400',Arial,sans-serif;
+    font-size: 36px;
+    line-height: 78px;
+    margin: 0 0 37px 0;
+    padding: 8px 0 10px 230px;
+    text-transform: uppercase;
+}
+h2 {
+	font-size: 26px;
+}
+body {
+  background: #F2F2F2 url('files/bg_top_line.gif') top repeat-x;
+  color: #444;
+  font: 15px/20px Arial, sans-serif;
+}
+.page-ioDocs #main>h1 {
+	border-bottom: 1px solid #DEDEDE;
+	color: #444444;
+	font-family: 'Oswald400',Arial,sans-serif;
+	font-size: 36px;
+	line-height: 78px;margin: 0 0 37px 0;
+	padding: 8px 0 10px 230px;
+	text-transform: uppercase;
+}
+a:link, a:visited {
+  color: #004D99;
+  font-family: Arial,sans-serif;
+}
+a:hover, a:active,
+.page-ioDocs a:hover, .page-ioDocs a:active {
+	color: #90BE3F;
+}
+fieldset {
+	border: 0;
+	margin:0;
+	background: none;
+}
+fieldset legend {
+	margin-bottom:10px;
+	padding-bottom: 25px;
+	color: #444;
+    font: 29px/29px 'Oswald',Arial,sans-serif;
+}
+label {
+	font: 400 16px/18px 'Helvetica Neue', Helvetica,sans-serif;
+	font-weight: bold;
+}
+form fieldset {
+	padding-left:0;
+}
+dd.require {
+    margin: 0 0 23px;
+}
+input.input-submit, input.input-submit1, input.input-submit2, input.input-button, input[type="submit"], a.create-new:link, a.create-new:visited {
+	background: #3695EB;
+	border:0;
+    color: #FFF;
+    display: inline-block;
+    font-weight: 700;
+    padding: 9px 21px;
+    font: 13px/1.231 sans-serif
+
+}
+table td, table th {
+    padding: 10px;
+}
+/* All the input fields (text input, textareas, selects) */
+input#search-box {
+  height: 17px;
+  padding-left: 0;
+  margin-right: 4px;
+  padding-bottom: 0;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 0;
+  color: #999;
+
+}
+
+form#search-input {
+  margin-top: -48px;
+}
+
+form#search-input input.search-button {
+  background: transparent url(../public/Mashery/images/clients/edmunds/find.jpg) no-repeat 0 0;
+  width: 70px;
+  height: 22px;
+  border: 0;
+  text-indent: -1200px;
+  margin-right: 20px;
+  margin-top: 1px;
+  margin-left: -10px;
+}
+
+table thead th {
+  border-bottom: 1px solid #999;
+}
+table td {
+  border-bottom: 1px solid #ddd;
+}
+
+div#page {
+  width: 1170px;
+}
+div#page.no_sub div#main {
+	width:100%;
+}
+input, textarea, select {
+	border:1px solid #ccc;
+	color:#444;
+	background: none;
+}
+/* Set the overall width */
+/* For pages without navigation (you can set which pages you do not want to have navigation on, for whatever reason) */
+/* For pages without a side column, you can set which pages do or do not have side columns. */
+/**
+ *
+ * HEADER
+ *
+ * The header is where your logo, login links, search, and user control links should go.
+ *
+ */
+div#header {
+  background-color: #3695eb;
+  border-bottom: 2px solid #909090;
+  height: 60px;
+  width: auto;
+}
+
+div#header .apiTitle {
+    float: right;
+    padding: 20px;
+    color: white;
+    font-size: 18px;
+}
+
+div#content {
+	width: auto;
+	font-size: 18px;
+}
+
+        /* Here is where you put your logo! Yes, it is the background of a div. This div is special because Javascript makes it behave
+           like a Home link by default, you can change this in the settings if you absolutely must.
+
+           You must change the width and height of this div to the same size as your logo. */
+
+.navbar-brand {
+    display: inline-block;
+    float: none;
+    height: auto;
+    padding: 0 20px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 50px;
+    text-align: center;
+}
+
+div.content {
+	margin-top:15px;
+	margin-bottom: 15px;
+	font-size: 18px;
+}
+
+#credentials h2
+{
+	margin-bottom: 8px;
+}
+
+
+div#branding-logo {
+	position: absolute;
+	z-index: 10000000;
+  background: url(files/api-logo.png) transparent;
+  margin: 0;
+  width: 93px;
+  height: 103px;
+}
+
+div#branding-mashery {
+  top: 7px;
+}
+
+/* END HEADER */
+/**
+ *
+ * USER
+ *
+ * User information and actions
+ *
+ */
+div#user {
+	width: auto;
+  /*            position: relative; This causes issues in IE6 */
+}
+
+/**
+ *
+ * USER NAV
+ *
+ * Login, logout, register, and My Account links.
+ *
+ */
+div#user-nav {
+	padding-left: 15px;
+  	left: 230px;
+    margin: 0;
+    position: absolute;
+    top: 27px;
+    background: url('files/icon_user.gif') left 1px no-repeat;
+  /* Use top margin to move this around when you can. */
+}
+div#user-nav ul li {
+  /* The user's name, "Signed in as Wally Wombat" */
+}
+div#user-nav ul a {
+
+}
+
+.user-nav .sign-in a, .user-nav .register a,
+.user-nav .sign-in a:visited, .user-nav .register a:visited {
+    color:#BF2F37;
+	font: bold 9px/20px Arial, sans-serif;
+    text-transform: uppercase;
+}
+.user-nav .sign-in a:hover, .user-nav .register a:hover {
+	color: #90BE3F;
+}
+.first.sign-in a:after {
+	content: " or ";
+	color:#999;
+	font: bold 9px/20px Arial;
+    text-transform: uppercase;
+}
+div#user-nav ul li.register {
+	padding-left: 3px;
+}
+div#user-nav ul li.sign-in {
+	padding-left: 25px;
+	padding-right: 0;
+}
+/* END USER NAV */
+/* END USER */
+/**
+ *
+ * LOCAL NAV
+ *
+ * This is the main navigation bar. You can customize your links in the Settings page.
+ *
+ * The div#local appears AFTER the content for accessbility reasons. Please see
+ * http: //www.contentwithstyle.co.uk/Articles/17/ for details.
+ *
+ * Because the navigation is placed below the content, you will most likely need
+ * to use absolute positioning. Please make sure you understand positioning before
+ * trying to customize it!
+ *
+ */
+div#local {
+  height: 38px;
+  width: auto;
+  top: 9px;
+  left:230px;
+}
+div#local li a {
+	border-bottom: 1px solid #444;
+    color: #444;
+    display: inline-block;
+    font: 25px/31px 'Oswald400', Arial, sans-serif;
+    margin-right: 25px;
+    padding: 0;
+    text-transform: lowercase;
+
+}
+div#local li.active a {
+	color:#BF2F37;
+	border:0;
+}
+div#local li.active a:hover {
+	color:#BF2F37;
+}
+div#local li a:hover {
+  border-bottom: 0;
+  color: #90BE3F;
+}
+
+/* END LOCAL NAV */
+/**
+ *
+ * USER MENU
+ *
+ * The User Menu contains actions for the user: Start New Entry, New Post, etc.
+ *
+ */
+/**
+ *
+ * SUB LOCAL NAVIGATION
+ *
+ * Links under each primary navigation section.
+ *
+ */
+div#user-menu {
+  display: none;
+}
+
+/* END SUBLOCAL NAV */
+/* END USER MENU */
+/**
+ *
+ * CONTENT
+ *
+ * Where the magic happens (Content of page)
+ *
+ */
+/**
+ *
+ * MAIN
+ *
+ * This is where almost all the content for every page is.
+ *
+ */
+div#main {
+	background: transparent;
+	display: block;
+	float: left;
+	border: 0 none;
+	margin-left: 0;
+	margin-top: 42px;
+	padding: 20px 0;
+	width: 970px;
+}
+
+/**
+ *
+ * BLOG, WIKI, FORUM, and DOCS
+ *
+ * Styling for the sections, meta info, file tables, and other parts of these apps.
+ *
+ * Remember, there are usually different states of each app type! For example, when browsing the forum the body will have
+ * an id of #page-forum and a class of .browse. If you click on a forum post to view it, the body will still have the same
+ * id, but the class will change to .read. This way you can control the different views of each app.
+ *
+ */
+/* Comments in all sections except the forum. */
+/**
+ *
+ * FORUM
+ *
+ * The forum is very different than the blog, wiki, docs, etc. Be sure to check out the markup, the default styling
+ * should be ok for most people, but you may need to override some of your list (ul, ol) rules that you set in this
+ * stylesheet.
+ *
+ */
+/* The "Start new topic" button */
+body.page-forum a.create-new {
+  margin: 0 0 21px 0;
+  /* Subject of a thread */
+  /* The "original post" in each thread looks different by default */
+}
+
+/* END FORUM */
+/* END BLOG, WIKI, FORUM, and DOCS */
+/* END MAIN */
+/**
+ *
+ * SUB
+ *
+ * The sub div is usually the small sidebar on the blog/wiki/forum, although some may prefer to hide it altogether.
+ *
+ * In the Dashboard, the sub is also where the form lives to add new content in the Content page.
+ *
+ */
+div#sub {
+	background: none;
+	border-top: 1px solid #dedede;
+	display: block;
+	float: right;
+	margin-right: 0;
+	margin-top: 158px;
+	padding: 20px 10px 10px;
+	width: 180px;
+}
+
+/* END SUB */
+/* END CONTENT */
+/**
+ *
+ * FOOTER
+ *
+ * Contains your site-info as well as your footer links.
+ *
+ */
+div#footer {
+  border-top: 2px solid #444;
+  padding-bottom: 25px;
+}
+div#footer a {
+	color: #444;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 10px 30px 10px 0;
+    text-transform: uppercase;
+}
+div#footer a:hover {
+	color:#90BE3F;
+}
+div#footer ul {
+	margin-top: 10px;
+}
+div#footer ul li {
+	margin: 0;
+}
+
+/**
+ *
+ * SITEINFO
+ *
+ * The siteinfo you can edit from the Settings page in the Dashboard.
+ * Usually this contains copyright stuff and credits.
+ *
+ */
+/* END SITEINFO */
+/* END FOOTER */
+/* END THEME TEMPLATE */
+
+#passwd_requirements li {
+	background-color: #dedede;
+}
+#passwd_requirements li.valid, #passwd_requirements + form .valid input {
+	background-color: #90BE3F;
+    border-left: 5px solid #444;
+    color: #333;
+}
+.page-ioDocs .method .title .http-method {
+	-webkit-border-radius:0;
+	-moz-border-radius:0;
+	-ms-border-radius:0;
+	-o-border-radius:0;
+	border-radius:0;
+	font-family: 'Oswald400',Arial,sans-serif;
+}
+.page-ioDocs .method .title:hover span {
+	text-decoration: none;
+}
+.page-ioDocs .get .http-method {
+    background-color: #32679B;
+}
+.page-ioDocs .get {
+	background: #eee;
+	border-color:#ccc;
+}
+.page-ioDocs .method .title .http-method {
+	color:#fff;
+}
+.page-ioDocs #controls {
+	border-color:#ccc;
+}
+.page-ioDocs .get th, .page-ioDocs .get td {
+	border-bottom: 1px solid #BBB;
+}
+body .method a.clear-results {
+	color:#BF2F37;
+	text-transform: uppercase
+}
+body .method a.clear-results:hover {
+	color: #BF2F37;
+	text-decoration: underline;
+	background: none;
+}
+.list-methods > a,
+.expand-methods > a,
+#controls a{
+    font-size: 11px;
+    text-transform: uppercase;
+}
+.page-ioDocs .servicesIodocs select {
+	top:10px;
+	border:1px solid #ccc;
+	font: 400 15px/18px Arial, sans-serif;
+	text-transform: none;
+}
+.page-ioDocs .credentials {
+	background-color: #444;
+    border: 1px solid #444;
+    color: #fff;
+}
+.page-ioDocs .credentials div {
+    margin: 0;
+}
+.page-ioDocs .credentials label {
+	font-weight: 400;
+}
+.page-ioDocs .credentials input,
+.page-ioDocs .credentials select {
+	background-color: #fff;
+}
+#apiKeyContainer input {
+	background-color: #fff;
+}
+#apiKeyContainer input:focus {
+}
+
+
+
+/*Start forum page*/
+.page-forum ol.categories li.subject, .page-forum ol.topics li.subject {
+	font-size: 17px;
+	line-height: 36px;
+}
+.category .subject > a, .topic .subject > a{
+    font: 700 18px/25px Arial, Helvetica, sans-serif;
+}
+.page-forum div#main ol.categories li.description {
+	font-size: 15px;
+	margin-bottom: 12px;
+}
+.page-forum ol li.category, .page-forum ol li.topic, .page-forum ol li.comment {
+	border-bottom: 1px solid #c5c5c5;
+	overflow: visible;
+}
+.page-forum ol.categories, .page-forum ol.topics, .page-forum ol.comments {
+	border-top: 1px solid #ccc;
+}
+a.rss, a.rss:link, a.rss:visited {
+	position: absolute;
+	right: 27px;
+	top:43px;
+	width: 28px;
+	height:28px;
+	margin: 17px 9px;
+	background: url('files/feed-icon-18x18.png') center no-repeat #666;
+}
+
+.page-forum .breadcrumbs a, .page-forum .breadcrumbs{
+	margin: 0;
+    font:400 13px/15px  Arial, sans-serif;
+}
+.page-forum .breadcrumbs a {
+	font-weight: 700;
+}
+.page-forum .breadcrumbs a:hover {
+	text-decoration: none;
+}
+.page-forum .breadcrumbs {
+	color:#888;
+}
+div.section-menu {
+	margin-bottom: 10px;
+}
+.page-forum .breadcrumbs li {
+	margin-left: 0;
+}
+.page-forum .breadcrumbs li.category, .page-forum .breadcrumbs li.topic {
+	padding-left: 9px;
+	background: url('files/bad-bread.gif') center left no-repeat;
+}
+.page-forum h3.subject {
+	padding: 0;
+}
+
+.page-forum h3.subject {
+	border:0;
+	margin: 0 0 4px 0;
+	font-size: 26px;
+	line-height: 45px;
+}
+.page-forum ol.categories, .page-forum ol.topics, .page-forum ol.comments {
+	border-top:0;
+}
+.page-forum .read a.rss {
+	margin: 17px 9px;
+}
+.page-forum ol ul li.topic-count, .page-forum ol ul li.comment-count, .page-forum ol ul li.last-comment, .page-forum ol ul li.last-topic, .page-forum ol ul li.last-active, .page-forum ol ul li.edit-comment {
+	font-size: 12px;
+	font-weight: 700;
+}
+.comment-count span{
+	padding:0 0 0 20px;
+	background: url('files/icon_posts.png') left center no-repeat;
+}
+.page-forum .topics h2.category, .page-forum .recent h2.category, .page-forum .browse h2 {
+	border-bottom: 1px solid #C5C5C5;
+	float: none;
+	padding: 36px 0;
+	margin: 0;
+}
+.section .section-body {
+	position: relative;
+}
+.page-forum ol.topics ul, .page-forum ol.categories ul {
+	padding: 36px 0;
+}
+
+abbr {
+	border: 0;
+}
+p.description {
+	margin: 10px 0;
+}
+h2.category {
+	padding: 36px 0;
+	margin:0;
+	border-bottom: 1px solid #C5C5C5;
+}
+.page-forum ol.comments div.comment-body,
+.page-forum p.edit-timestamp,
+.page-forum ol.comments div.comment-tags {
+	margin: 0 0 20px 0;
+}
+.page-forum p.edit-timestamp {
+	margin-bottom: 6px;
+	color:#888;
+	font-size: 12px;
+}
+.page-forum ol.comments div.comment-tags h4 {
+	color:#888;
+	font: 700 12px/26px Arial, sans-serif;
+}
+.page-forum ol.comments div.comment-tags ul li {
+	display: inline-block;
+	margin-left: 6px;
+    line-height: 24px;
+	-webkit-border-radius:3px 0 0 3px;
+	-moz-border-radius:3px 0 0 3px;
+	-ms-border-radius:3px 0 0 3px;
+	-o-border-radius:3px 0 0 3px;
+	border-radius:3px 0 0 3px;
+	background: url('files/bg_tags.png') right center no-repeat #fff;
+}
+.page-forum ol.comments div.comment-tags ul li a {
+	display: block;
+	border-top:1px solid #ddd;
+	border-left:1px solid #ddd;
+	border-bottom:1px solid #bbb;
+	border-right:0;
+	-webkit-border-radius:3px 0 0 3px;
+	-moz-border-radius:3px 0 0 3px;
+	-ms-border-radius:3px 0 0 3px;
+	-o-border-radius:3px 0 0 3px;
+	border-radius:3px 0 0 3px;
+	padding: 0 11px 0 7px;
+	margin:0 14px 0 0;
+	color:#888;
+}
+.page-forum ol.comments div.comment-tags ul li a:hover {
+	color:#90BE3F;
+}
+.comment-body p {
+	margin: 0;
+}
+.page-forum ol.comments div.comment-header,
+.comments p.edit-timestamp,
+.comments .comment-tags
+	padding: 0 27px;
+}
+.comments .comment-body {
+	padding: 20px 27px;
+	background: #dedede;
+}
+.page-forum ol.comments div.comment-header li.timestamp {
+	color: #888;
+}
+.page-forum ol.comments div.comment-header li.timestamp abbr {
+	font-weight: 700;
+}
+.page-forum ol.comments div.comment-header li.moniker, .page-forum ol.comments div.comment-header li.timestamp {
+	margin-right: 12px;
+	line-height: 34px;
+}
+.page-forum ol.comments div.comment-header li.timestamp {
+    font-size: 12px;
+}
+
+.page-forum p.comment-meta {
+    background-color: #F2F2F2;
+    margin: -20px -27px 1em;
+    padding: 30px 27px 6px;
+    color:#888;
+}
+.page-forum p.comment-meta .timestamp {
+	font-size: 12px;
+	font-weight: 700;
+}
+
+ul.pun-nav {
+	margin-top: 30px;
+}
+
+.page-forum div.section-menu ul>li.recent-topics a {
+	background: url('files/topics.png') no-repeat;
+	line-height: 29px;
+	padding-left: 35px;
+	display: inline-block;
+}
+
+.key h3 {
+	text-transform: none !important;
 }
