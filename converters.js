@@ -8,6 +8,17 @@ function rename(obj,key,newKey){
     delete obj[key];
 }
 
+function fixPathParameters(s){
+    if (!s.startsWith('/')) s = '/'+s;
+    s = s + '/';
+    s = s.replace(/:(.+?)([\.\/:\{&])/g,function(match,group1,group2){
+        group1 = '{'+group1.replace(':','')+'}';
+        return group1+group2;
+    });
+    s = s.substr(0,s.length-1);
+    return s;
+}
+
 /**
 * Convert pre-Summer 2014 iodocs format to latest schema. Originally based on python code by https://github.com/hskrasek
 */
@@ -104,9 +115,8 @@ function convertSwagger(apiInfo){
 */
 function convertLiveDocs(apiInfo){
     rename(apiInfo,'title','name');
-    rename(apiInfo,'prefix','basePath');
-    apiInfo.basePath = apiInfo.server+apiInfo.basePath;
-    delete apiInfo.server;
+    rename(apiInfo,'prefix','publicPath');
+    rename(apiInfo,'server','basePath');
     apiInfo.resources = {};
     for (var e in apiInfo.endpoints) {
         var ep = apiInfo.endpoints[e];
@@ -125,6 +135,8 @@ function convertLiveDocs(apiInfo){
             rename(lMethod,'URI','path');
             rename(lMethod,'Synopsis','description');
             rename(lMethod,'MethodName','name');
+
+            lMethod.path = fixPathParameters(lMethod.path);
 
             var params = {};
             for (var p in lMethod.parameters) {
@@ -226,13 +238,7 @@ function exportIodocs(src){
         for (var m in resource.methods) {
             var method = resource.methods[m];
 
-            if (!method.path.startsWith('/')) method.path = '/'+method.path;
-            method.path = method.path + '/';
-            method.path = method.path.replace(/:(.+?)([\.\/:\{&])/g,function(match,group1,group2){
-                group1 = '{'+group1.replace(':','')+'}';
-                return group1+group2;
-            });
-            method.path = method.path.substr(0,method.path.length-1);
+            method.path = fixPathParameters(method.path);
 
             if (!obj.paths[method.path]) obj.paths[method.path] = {};
             var path = obj.paths[method.path];
