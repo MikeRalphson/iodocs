@@ -323,6 +323,13 @@
             if (response.code) {
                 $('pre.code', resultContainer)
                     .text(response.code);
+				for (var r in httpStatusCodes) {
+				  if (httpStatusCodes[r].code == response.code) {
+                    $('pre.code', resultContainer).text(response.code + ' : ' + httpStatusCodes[r].phrase +
+					  '. ' + httpStatusCodes[r].description);
+					break;
+				  }
+				}
             }
 
             if (response.headers) {
