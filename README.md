@@ -35,6 +35,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 
 <details>
 	<summary>Other forks of interest</summary>
+* http://forked.yannick.io/mashery/iodocs
 * https://github.com/funmachine/iodocs
 * https://github.com/adzerk/ratatoskr
 </details>

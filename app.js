@@ -75,7 +75,7 @@ var configFilePath = path.resolve(argv['config-file']);
 try {
     var config = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
 } catch(e) {
-    console.error("File " + configFilePath + " not found or is invalid.  Try: `cp config.json.sample config.json`");
+    console.error('File %s not found or is invalid.  Try: `cp config.json.sample config.json`', configFilePath);
     process.exit(1);
 }
 
@@ -87,18 +87,18 @@ if(config.redis) {
     config.redis.database = config.redis.database || defaultDB;
 
     if (process.env.REDISTOGO_URL || process.env.REDIS_URL) {
-        var rtg = require("url").parse(process.env.REDISTOGO_URL || process.env.REDIS_URL);
+        var rtg = require('url').parse(process.env.REDISTOGO_URL || process.env.REDIS_URL);
         config.redis.host = rtg.hostname;
         config.redis.port = rtg.port;
-        config.redis.password = rtg.auth && rtg.auth.split(":")[1] ? rtg.auth.split(":")[1] : '';
+        config.redis.password = rtg.auth && rtg.auth.split(':')[1] ? rtg.auth.split(':')[1] : '';
     }
 
     var db = redis.createClient(config.redis.port, config.redis.host);
     db.auth(config.redis.password);
 
-    db.on("error", function(err) {
+    db.on('error', function(err) {
         if (config.debug) {
-            console.log("Error %s", err);
+            console.log('Error %s', err);
         }
     });
 }
@@ -108,7 +108,7 @@ if(config.redis) {
 //
 config.apiConfigDir = path.resolve(config.apiConfigDir || 'public/data');
 if (!fs.existsSync(config.apiConfigDir)) {
-    console.error("Could not find API config directory: " + config.apiConfigDir);
+    console.error('Could not find API config directory: %s', config.apiConfigDir);
     process.exit(1);
 }
 
@@ -119,7 +119,7 @@ try {
     }
 } catch(e) {
     console.log(e);
-    console.error("File apiconfig.json not found or is invalid.");
+    console.error('File apiconfig.json not found or is invalid.');
     process.exit(1);
 }
 
@@ -169,8 +169,8 @@ function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
             console.log('error: %s', e.message);
             if (config.debug) {
                 console.log('HEADERS: ' + JSON.stringify(res.headers));
-                console.log("Got error: " + e.message);
-                console.log("Error: " + util.inspect(e));
+                console.log('Got error: ' + e.message);
+                console.log('Error: ' + util.inspect(e));
             }
         });
     }
@@ -657,7 +657,7 @@ function oauth2Success(req, res, next) {
                 }
 
                 if (oauth2_type == 'authorization_code') {
-                    console.log("in oauth2Success in authorization_code");
+                    console.log('in oauth2Success in authorization_code');
                     oa.getOAuthAccessToken(
                         req.query.code,
                         {
@@ -702,7 +702,7 @@ function oauth2Success(req, res, next) {
 // processRequest - handles API call
 //
 function processRequest(req, res, next) {
-    console.log("in processRequest");
+    console.log('in processRequest');
     if (config.debug) {
         console.log(util.inspect(req.body, null, 3));
     }
@@ -722,9 +722,9 @@ function processRequest(req, res, next) {
         key = req.sessionID + ':' + apiName,
         implicitAccessToken = reqQuery.accessToken;
 
-    console.log("json: ", json, typeof json);
+    console.log('json: ', json, typeof json);
 	if (typeof json == 'string') json = JSON.parse(json);
-    console.log("locations: ", locations, typeof locations);
+    console.log('locations: ', locations, typeof locations);
     if (typeof locations == 'string') locations = JSON.parse(locations);
 
     for (var k in json) {
@@ -1162,6 +1162,7 @@ function processRequest(req, res, next) {
         } else {
             console.log('Protocol: HTTP');
             doRequest = http.request;
+            options.protocol = 'http:';
 			console.log(JSON.stringify(options,null,2));
         }
 
@@ -1196,8 +1197,8 @@ function processRequest(req, res, next) {
                 if (options.headers) req.requestHeaders = options.headers;
                 if (requestBody) req.requestBody = requestBody;
                 req.resultHeaders = response.headers;
-                req.call = url.parse(options.host + options.path);
-                req.call = url.format(req.call);
+                var u = url.parse(options.protocol + '//' + options.host + options.path);
+                req.call = url.format(u);
 
                 // Response body
                 req.result = body;
@@ -1209,8 +1210,8 @@ function processRequest(req, res, next) {
             res.status(500).send(JSON.stringify(e));
             if (config.debug) {
                 console.log('HEADERS: ' + JSON.stringify(res.headers));
-                console.log("Got error: " + e.message);
-                console.log("Error: " + util.inspect(e));
+                console.log('Got error: ' + e.message);
+                console.log('Error: ' + util.inspect(e));
             }
         });
 
@@ -1407,15 +1408,15 @@ app.get('/:api([^\.]+)', function(req, res) {
 
 if (!module.parent) {
 
-    if (typeof config.socket != "undefined") {
+    if (typeof config.socket != 'undefined') {
         var args = [config.socket];
-        console.log("Express server starting on UNIX socket %s", args[0]);
+        console.log('Express server starting on UNIX socket %s', args[0]);
         fs.unlink(config.socket, function () {
           runServer(app, args);
         });
     } else {
         var args = [process.env.PORT || config.port, config.address];
-        console.log("Express server starting on %s:%d", args[1], args[0]);
+        console.log('Express server starting on %s:%d', args[1], args[0]);
         runServer(app, args);
     }
 
@@ -1427,14 +1428,14 @@ if (!module.parent) {
 
         if (config && config.https && config.https.enabled && config.https.keyPath && config.https.certPath) {
             if (config.debug) {
-                console.log("Starting secure server (https)");
+                console.log('Starting secure server (https)');
             }
 
             // try reading the key file, die if that fails
             try {
                 httpsOptions.key = fs.readFileSync(config.https.keyPath);
             } catch (err) {
-                console.error("Failed to read https key: ", config.https.keyPath);
+                console.error('Failed to read https key: ', config.https.keyPath);
                 console.log(err);
                 process.exit(1);
             }
@@ -1443,7 +1444,7 @@ if (!module.parent) {
             try {
                 httpsOptions.cert = fs.readFileSync(config.https.certPath);
             } catch (err) {
-                console.error("Failed to read https cert: ", config.https.certPath);
+                console.error('Failed to read https cert: ', config.https.certPath);
                 console.log(err);
                 process.exit(1);
             }
@@ -1453,7 +1454,7 @@ if (!module.parent) {
                 try {
                     httpsOptions.ca = fs.readFileSync(config.https.caCertPath);
                 } catch (err) {
-                    console.error("Failed to read https ca cert: ", config.https.caCertPath);
+                    console.error('Failed to read https ca cert: ', config.https.caCertPath);
                     console.log(err);
                 }
             }
@@ -1469,7 +1470,7 @@ if (!module.parent) {
             server = https.createServer(httpsOptions, app);
             server.listen.apply(server, args);
         } else if (config.https && config.https.on) {
-            console.error("No https key or certificate specified.");
+            console.error('No https key or certificate specified.');
             process.exit(1);
         } else {
             server = http.createServer(app);

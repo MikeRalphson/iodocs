@@ -213,7 +213,7 @@ function exportIodocs(src){
     obj.info.description = obj.description;
     obj.paths = {};
 
-    var u = url.parse(obj.basePath);
+    var u = url.parse(obj.basePath+obj.publicPath);
     obj.schemes = [];
     obj.schemes.push(u.protocol.replace(':',''));
     obj.host = u.host;
@@ -222,7 +222,7 @@ function exportIodocs(src){
     delete obj.version;
     delete obj.title;
     delete obj.description;
-    delete obj.publicPath; // needs appending?
+    delete obj.publicPath;
     delete obj.privatePath; // for oauth etc
     delete obj.protocol;
     delete obj.name;
