@@ -8,23 +8,27 @@ Copyright 2011-2016 Mashery, Inc., and others
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-### Work in Progress / TODO
+### Changes in this fork
 
-* ~~Updated dependencies (node 4.x and Express 4.x)~~
-* ~~Deployable to Heroku with one click~~
-* ~~Reinstate support for pre-Summer 2014 schema iodocs specs~~
-* ~~Improve speed by not fetching {apiname}.json again via AJAX~~
-* ~~Ability to import spec from static iodocs sites~~ (see [mashery2openapi](https://github.com/mermade/mashery2openapi))
-* ~~Renderer for OpenAPI (Swagger) 2.0 specs~~
-* ~~Markdown support in descriptions~~
-* ~~Required parameter validation~~
-* ~~Variable CSS /logos per specification hosted~~
-* ~~Support for LiveDocs specification format~~
-* ~~Drop support for comments in .json files, for speed~~
-* ~~If you want to use comments, use yaml (support added)~~
-* ~~Load from URL mode, from env. var or user input~~
-* ~~Server-side cacheing of specs~~
-* ~~Ability to export iodocs spec as OpenAPI (Swagger)~~ auth needs translating
+* Updated dependencies (node 4.x and Express 4.x)
+* Deployable to Heroku with one click
+* Reinstate support for pre-Summer 2014 schema iodocs specs
+* Improve speed by not fetching {apiname}.json again via AJAX
+* Ability to import spec from static iodocs sites (see [mashery2openapi](https://github.com/mermade/mashery2openapi))
+* Renderer for OpenAPI (Swagger) 2.0 specs
+* Markdown support in descriptions
+* Required parameter validation
+* Variable CSS / logos per specification hosted
+* Support for LiveDocs specification format
+* Drop support for comments in .json files, for speed
+* If you want to use comments, use yaml (support added)
+* Load from URL mode, from env. var or user input
+* Server-side cacheing of specs
+* Ability to export iodocs/LiveDocs spec as OpenAPI (Swagger). *auth needs translating*
+* Report meaningful text for HTTP status codes
+
+### TODO / work in progress items
+
 * Port pull-requests from Mashery repository
 * Support for GraphQL APIs
 * Support for OpenApi 3.x when ratified

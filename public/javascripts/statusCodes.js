@@ -1,3 +1,5 @@
+/* originally from https://github.com/for-GET/know-your-http-well/blob/master/json/status-codes.json */
+
 var httpStatusCodes = [
     {
         "code": "1xx",
