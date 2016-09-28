@@ -1206,6 +1206,7 @@ function processRequest(req, res, next) {
             })
         }).on('error', function(e) {
             console.log('error: ' + e.message);
+            res.status(500).send(JSON.stringify(e));
             if (config.debug) {
                 console.log('HEADERS: ' + JSON.stringify(res.headers));
                 console.log("Got error: " + e.message);
