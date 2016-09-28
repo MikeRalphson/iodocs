@@ -9,6 +9,47 @@ function rename(obj,key,newKey){
 }
 
 /**
+* Convert pre-Summer 2014 iodocs format to latest schema. Originally based on python code by https://github.com/hskrasek
+*/
+
+function iodocsUpgrade(data){
+ 	var data = data['endpoints'];
+	var newResource = {};
+	newResource.resources = {};
+	for (var index2 = 0; index2 < data.length; index2++) {
+		var resource = data[index2];
+		var resourceName = resource.name;
+		newResource.resources[resourceName] = {};
+		newResource.resources[resourceName].methods = {};
+		var methods = resource.methods;
+		for (var index3 = 0; index3 < methods.length; index3++) {
+			var method = methods[index3];
+			var methodName = method['MethodName'];
+			var methodName = methodName.split(' ').join('_');
+			newResource.resources[resourceName].methods[methodName] = {};
+			newResource.resources[resourceName].methods[methodName].name = method['MethodName'];
+			newResource.resources[resourceName].methods[methodName]['httpMethod'] = method['HTTPMethod'];
+			newResource.resources[resourceName].methods[methodName]['path'] = method['URI'];
+			newResource.resources[resourceName].methods[methodName].parameters = {};
+			if (!method.parameters) {
+				continue;
+			}
+			var parameters = method.parameters;
+			for (var index4 = 0; index4 < parameters.length; index4++) {
+				var param = parameters[index4];
+				newResource.resources[resourceName].methods[methodName].parameters[param.Name] = {};
+				newResource.resources[resourceName].methods[methodName].parameters[param.Name]['title'] = param.name;
+				newResource.resources[resourceName].methods[methodName].parameters[param.Name]['required'] = (param['Required'] == 'Y');
+				newResource.resources[resourceName].methods[methodName].parameters[param.Name]['default'] = param['Default'];
+				newResource.resources[resourceName].methods[methodName].parameters[param.Name]['type'] = param['Type'];
+				newResource.resources[resourceName].methods[methodName].parameters[param.Name]['description'] = param['Description'];
+			}
+		}
+	}
+    return newResource;
+}
+
+/**
 * function to reformat swagger paths object into an iodocs-style resources object
 * this is purely to render the schema, but could be the start of a spec converter if needed
 * auth is handled server side TODO check client-side knows auth requirements
@@ -64,7 +105,8 @@ function convertSwagger(apiInfo){
 function convertLiveDocs(apiInfo){
     rename(apiInfo,'title','name');
     rename(apiInfo,'prefix','basePath');
-    apiInfo.basePath = 'http://'+apiInfo.server+apiInfo.basePath;
+    apiInfo.basePath = apiInfo.server+apiInfo.basePath;
+    delete apiInfo.server;
     apiInfo.resources = {};
     for (var e in apiInfo.endpoints) {
         var ep = apiInfo.endpoints[e];
@@ -97,8 +139,12 @@ function convertLiveDocs(apiInfo){
                         lParam.location = 'query';
                     }
                 }
+                if (lParam.location == 'boddy') lParam.location = 'body'; // ;)
                 params[lParam.name] = lParam;
                 delete lParam.name;
+                delete lParam.input; // TODO checkbox to boolean?
+                delete lParam.label;
+                rename(lParam,'options','enum');
             }
             lMethod.parameters = params;
             if (Object.keys(params).length==0) delete lMethod.parameters;
@@ -169,6 +215,7 @@ function exportIodocs(src){
     delete obj.protocol;
     delete obj.name;
     delete obj.auth; // TODO
+    delete obj.oauth; // TODO
     delete obj.headers; // TODO
     rename(obj,'schemas','definitions');
     if (obj.definitions) fixSchema(obj.definitions);
@@ -181,7 +228,7 @@ function exportIodocs(src){
 
             if (!method.path.startsWith('/')) method.path = '/'+method.path;
             method.path = method.path + '/';
-            method.path = method.path.replace(/:(.+?)([\.\/:\{])/g,function(match,group1,group2){
+            method.path = method.path.replace(/:(.+?)([\.\/:\{&])/g,function(match,group1,group2){
                 group1 = '{'+group1.replace(':','')+'}';
                 return group1+group2;
             });
@@ -201,7 +248,13 @@ function exportIodocs(src){
                 var param = method.parameters[p];
                 param.name = p;
                 if (param.title) rename(param,'title','name');
-                if (param.type == 'textarea') param.type = 'string';
+                if ((param.type == 'textarea') || (param.type == 'enumerated')) param.type = 'string';
+                if (param.type == 'long') param.type = 'number';
+                if (param.type == 'string[]') {
+                    param.type = 'array';
+                    param.items = {};
+                    param.items.type = 'string';
+                }
                 rename(param,'location','in');
                 if (!param["in"]) {
                     if (method.path.indexOf('{'+param.name+'}')>=0) {
@@ -252,5 +305,6 @@ function exportIodocs(src){
 module.exports = {
     convertSwagger : convertSwagger,
     convertLiveDocs : convertLiveDocs,
-    exportIodocs : exportIodocs
+    exportIodocs : exportIodocs,
+    iodocsUpgrade : iodocsUpgrade
 };

@@ -50,6 +50,8 @@ var express     = require('express'),
 
 var converters  = require('./converters.js');
 
+const MAXAGE = 1209600000; // 14 days
+
 //
 // Parse arguments
 //
@@ -96,7 +98,7 @@ if(config.redis) {
 
     db.on("error", function(err) {
         if (config.debug) {
-            console.log("Error " + err);
+            console.log("Error %s", err);
         }
     });
 }
@@ -129,7 +131,7 @@ function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
         options.hostname = u.host;
         options.port = u.port;
         options.path = u.path;
-        console.log('Loading dynamic API from %s',dynamicUrl);
+        console.log('Loading dynamic API from %s', dynamicUrl);
         doRequest(options, function(response){
             var body = '';
 
@@ -164,7 +166,7 @@ function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
                 }
             });
         }).on('error', function(e) {
-            console.log('error: ' + e.message);
+            console.log('error: %s', e.message);
             if (config.debug) {
                 console.log('HEADERS: ' + JSON.stringify(res.headers));
                 console.log("Got error: " + e.message);
@@ -177,7 +179,7 @@ function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
 //
 // Remote API config
 //
-loadDynamicUrl(process.env["IODOCS_DYNAMIC_URL"] || config.dynamicUrl, process.env["IODOCS_DYNAMIC_NAME"] || 'dynamic',false);
+loadDynamicUrl(process.env["IODOCS_DYNAMIC_URL"] || config.dynamicUrl, process.env["IODOCS_DYNAMIC_NAME"] || 'dynamic', false);
 
 var app = module.exports = express();
 
@@ -196,7 +198,7 @@ if (config.redis) {
             'port':   config.redis.port,
             'pass':   config.redis.password,
             'db'  :   config.redis.database,
-            'maxAge': 1209600000
+            'maxAge': MAXAGE
         }),
 		resave: false,
 		saveUninitialized : true
@@ -280,7 +282,7 @@ function oauth1(req, res, next) {
 
             oa.getOAuthRequestToken(function(err, oauthToken, oauthTokenSecret, results) {
                 if (err) {
-                    res.status(500).send("Error getting OAuth request token : " + util.inspect(err));
+                    res.status(500).send('Error getting OAuth request token : ' + util.inspect(err));
                 } else {
                     // Unique key using the sessionID and API name to store tokens and secrets
                     var key = req.sessionID + ':' + apiName;
@@ -292,10 +294,10 @@ function oauth1(req, res, next) {
                     db.set(key + ':requestTokenSecret', oauthTokenSecret, redis.print);
 
                     // Set expiration to same as session
-                    db.expire(key + ':apiKey', 1209600000); // 14 days?
-                    db.expire(key + ':apiSecret', 1209600000);
-                    db.expire(key + ':requestToken', 1209600000);
-                    db.expire(key + ':requestTokenSecret', 1209600000);
+                    db.expire(key + ':apiKey', MAXAGE);
+                    db.expire(key + ':apiSecret', MAXAGE);
+                    db.expire(key + ':requestToken', MAXAGE);
+                    db.expire(key + ':requestTokenSecret', MAXAGE);
 
                     res.send({'signin': oauth1_signin_url + oauthToken });
                 }
@@ -363,9 +365,9 @@ function oauth2(req, res, next){
             db.set(key + ':callbackURL', callbackURL, redis.print);
 
             // Set expiration to same as session
-            db.expire(key + ':apiKey', 1209600000);
-            db.expire(key + ':apiSecret', 1209600000);
-            db.expire(key + ':callbackURL', 1209600000);
+            db.expire(key + ':apiKey', MAXAGE);
+            db.expire(key + ':apiSecret', MAXAGE);
+            db.expire(key + ':callbackURL', MAXAGE);
 
             res.send({'signin': redirectUrl});
         }
@@ -378,9 +380,9 @@ function oauth2(req, res, next){
             db.set(key + ':callbackURL', callbackURL, redis.print);
 
             // Set expiration to same as session
-            db.expire(key + ':apiKey', 1209600000);
-            db.expire(key + ':apiSecret', 1209600000);
-            db.expire(key + ':callbackURL', 1209600000);
+            db.expire(key + ':apiKey', MAXAGE);
+            db.expire(key + ':apiSecret', MAXAGE);
+            db.expire(key + ':callbackURL', MAXAGE);
 
             res.send({'implicit': redirectUrl});
         }
@@ -403,9 +405,9 @@ function oauth2(req, res, next){
             db.set(key + ':callbackURL', callbackURL, redis.print);
 
             // Set expiration to same as session
-            db.expire(key + ':apiKey', 1209600000);
-            db.expire(key + ':apiSecret', 1209600000);
-            db.expire(key + ':callbackURL', 1209600000);
+            db.expire(key + ':apiKey', MAXAGE);
+            db.expire(key + ':apiSecret', MAXAGE);
+            db.expire(key + ':callbackURL', MAXAGE);
 
             //client_credentials w/Authorization header
             oa._request(
@@ -416,7 +418,7 @@ function oauth2(req, res, next){
                 '',
                 function(error, data, response) {
                     if (error) {
-                        res.status(500).send("Error getting OAuth access token : " + util.inspect(error));
+                        res.status(500).send('Error getting OAuth access token : ' + util.inspect(error));
                     }
                     else {
                         var results;
@@ -440,8 +442,8 @@ function oauth2(req, res, next){
                             function(err, results2) {
                                 db.set(key + ':accessToken', oauth2access_token, redis.print);
                                 db.set(key + ':refreshToken', oauth2refresh_token, redis.print);
-                                db.expire(key + ':accessToken', 1209600000);
-                                db.expire(key + ':refreshToken', 1209600000);
+                                db.expire(key + ':accessToken', MAXAGE);
+                                db.expire(key + ':refreshToken', MAXAGE);
                                 res.send({'refresh': callbackURL});
                             }
                         );
@@ -452,12 +454,19 @@ function oauth2(req, res, next){
     }
 }
 
+function isLiveDocs(obj){
+    return (obj.server && obj.prefix);
+}
+
+function isOpenApi(obj){
+    return (obj.swagger || obj.openapi);
+}
 
 function convertApi(obj){
-    if (obj.server && obj.prefix) {
+    if (isLiveDocs(obj)) {
         return converters.convertLiveDocs(obj);
     }
-    if (obj.swagger || obj.openapi) {
+    else if (isOpenApi(obj)) {
         return converters.convertSwagger(obj);
     }
     return {};
@@ -554,7 +563,7 @@ function oauth1Success(req, res, next) {
                 req.query.oauth_verifier,
                 function (error, oauthAccessToken, oauthAccessTokenSecret, results) {
                     if (error) {
-                        res.status(500).send("Error getting OAuth access token : " + util.inspect(error) + "[" + oauthAccessToken + "]" + "[" + oauthAccessTokenSecret + "]" + "[" + util.inspect(results) + "]");
+                        res.status(500).send('Error getting OAuth access token : ' + util.inspect(error) + '[' + oauthAccessToken + ']' + '[' + oauthAccessTokenSecret + ']' + '[' + util.inspect(results) + ']');
                     } else {
                         if (config.debug) {
                             console.log('results: ' + util.inspect(results));
@@ -659,7 +668,7 @@ function oauth2Success(req, res, next) {
                         },
                         function(error, oauth2access_token, oauth2refresh_token, results) {
                             if (error) {
-                                res.status(500).send("Error getting OAuth access token : " + util.inspect(error) + "["+oauth2access_token+"]"+ "["+oauth2refresh_token+"]");
+                                res.status(500).send('Error getting OAuth access token : ' + util.inspect(error) + '['+oauth2access_token+']'+ '['+oauth2refresh_token+']');
                             } else {
                                 if (config.debug) {
                                     console.log('results: ' + util.inspect(results));
@@ -1057,7 +1066,7 @@ function processRequest(req, res, next) {
         if (apiKey != '' && apiKey != 'undefined' && apiKey != undefined) {
 
             var openapiSec = {};
-            if ((apiConfig.swagger || apiConfig.openapi) && apiConfig.securityDefinitions) {
+            if (isOpenApi(apiConfig) && apiConfig.securityDefinitions) {
                 for (var s in apiConfig.securityDefinitions) {
                     if (apiConfig.securityDefinitions[s].type == 'apiKey') {
                         openapiSec = apiConfig.securityDefinitions[s];
@@ -1225,8 +1234,23 @@ function exportSpec(req,res,next){
         if (!apisConfig[req.body.exportApi].definition) {
             loadApi(req.body.exportApi);
         }
-        // TODO upgrade old iodocs to new format first, for LiveDocs used .converteds
-        res.send(JSON.stringify(converters.exportIodocs(apisConfig[req.body.exportApi].definition),null,2));
+        var source = apisConfig[req.body.exportApi].definition;
+        if (isLiveDocs(source)) {
+            source = apisConfig[req.body.exportApi].converted;
+        }
+        else if (source.endpoints) {
+            source = clone(apisConfig[req.body.exportApi]);
+            delete source.definition;
+            delete source.converted; // isn't stored in .converted as we're still using the old renderer
+            source.basePath = source.protocol + '://' + source.baseURL;
+            source = Object.assign({},source,converters.iodocsUpgrade(apisConfig[req.body.exportApi].definition)); // merge old header info
+
+            delete source.baseURL;
+            delete source.protocol;
+            delete source.keyParam; //?
+
+        }
+        res.send(JSON.stringify(converters.exportIodocs(source),null,2));
     }
     else {
         res.render('error');
@@ -1358,12 +1382,12 @@ app.get('/:api([^\.]+)', function(req, res) {
         res.render('error');
     }
 
-    if (res.locals.apiInfo.server && res.locals.apiInfo.prefix) {
+    if (isLiveDocs(res.locals.apiInfo)) {
         res.locals.apiInfo = apisConfig[res.locals.apiName].converted;
         // falls through into rendering api
     }
 
-	if (res.locals.apiInfo.swagger || res.locals.apiInfo.openapi) {
+	if (isOpenApi(res.locals.apiInfo)) {
         res.locals.apiInfo = apisConfig[res.locals.apiName].converted;
 		res.render('swagger2');
 	}
