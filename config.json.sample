@@ -22,5 +22,6 @@
         "caCertPath": "/Path/to/my.ca.crt.pem",
         "requestCert": true,
         "rejectUnauthorized": false
-    }
+    },
+	"allowLoadFromUrl": false
 }

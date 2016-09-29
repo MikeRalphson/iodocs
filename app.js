@@ -94,7 +94,7 @@ if(config.redis) {
     }
 
     var db = redis.createClient(config.redis.port, config.redis.host);
-    db.auth(config.redis.password);
+    if (config.redis.password) db.auth(config.redis.password);
 
     db.on('error', function(err) {
         if (config.debug) {
@@ -1314,6 +1314,7 @@ function dynamicHelpers(req, res, next) {
         res.locals.apiName = req.query.api;
 		res.locals.apiConfig = apisConfig[req.query.api];
 		res.locals.md = markdown;
+        res.locals.config = config;
 
         // If the cookie says we're authed for this particular API, set the session to authed as well
         if (req.session && req.session[req.query.api] && req.session[req.query.api]['authed']) {
