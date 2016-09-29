@@ -9,12 +9,12 @@
   ],
   "env": {
     "IODOCS_DYNAMIC_NAME": {
-	  "description": "",
+	  "description": "An optional spec name which will be loaded at startup time from the given URL",
 	  "value": "",
 	  "required": false
 	},
     "IODOCS_DYNAMIC_URL": {
-	  "description": "",
+	  "description": "The optional URL to load a dynamic spec from. Can be in any supported format",
 	  "value": "",
 	  "required": false
 	}
