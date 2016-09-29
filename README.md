@@ -28,6 +28,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Report meaningful text for HTTP status codes
 * Update jQuery
 * Fix -1 on optional numeric parameters [#208](https://github.com/mashery/iodocs/issues/208)
+* Remove dependency on deprecated compass scss framework
 
 ### TODO / work in progress items
 

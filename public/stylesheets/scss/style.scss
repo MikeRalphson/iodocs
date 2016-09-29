@@ -1,4 +1,4 @@
-@import "compass";
+/* compass replaced with mixins from https://github.com/web-design-weekly/sass-mixins/blob/master/mixins.scss */
 
 /* Colors */
 
@@ -6,8 +6,75 @@ $get: #e7f0f7;
 $post: #e7f6ec;
 $put: #f9f2e9;
 $delete: #f5e8e8;
+$patch: #dddddd;
+$options: #dddddd;
+$head: #dddddd;
 
 /* Mixins */
+
+@mixin clearfix() {
+  & {
+      *zoom: 1;
+  }
+  &:before,
+  &:after {
+      content: "";
+      display: table;
+  }
+  &:after {
+      clear: both;
+  }
+}
+
+@mixin box-shadow($top, $left, $bot, $blur, $color, $inset: false) {
+  @if $inset {
+    -webkit-box-shadow:inset $top $left $bot $blur $color;
+    -moz-box-shadow:inset $top $left $bot $blur $color;
+    box-shadow:inset $top $left $bot $blur $color;
+  } @else {
+    -webkit-box-shadow: $top $left $bot $blur $color;
+    -moz-box-shadow: $top $left $bot $blur $color;
+    box-shadow: $top $left $bot $blur $color;
+  }
+}
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+  background-clip: padding-box;  /* stops bg color from leaking outside the border: */
+}
+
+// Single side border-radius
+
+@mixin border-top-radius($radius) {
+  -webkit-border-top-right-radius: $radius;
+  border-top-right-radius: $radius;
+   -webkit-border-top-left-radius: $radius;
+   border-top-left-radius: $radius;
+   background-clip: padding-box;
+}
+@mixin border-right-radius($radius) {
+  -webkit-border-bottom-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+     -webkit-border-top-right-radius: $radius;
+     border-top-right-radius: $radius;
+     background-clip: padding-box;
+}
+@mixin border-bottom-radius($radius) {
+  -webkit-border-bottom-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+   -webkit-border-bottom-left-radius: $radius;
+   border-bottom-left-radius: $radius;
+   background-clip: padding-box;
+}
+@mixin border-left-radius($radius) {
+  -webkit-border-bottom-left-radius: $radius;
+  border-bottom-left-radius: $radius;
+     -webkit-border-top-left-radius: $radius;
+     border-top-left-radius: $radius;
+     background-clip: padding-box;
+}
+
 /*
   Setting colors for a method container, the form, and http method indicator
 */
@@ -18,6 +85,12 @@ $delete: #f5e8e8;
 
         & .http-method {
             background-color: saturate(darken($color, 60%), 50%);
+            background-image: linear-gradient(to bottom, darken($color, 20%), darken($color, 75%));
+
+            &a:hover {
+                background-image: linear-gradient(to bottom, darken($color, 40%), darken($color, 80%));
+            }
+
         }
 
         th, td {
@@ -243,7 +316,7 @@ button::-moz-focus-inner {
 input:invalid,
 textarea:invalid {
     @include border-radius(1px);
-    @include box-shadow(0,0,5px, #f00);
+    @include box-shadow(0,0,5px,0,#f00);
 }
 
 .no-boxshadow input:invalid,
@@ -301,6 +374,11 @@ h2 {
     margin-bottom: 15px;
 }
 
+h4 {
+  font-weight: normal;
+  font-size: 14px;
+}
+
 ul {
     margin: 0;
 }
@@ -310,7 +388,7 @@ li {
     margin-left: 0;
 }
 
-.credentials {
+.credentials, .userload {
     background-color: #f4f4e1;
     border: 1px solid darken(#f4f4e1, 30%);
     @include border-radius(5px);
@@ -332,8 +410,9 @@ li {
         margin-bottom: 3px;
     }
 
-    input {
-        width: 200px;
+    input[type=text] {
+        width: 400px;
+        margin: 5px;
     }
 }
 
@@ -355,7 +434,7 @@ li {
     }
 }
 
-.endpoint {
+.resource {
     margin: 0;
     border-bottom: 1px solid #eee;
     @include clearfix;
@@ -450,16 +529,27 @@ li {
     }
 
     // Instead of this indicator, maybe do a validation check on attempt and tell them to set their key/secret.
-/*    &.authrequired .http-method {
+    &.authrequired .http-method {
         background-image: url(/images/lock.png);
         background-repeat: no-repeat;
         background-position: 7px 50%;
-    }*/
+    }
 
     form {
         clear: both;
         padding: 15px;
         display: none;
+
+        a.clear-results {
+          color: red;
+          margin-left: 20px;
+          font-size: 12px;
+        }
+
+        a.clear-results:hover {
+          background-color: red;
+          color: #fff;
+        }
     }
 
     table {
@@ -495,6 +585,8 @@ li {
         overflow: auto;
         border: 1px solid rgba(0,0,0,0.2);
         background-color: rgba(255,255,255,0.4);
+        padding: 10px;
+        width: 95%;
 
         &.response {
             max-height: 500px;
@@ -503,13 +595,23 @@ li {
         &.error {
             background-color: rgba(255,66,66,0.2);
         }
+
+        &.prettyprint {
+          padding: 10px;
+          border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
     }
+
 }
 
 @include method();
 @include method('post', $post);
 @include method('put', $put);
 @include method('delete', $delete);
+@include method('patch', $patch);
+@include method('options', $options);
+@include method('head', $head);
 
 
 .ir {
@@ -597,3 +699,47 @@ li {
 
   }
 
+#io-footer {
+  margin-top: 25px;
+}
+
+#io-footer a{
+  text-decoration: none;
+  color: inherit;
+}
+
+#io-footer a:hover {
+  text-decoration: underline;
+  color: inherit;
+}
+
+.f-left {
+  font-size: 8pt;
+  text-align: left;
+  float: left;
+}
+
+.f-right {
+  font-size: 8pt;
+  text-align: right;
+  float: right;
+}
+
+/* Bookmark css */
+/* http://blog.avtex.com/2012/01/27/how-to-make-an-entire-div-clickable-with-css/ */
+div.clickable { /* Containing div must have a position value */
+    position:relative;
+}
+
+div.clickable a {
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    text-decoration:none !important; /* Makes sure the link doesn't get underlined */
+    z-index:10; /* raises anchor tag above everything else in div */
+    background-color:white; /*workaround to make clickable in IE */
+    opacity: 0; /*workaround to make clickable in IE */
+    filter: alpha(opacity=1); /*workaround to make clickable in IE */
+}
