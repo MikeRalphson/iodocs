@@ -734,7 +734,7 @@ function processRequest(req, res, next) {
             // Set custom headers from the params
             if (locations[k] == 'header' ) {
                 customHeaders[k] = v;
-            } else if (locations[k] == 'body') {
+            } else if ((locations[k] == 'body') || (locations[k] == 'formData')) {
                 bodyParams[k] = v;
             } else {
                 // URL params are contained within "{param}" TODO what about :param format ?
@@ -778,6 +778,7 @@ function processRequest(req, res, next) {
             headers[customHeader] = customHeaders[customHeader];
         }
     }
+    // TODO add openApi consumes header?
 
     var paramString = query.stringify(params),
         privateReqURL = (apiConfig.privatePath) ? apiConfig.basePath + apiConfig.privatePath + methodURL +
@@ -791,11 +792,15 @@ function processRequest(req, res, next) {
 				apiConfig.basePath + methodURL : apisConfig[apiName].publicPath
         };
 
-    if (['POST','PUT'].indexOf(httpMethod) !== -1) {
+    if (['POST','PUT','PATCH'].indexOf(httpMethod) !== -1) {
         var requestBody;
         requestBody = (options.headers['Content-Type'] === 'application/json')
         ? JSON.stringify(bodyParams)
         : query.stringify(bodyParams);
+        if (isOpenApi(apiConfig) && (Object.keys(bodyParams).length==1)) {
+            options.headers['Content-Type'] = 'application/json'; // TODO use consumes header, what about xml etc
+            requestBody = JSON.stringify(JSON.parse(bodyParams[Object.keys(bodyParams)[0]]));
+        }
     }
 
     var auth = apiConfig.auth ? apiConfig.auth : apisConfig[apiName];

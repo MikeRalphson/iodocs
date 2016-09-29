@@ -67,7 +67,7 @@ block content
                   - else
                     label(for='key') 🔒 API Key
                     - var secure =''
-                    input(id='key', name='key', value=defaultKey, class='auth-entry')
+                    input(id='key', name='key', type='text', value=defaultKey, class='auth-entry')
               div
                   - if (oAuthVersion)
                       label(for='secret') Client Secret
@@ -147,11 +147,11 @@ block content
                               br
                               div.tabSet
                                 ul(style='float: left')
-                                  li(style='display: inline; padding: 2px')
+                                  li(style='display: inline; padding-left: 10px; padding-right: 10px')
                                     a(href='#tab1') Console
-                                  li(style='display: inline; padding: 2px')
+                                  li(style='display: inline; padding-left: 10px; padding-right: 10px')
                                     a(href='#tab2') Examples
-                                  li(style='display: inline; padding: 2px')
+                                  li(style='display: inline; padding-left: 10px; padding-right: 10px')
                                     a(href='#tab3') Code
                                 div#tab1
                                   - if (method.parameters && Object.keys(method.parameters).length)

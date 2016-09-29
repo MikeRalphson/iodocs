@@ -181,8 +181,8 @@ $(document).ready(function() {
                             paramReference.required = true;
                         }
 
-                        //Sets options to textarea if necessary
-                        if (paramReference.type == "textarea") {
+			//Sets options to textarea if necessary
+                        if ((paramReference.type == "textarea") || (paramReference.location == 'body')) {
                             parameterOptions["type"] = "textarea";
                             parameterOptions["cols"] = 20;
                             paramReference.type = "string";

@@ -411,8 +411,12 @@ li {
     }
 
     input[type=text] {
-        width: 400px;
+        width: 300px;
         margin: 5px;
+    }
+
+    input[type=submit] {
+        float: bottom;
     }
 }
 

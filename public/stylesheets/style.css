@@ -266,8 +266,10 @@ li {
     display: block;
     margin-bottom: 3px; }
   .credentials input[type=text], .userload input[type=text] {
-    width: 400px;
+    width: 300px;
     margin: 5px; }
+  .credentials input[type=submit], .userload input[type=submit] {
+    float: bottom; }
 
 #controls {
   margin-top: 10px;
