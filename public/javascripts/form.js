@@ -3,6 +3,9 @@ $.ajaxSetup({
 });
 
 $(document).ready(function() {
+
+    $('.tabSet').tabs();
+
     var apiName = $('.apiName').attr('id');
     if (apiName && apiJson) {
 

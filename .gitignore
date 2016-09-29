@@ -4,6 +4,7 @@ config.json
 *.log
 pids/*
 *.rdb
+*.zip
 
 # Ignore project files
 .idea/*

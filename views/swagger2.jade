@@ -58,14 +58,14 @@ block content
                   - var defaultSecret =''
               div
                   - if (oAuthVersion)
-                      label(for='key') Client ID
+                      label(for='key') 🔓 Client ID
                       - var secure ='authrequired'
                       input(id='key', name='key', value=defaultKey, class='auth-entry')
                   - else if (apiInfo.auth == 'basicAuth')
                     label(for='username') User name
                     input(id='username', name='username', value=defaultKey, class='auth-entry')
                   - else
-                    label(for='key') API Key
+                    label(for='key') 🔒 API Key
                     - var secure =''
                     input(id='key', name='key', value=defaultKey, class='auth-entry')
               div
@@ -145,15 +145,32 @@ block content
                               - if (method.deprecated)
                                 h3 Warning: deprecated
                               br
-                              - if (method.parameters && Object.keys(method.parameters).length)
-                                br
-                                .container.header
-                                  .row
-                                    .col-description.header Description !{method.MethodName}
-                                    .location.header Location
-                                    .col-type.header Type
-                                    .col-parameter.header Value
-                                    .col-name.header Parameter
-                              table(id=methodKey)
-                              - if (!method['read-only'])
-                                  input(type='submit', id=method.name, value='Try it!', class=methodKey)
+                              div.tabSet
+                                ul(style='float: left')
+                                  li(style='display: inline; padding: 2px')
+                                    a(href='#tab1') Console
+                                  li(style='display: inline; padding: 2px')
+                                    a(href='#tab2') Examples
+                                  li(style='display: inline; padding: 2px')
+                                    a(href='#tab3') Code
+                                div#tab1
+                                  - if (method.parameters && Object.keys(method.parameters).length)
+                                  br
+                                  .container.header
+                                    .row
+                                      .col-description.header Description !{method.MethodName}
+                                      .location.header Location
+                                      .col-type.header Type
+                                      .col-parameter.header Value
+                                      .col-name.header Parameter
+                                  table(id=methodKey)
+                                  - if (!method['read-only'])
+                                    input(type='submit', id=method.name, value='Try it!', class=methodKey)
+                                div#tab2
+                                  br
+                                  .container
+                                    h3 Example responses etc
+                                div#tab3
+                                  br
+                                  .container
+                                    h3 Code samples etc
