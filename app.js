@@ -42,7 +42,7 @@ var express     = require('express'),
     https       = require('https'),
     crypto      = require('crypto'),
     clone       = require('clone'),
-	markdown    = require('markdown-it')(),
+	markdown    = require('markdown-it')({html:true, linkify: true}),
     yaml        = require('js-yaml'),
     redis       = require('redis'),
     RedisStore  = require('connect-redis')(session),
@@ -156,7 +156,7 @@ function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
                     result.definition = obj;
                     result.converted = convertApi(obj);
                     if (sessionID) {
-                        db.set(sessionID+':remote',result); // for when we have async loadApi
+                        //db.set(sessionID+':remote',JSON.stringify(result)); // for when we have async loadApi
                         apisConfig[sessionID] = result;
                     }
                     else {
@@ -1149,7 +1149,10 @@ function processRequest(req, res, next) {
 
         var doRequest;
 		var protocol;
-		if (apiConfig.basePath) {
+        if (apiConfig.schemes) {
+            protocol = apiConfig.schemes[0];
+        }
+		else if (apiConfig.basePath) {
 			protocol = apiConfig.basePath.split(':')[0];
 		}
 		else {
