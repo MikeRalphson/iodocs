@@ -1,0 +1,2 @@
+#!/bin/sh
+./sass public/stylesheets/scss/style.scss > public/stylesheets/style.css

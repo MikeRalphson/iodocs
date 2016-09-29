@@ -1,6 +1,29 @@
 /* compass replaced with mixins from https://github.com/web-design-weekly/sass-mixins/blob/master/mixins.scss */
 /* Colors */
 /* Mixins */
+/* Bookmark css */
+/* http://blog.avtex.com/2012/01/27/how-to-make-an-entire-div-clickable-with-css/ */
+div.clickable {
+  /* Containing div must have a position value */
+  position: relative; }
+
+div.clickable a {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  text-decoration: none !important;
+  /* Makes sure the link doesn't get underlined */
+  z-index: 10;
+  /* raises anchor tag above everything else in div */
+  background-color: white;
+  /*workaround to make clickable in IE */
+  opacity: 0;
+  /*workaround to make clickable in IE */
+  filter: alpha(opacity=1);
+  /*workaround to make clickable in IE */ }
+
 /*
   Setting colors for a method container, the form, and http method indicator
 */
@@ -423,9 +446,7 @@ li {
   border-color: #aecce4; }
   .get .http-method {
     background-color: #0061ac;
-    background-image: linear-gradient(to bottom, #9bc0de, #183348); }
-    .get .http-methoda:hover {
-      background-image: linear-gradient(to bottom, #4e90c4, #122535); }
+    background-image: linear-gradient(to bottom, #c1d8ea, #316994); }
   .get th, .get td {
     border-bottom: 1px solid #9bc0de; }
 
@@ -434,9 +455,7 @@ li {
   border-color: #afe1c0; }
   .post .http-method {
     background-color: #04a73a;
-    background-image: linear-gradient(to bottom, #9ddab1, #1a4528); }
-    .post .http-methoda:hover {
-      background-image: linear-gradient(to bottom, #53be77, #13321d); }
+    background-image: linear-gradient(to bottom, #c2e8cf, #368f53); }
   .post th, .post td {
     border-bottom: 1px solid #9ddab1; }
 
@@ -445,9 +464,7 @@ li {
   border-color: #e9cead; }
   .put .http-method {
     background-color: #b06300;
-    background-image: linear-gradient(to bottom, #e3c399, #4e3515); }
-    .put .http-methoda:hover {
-      background-image: linear-gradient(to bottom, #cd9349, #3a2810); }
+    background-image: linear-gradient(to bottom, #eedac1, #9e6c2b); }
   .put th, .put td {
     border-bottom: 1px solid #e3c399; }
 
@@ -456,9 +473,7 @@ li {
   border-color: #deb3b3; }
   .delete .http-method {
     background-color: #a20909;
-    background-image: linear-gradient(to bottom, #d6a1a1, #421d1d); }
-    .delete .http-methoda:hover {
-      background-image: linear-gradient(to bottom, #b75a5a, #301515); }
+    background-image: linear-gradient(to bottom, #e6c4c4, #893c3c); }
   .delete th, .delete td {
     border-bottom: 1px solid #d6a1a1; }
 
@@ -467,9 +482,7 @@ li {
   border-color: #b7b7b7; }
   .patch .http-method {
     background-color: #662222;
-    background-image: linear-gradient(to bottom, #aaaaaa, #1e1e1e); }
-    .patch .http-methoda:hover {
-      background-image: linear-gradient(to bottom, #777777, #111111); }
+    background-image: linear-gradient(to bottom, #c4c4c4, #515151); }
   .patch th, .patch td {
     border-bottom: 1px solid #aaaaaa; }
 
@@ -478,9 +491,7 @@ li {
   border-color: #b7b7b7; }
   .options .http-method {
     background-color: #662222;
-    background-image: linear-gradient(to bottom, #aaaaaa, #1e1e1e); }
-    .options .http-methoda:hover {
-      background-image: linear-gradient(to bottom, #777777, #111111); }
+    background-image: linear-gradient(to bottom, #c4c4c4, #515151); }
   .options th, .options td {
     border-bottom: 1px solid #aaaaaa; }
 
@@ -489,9 +500,7 @@ li {
   border-color: #b7b7b7; }
   .head .http-method {
     background-color: #662222;
-    background-image: linear-gradient(to bottom, #aaaaaa, #1e1e1e); }
-    .head .http-methoda:hover {
-      background-image: linear-gradient(to bottom, #777777, #111111); }
+    background-image: linear-gradient(to bottom, #c4c4c4, #515151); }
   .head th, .head td {
     border-bottom: 1px solid #aaaaaa; }
 
@@ -592,27 +601,4 @@ li {
   font-size: 8pt;
   text-align: right;
   float: right; }
-
-/* Bookmark css */
-/* http://blog.avtex.com/2012/01/27/how-to-make-an-entire-div-clickable-with-css/ */
-div.clickable {
-  /* Containing div must have a position value */
-  position: relative; }
-
-div.clickable a {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  text-decoration: none !important;
-  /* Makes sure the link doesn't get underlined */
-  z-index: 10;
-  /* raises anchor tag above everything else in div */
-  background-color: white;
-  /*workaround to make clickable in IE */
-  opacity: 0;
-  /*workaround to make clickable in IE */
-  filter: alpha(opacity=1);
-  /*workaround to make clickable in IE */ }
 

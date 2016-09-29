@@ -75,6 +75,25 @@ $head: #dddddd;
      background-clip: padding-box;
 }
 
+/* Bookmark css */
+/* http://blog.avtex.com/2012/01/27/how-to-make-an-entire-div-clickable-with-css/ */
+div.clickable { /* Containing div must have a position value */
+    position:relative;
+}
+
+div.clickable a {
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    text-decoration:none !important; /* Makes sure the link doesn't get underlined */
+    z-index:10; /* raises anchor tag above everything else in div */
+    background-color:white; /*workaround to make clickable in IE */
+    opacity: 0; /*workaround to make clickable in IE */
+    filter: alpha(opacity=1); /*workaround to make clickable in IE */
+}
+
 /*
   Setting colors for a method container, the form, and http method indicator
 */
@@ -85,12 +104,7 @@ $head: #dddddd;
 
         & .http-method {
             background-color: saturate(darken($color, 60%), 50%);
-            background-image: linear-gradient(to bottom, darken($color, 20%), darken($color, 75%));
-
-            &a:hover {
-                background-image: linear-gradient(to bottom, darken($color, 40%), darken($color, 80%));
-            }
-
+            background-image: linear-gradient(to bottom, darken($color, 10%), darken($color, 55%));
         }
 
         th, td {
@@ -727,23 +741,4 @@ li {
   font-size: 8pt;
   text-align: right;
   float: right;
-}
-
-/* Bookmark css */
-/* http://blog.avtex.com/2012/01/27/how-to-make-an-entire-div-clickable-with-css/ */
-div.clickable { /* Containing div must have a position value */
-    position:relative;
-}
-
-div.clickable a {
-    position:absolute;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    text-decoration:none !important; /* Makes sure the link doesn't get underlined */
-    z-index:10; /* raises anchor tag above everything else in div */
-    background-color:white; /*workaround to make clickable in IE */
-    opacity: 0; /*workaround to make clickable in IE */
-    filter: alpha(opacity=1); /*workaround to make clickable in IE */
 }

@@ -1,6 +1,6 @@
 .container {
 	display: table;
-	width: 100%;
+	width: 99%;
 }
 
 .alpaca-item-container-last {
@@ -8,7 +8,6 @@
 }
 
 .alpaca-fieldset-item-container {
-        width: 95%;
 	border-bottom: 1px solid #cccccc;
 }
 
