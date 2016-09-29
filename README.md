@@ -36,6 +36,10 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Support for GraphQL APIs
 * Support for OpenApi 3.x when ratified
 
+### Creating / editing IO Docs specs
+
+* [IO Doctor](https://io-doctor.herokuapp.com)
+
 <details>
 	<summary>Other forks of interest</summary>
 * http://forked.yannick.io/mashery/iodocs
