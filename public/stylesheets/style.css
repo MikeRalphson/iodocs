@@ -617,3 +617,10 @@ li {
     background-color: #808080;
     background-image: linear-gradient(to bottom, #808080, #9d9d9d); }
 
+.tabSet ul {
+  float: left; }
+  .tabSet ul li {
+    display: inline;
+    padding-left: 10px;
+    padding-right: 10px; }
+
