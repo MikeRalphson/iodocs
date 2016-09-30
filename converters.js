@@ -69,40 +69,42 @@ function convertSwagger(apiInfo){
     apiInfo.resources = {};
     for (var p in apiInfo.paths) {
         for (var m in apiInfo.paths[p]) {
-            var sMethod = apiInfo.paths[p][m];
-            var ioMethod = {};
-            ioMethod.httpMethod = m.toUpperCase();
-            var sMethodUniqueName = sMethod.operationId ? sMethod.operationId : m+'_'+p;
-            sMethodUniqueName = sMethodUniqueName.split(' ').join('_');
-            ioMethod.name = sMethodUniqueName;
-            ioMethod.summary = sMethod.summary;
-            ioMethod.description = sMethod.description;
-            ioMethod.parameters = {};
-            for (var p2 in sMethod.parameters) {
-                var param = sMethod.parameters[p2];
-                param.location = param["in"];
-                delete param["in"];
-                ioMethod.parameters[param.name] = param;
-            }
-            ioMethod.path = p;
-            var tagName = 'Default';
-            if (sMethod.tags && sMethod.tags.length>0) {
-                tagName = sMethod.tags[0];
-            }
-            if (!apiInfo.resources[tagName]) {
-                apiInfo.resources[tagName] = {};
-                if (apiInfo.tags) {
-                    for (var t in apiInfo.tags) {
-                        var tag = apiInfo.tags[t];
-                        if (tag.name == tagName) {
-                            apiInfo.resources[tagName].description = tag.description;
-                            apiInfo.resources[tagName].externalDocs = tag.externalDocs;
+            if (m != 'parameters') {
+                var sMethod = apiInfo.paths[p][m];
+                var ioMethod = {};
+                ioMethod.httpMethod = m.toUpperCase();
+                var sMethodUniqueName = sMethod.operationId ? sMethod.operationId : m+'_'+p.split('/').join('_');
+                sMethodUniqueName = sMethodUniqueName.split(' ').join('_'); // TODO {, } and : ?
+                ioMethod.name = sMethodUniqueName;
+                ioMethod.summary = sMethod.summary;
+                ioMethod.description = sMethod.description;
+                ioMethod.parameters = {};
+                for (var p2 in sMethod.parameters) {
+                    var param = sMethod.parameters[p2];
+                    param.location = param["in"];
+                    delete param["in"];
+                    ioMethod.parameters[param.name] = param;
+                }
+                ioMethod.path = p;
+                var tagName = 'Default';
+                if (sMethod.tags && sMethod.tags.length>0) {
+                    tagName = sMethod.tags[0];
+                }
+                if (!apiInfo.resources[tagName]) {
+                    apiInfo.resources[tagName] = {};
+                    if (apiInfo.tags) {
+                        for (var t in apiInfo.tags) {
+                            var tag = apiInfo.tags[t];
+                            if (tag.name == tagName) {
+                                apiInfo.resources[tagName].description = tag.description;
+                                apiInfo.resources[tagName].externalDocs = tag.externalDocs;
+                            }
                         }
                     }
                 }
+                if (!apiInfo.resources[tagName].methods) apiInfo.resources[tagName].methods = {};
+                apiInfo.resources[tagName].methods[sMethodUniqueName] = ioMethod;
             }
-            if (!apiInfo.resources[tagName].methods) apiInfo.resources[tagName].methods = {};
-            apiInfo.resources[tagName].methods[sMethodUniqueName] = ioMethod;
         }
     }
     delete apiInfo.paths; // to keep size down
@@ -237,7 +239,6 @@ function exportIodocs(src){
         // do tags
         for (var m in resource.methods) {
             var method = resource.methods[m];
-
             method.path = fixPathParameters(method.path);
 
             if (!obj.paths[method.path]) obj.paths[method.path] = {};
@@ -250,6 +251,9 @@ function exportIodocs(src){
             op.operationId = m;
             op.description = method.description;
             op.parameters = [];
+
+            // TODO join path parameters, dereference $refs?
+
             for (var p in method.parameters) {
                 var param = method.parameters[p];
                 param.name = p;

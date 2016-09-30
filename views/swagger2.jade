@@ -122,56 +122,57 @@ block content
               - if (Object.keys(resource).length)
               ul.methods.hidden
                   - each method, methodKey in resource.methods
-                      div(id = method.httpMethod)
                       - var httpmethod = method.httpMethod.toLowerCase()
-                      li(class='method ' + httpmethod + ' ' + secure)
-                          div.title.clickable
-                              - var methodLink = (resourceName + '-' + method.httpMethod + '-' + method.name).replace(/\s/g, '-')
-                              div(id = methodLink)
-                              a(href='#'+methodLink)
-                              span.http-method !{method.httpMethod}
-                              span.name !{method.name}
-                              span.uri !{method.path}
-                              div(class='f-right')
-                                span.summary !{method.summary ? method.summary : method.description}
-                          form.hidden(class='container')
-                              input(type='hidden', name='httpMethod', value=method.httpMethod)
-                              input(type='hidden', name='oauth', value=secure)
-                              input(type='hidden', name='methodUri', value=method.path)
-                              input(type='hidden', name='accessToken', id='accessToken')
-                              input(type='hidden', name='json', id=methodKey + 'json')
-                              input(type='hidden', name='locations', id=methodKey + 'locations')
+                      - if (httpmethod != 'parameters')
+                          div(id = method.httpMethod)
+                          li(class='method ' + httpmethod + ' ' + secure)
+                              div.title.clickable
+                                  - var methodLink = (resourceName + '-' + method.httpMethod + '-' + method.name).replace(/\s/g, '-')
+                                  div(id = methodLink)
+                                  a(href='#'+methodLink)
+                                  span.http-method !{method.httpMethod}
+                                  span.name !{method.name}
+                                  span.uri !{method.path}
+                                  div(class='f-right')
+                                    span.summary !{method.summary ? method.summary : ''}
+                              form.hidden(class='container')
+                                  input(type='hidden', name='httpMethod', value=method.httpMethod)
+                                  input(type='hidden', name='oauth', value=secure)
+                                  input(type='hidden', name='methodUri', value=method.path)
+                                  input(type='hidden', name='accessToken', id='accessToken')
+                                  input(type='hidden', name='json', id=methodKey + 'json')
+                                  input(type='hidden', name='locations', id=methodKey + 'locations')
 
-                              span.description !{method.description ? md.render(method.description) : method.summary}
-                              - if (method.deprecated)
-                                h3 Warning: deprecated
-                              br
-                              div.tabSet
-                                ul(style='float: left')
-                                  li(style='display: inline; padding-left: 10px; padding-right: 10px')
-                                    a(href='#tab1') Console
-                                  li(style='display: inline; padding-left: 10px; padding-right: 10px')
-                                    a(href='#tab2') Examples
-                                  li(style='display: inline; padding-left: 10px; padding-right: 10px')
-                                    a(href='#tab3') Code
-                                div#tab1
-                                  - if (method.parameters && Object.keys(method.parameters).length)
+                                  span.description !{method.description ? md.render(method.description) : method.summary}
+                                  - if (method.deprecated)
+                                    h3 Warning: deprecated
                                   br
-                                  .container.header
-                                    .row
-                                      .col-description.header Description !{method.MethodName}
-                                      .location.header Location
-                                      .col-type.header Type
-                                      .col-parameter.header Value
-                                      .col-name.header Parameter
-                                  table(id=methodKey)
-                                  - if (!method['read-only'])
-                                    input(type='submit', id=method.name, value='Try it!', class='button '+methodKey)
-                                div#tab2
-                                  br
-                                  .container
-                                    h3 Example responses etc
-                                div#tab3
-                                  br
-                                  .container
-                                    h3 Code samples etc
+                                  div.tabSet
+                                    ul(style='float: left')
+                                      li(style='display: inline; padding-left: 10px; padding-right: 10px')
+                                        a(href='#tab1') Console
+                                      li(style='display: inline; padding-left: 10px; padding-right: 10px')
+                                        a(href='#tab2') Examples
+                                      li(style='display: inline; padding-left: 10px; padding-right: 10px')
+                                        a(href='#tab3') Code
+                                    div#tab1
+                                      - if (method.parameters && Object.keys(method.parameters).length)
+                                      br
+                                      .container.header
+                                        .row
+                                          .col-description.header Description !{method.MethodName}
+                                          .location.header Location
+                                          .col-type.header Type
+                                          .col-parameter.header Value
+                                          .col-name.header Parameter
+                                      table(id=methodKey)
+                                      - if (!method['read-only'])
+                                        input(type='submit', id=method.name, value='Try it!', class='button '+methodKey)
+                                    div#tab2
+                                      br
+                                      .container
+                                        h3 Example responses etc
+                                    div#tab3
+                                      br
+                                      .container
+                                        h3 Code samples etc
