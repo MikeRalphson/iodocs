@@ -88,7 +88,7 @@ function convertSwagger(apiInfo){
                     var ptr = param["$ref"];
                     if (ptr && ptr.startsWith('#/parameters/')) {
                         ptr = ptr.replace('#/parameters/','');
-                        param = apiInfo.parameters[ptr];
+                        param = clone(apiInfo.parameters[ptr],false);
                     }
                     param.location = param["in"];
                     delete param["in"];
