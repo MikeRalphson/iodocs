@@ -59,10 +59,10 @@ block content
                       input(id='secret', name='secret', type='text', value=defaultSecret, class='auth-entry')
               - if (oAuthVersion == '1.0' && apiInfo.auth.oauth.type !='two-legged')
                   div
-                     input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth')
+                     input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth', class='button')
               - else if (oAuthVersion == '2.0')
                   div
-                     input(name='oauth', value='Authenticate with OAuth2', type='submit', id='oauth-auth')
+                     input(name='oauth', value='Authenticate with OAuth2', type='submit', id='oauth-auth', class='button')
               div(id='oauthAuthenticated', style='display:none')
                   br
                   span(style='vertical-align:botttom') Authenticated with OAuth
@@ -124,8 +124,8 @@ block content
                                     .col-name.header Parameter
                               table(id=methodKey)
                               - if (!method['read-only'])
-                                  input(type='submit', id=method.name, value='Try it!', class=methodKey)
+                                  input(type='submit', id=method.name, value='Try it!', class='button '+methodKey)
   br
   form.export(method='post', action='/export')
     input(type='hidden', name='exportApi', id='exportApi', value=apiName)
-    input(type='submit', value='Export to OpenApi')
+    input(type='submit', value='Export to OpenApi', class='button')

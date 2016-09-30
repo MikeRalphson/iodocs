@@ -42,10 +42,10 @@ block content
                       input(id='secret', class='auth-entry', name='secret', value=defaultSecret)
               - if (apiConfig.oauth && apiConfig.oauth.type !='two-legged')
                   div
-                     input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth')
+                     input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth', class='button')
               - else if (apiConfig.oauth2)
                   div
-                     input(name='oauth', value='Authenticate with OAuth2', type='submit', id='oauth-auth')
+                     input(name='oauth', value='Authenticate with OAuth2', type='submit', id='oauth-auth', class='button')
               div(id='oauthAuthenticated', style='display:none')
                   br
                   span(style='vertical-align:botttom') Authenticated with OAuth
@@ -186,8 +186,8 @@ block content
                                           a(href='#', class='add-headers') Add Header
                                       // Create header fields and button to add/remove headers.
                               - if (!method['read-only'])
-                                  input(type='submit', id=method.MethodName, value='Try it!')
+                                  input(type='submit', class='button', id=method.MethodName, value='Try it!')
   br
   form.export(method='post', action='/export')
     input(type='hidden', name='exportApi', id='exportApi', value=apiName)
-    input(type='submit', value='Export to OpenApi')
+    input(type='submit', value='Export to OpenApi', class='button')

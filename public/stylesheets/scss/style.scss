@@ -742,3 +742,18 @@ li {
   text-align: right;
   float: right;
 }
+
+.button {
+    @include border-radius(5px);
+    background-color: #9d9d9d;
+	background-image: linear-gradient(to bottom, #9d9d9d, #bababa);
+    border: none;
+    padding: 5px 5px 5px 5px;
+    color: #FFF;
+    text-shadow: 1px 1px 1px #949494;
+
+    &:hover {
+        background-color:#808080;
+        background-image: linear-gradient(to bottom, #808080, #9d9d9d);
+    }
+}
