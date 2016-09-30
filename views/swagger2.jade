@@ -150,11 +150,13 @@ block content
                                   div.tabSet
                                     ul
                                       li
-                                        a(href='#tab1') Console
+                                        a(href='#tab1') Parameters
                                       li
-                                        a(href='#tab2') Examples
+                                        a(href='#tab2') Models
                                       li
-                                        a(href='#tab3') Code
+                                        a(href='#tab3') Responses
+                                      li
+                                        a(href='#tab4') Code
                                     div#tab1
                                       - if (method.parameters && Object.keys(method.parameters).length)
                                       br
@@ -171,8 +173,14 @@ block content
                                     div#tab2
                                       br
                                       .container
-                                        h3 Example responses etc
+                                        h3 Example models
                                     div#tab3
+                                      br
+                                      .container
+                                        h3 Example responses etc
+                                        - each response, r in method.responses
+                                          h4=r
+                                    div#tab4
                                       br
                                       .container
                                         h3 Code samples etc

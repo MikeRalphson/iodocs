@@ -79,13 +79,23 @@ function convertSwagger(apiInfo){
                 ioMethod.summary = sMethod.summary;
                 ioMethod.description = sMethod.description;
                 ioMethod.parameters = {};
-                for (var p2 in sMethod.parameters) {
-                    var param = sMethod.parameters[p2];
+                var sParams = sMethod.parameters ? sMethod.parameters : [];
+                if (apiInfo.paths[p].parameters) {
+                    sParams = sParams.concat(apiInfo.paths[p].parameters);
+                }
+                for (var p2 in sParams) {
+                    var param = sParams[p2];
+                    var ptr = param["$ref"];
+                    if (ptr && ptr.startsWith('#/parameters/')) {
+                        ptr = ptr.replace('#/parameters/','');
+                        param = apiInfo.parameters[ptr];
+                    }
                     param.location = param["in"];
                     delete param["in"];
                     ioMethod.parameters[param.name] = param;
                 }
                 ioMethod.path = p;
+                ioMethod.responses = sMethod.responses;
                 var tagName = 'Default';
                 if (sMethod.tags && sMethod.tags.length>0) {
                     tagName = sMethod.tags[0];
@@ -251,8 +261,6 @@ function exportIodocs(src){
             op.operationId = m;
             op.description = method.description;
             op.parameters = [];
-
-            // TODO join path parameters, dereference $refs?
 
             for (var p in method.parameters) {
                 var param = method.parameters[p];
