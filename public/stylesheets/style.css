@@ -496,13 +496,13 @@ li {
     border-bottom: 1px solid #aaaaaa; }
 
 .head {
-  background: #dddddd;
-  border-color: #b7b7b7; }
+  background: #ffe97f;
+  border-color: #ffdc33; }
   .head .http-method {
-    background-color: #662222;
-    background-image: linear-gradient(to bottom, #c4c4c4, #515151); }
+    background-color: #4c3f00;
+    background-image: linear-gradient(to bottom, #ffe04c, #665400); }
   .head th, .head td {
-    border-bottom: 1px solid #aaaaaa; }
+    border-bottom: 1px solid #ffd719; }
 
 .ir {
   display: block;

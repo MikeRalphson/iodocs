@@ -1316,13 +1316,13 @@ function checkObjVal(obj /*, val, level1, level2, ... levelN*/) {
 // Replaces deprecated app.dynamicHelpers that were dropped in Express 3.x
 // Passes variables to the view
 function dynamicHelpers(req, res, next) {
+    res.locals.config = config;
     if (req.query.api) {
         if (req.query.api == 'remote') req.query.api = req.sessionID;
         res.locals.apiInfo = loadApi(req.query.api);
         res.locals.apiName = req.query.api;
 		res.locals.apiConfig = apisConfig[req.query.api];
 		res.locals.md = markdown;
-        res.locals.config = config;
 
         // If the cookie says we're authed for this particular API, set the session to authed as well
         if (req.session && req.session[req.query.api] && req.session[req.query.api]['authed']) {
