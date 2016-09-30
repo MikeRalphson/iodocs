@@ -31,6 +31,7 @@ var express     = require('express'),
 	cookie      = require('cookie-parser'),
 	override    = require('express-method-override'),
 	errorHndlr  = require('express-error-handler'),
+    compression = require('compression'),
     util        = require('util'),
     fs          = require('fs'),
     path        = require('path'),
@@ -189,6 +190,7 @@ app.use(logger({path: "./iodocs.log"}));
 bodyParser.extend(app);
 app.use(override());
 app.use(cookie());
+app.use(compression());
 
 if (config.redis) {
     app.use(session({

@@ -29,6 +29,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Update jQuery
 * Fix -1 on optional numeric parameters [#208](https://github.com/mashery/iodocs/issues/208)
 * Remove dependency on deprecated compass scss framework
+* Use compression middleware
 
 ### TODO / work in progress items
 
