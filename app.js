@@ -786,7 +786,7 @@ function processRequest(req, res, next) {
         privateReqURL = (apiConfig.privatePath) ? apiConfig.basePath + apiConfig.privatePath + methodURL +
             ((paramString.length > 0) ? '?' + paramString : "") : apiConfig.basePath + methodURL + ((paramString.length > 0) ? '?' + paramString : ""),
         options = {
-            headers: clone(headers),
+            headers: clone(headers,false),
             host: baseHostUrl,
             port: baseHostPort,
             method: httpMethod,
@@ -1251,7 +1251,7 @@ function exportSpec(req,res,next){
             source = apisConfig[req.body.exportApi].converted;
         }
         else if (source.endpoints) {
-            source = clone(apisConfig[req.body.exportApi]);
+            source = clone(apisConfig[req.body.exportApi],false);
             delete source.definition;
             delete source.converted; // isn't stored in .converted as we're still using the old renderer
             source.basePath = source.protocol + '://' + source.baseURL;

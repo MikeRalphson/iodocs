@@ -217,7 +217,7 @@ function fixSchema(schema){
 * function to convert modern iodocs format to swagger 2.0
 */
 function exportIodocs(src){
-    var obj = clone(src);
+    var obj = clone(src,false);
     obj.swagger = '2.0';
     obj.info = {};
     obj.info.version = obj.version || '1';
