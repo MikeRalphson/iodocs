@@ -72,7 +72,7 @@ if (argv.help) {
 //
 // Configuration
 //
-var configFilePath = path.resolve(argv['config-file']);
+var configFilePath = path.resolve(argv["config-file"]);
 try {
     var config = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
 } catch(e) {
@@ -186,7 +186,7 @@ var app = module.exports = express();
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(logger({path: "./iodocs.log"}));
+app.use(logger({path: './iodocs.log'}));
 bodyParser.extend(app);
 app.use(override());
 app.use(cookie());
@@ -700,6 +700,18 @@ function oauth2Success(req, res, next) {
 }
 
 
+function getHeader(header, headers) {
+	// snaffled from request module
+	var headers = Object.keys(headers || this.headers),
+		lheaders = headers.map(function (h) {return h.toLowerCase();});
+	header = header.toLowerCase();
+	for (var i=0;i<lheaders.length;i++) {
+		if (lheaders[i] === header) return headers[i];
+	}
+	return false;
+}
+
+
 //
 // processRequest - handles API call
 //
@@ -729,6 +741,10 @@ function processRequest(req, res, next) {
     console.log('locations: ', locations, typeof locations);
     if (typeof locations == 'string') locations = JSON.parse(locations);
 
+    if (methodURL.indexOf('/:')>=0) {
+        methodURL = converters.fixPathParameters(methodURL);
+    }
+
     for (var k in json) {
         var v = json[k];
 
@@ -739,7 +755,7 @@ function processRequest(req, res, next) {
             } else if ((locations[k] == 'body') || (locations[k] == 'formData')) {
                 bodyParams[k] = v;
             } else {
-                // URL params are contained within "{param}" TODO what about :param format ?
+                // URL params are contained within "{param}"
                 var regx = new RegExp('{' + k + '}');
 
                 // If the param is actually a part of the URL, put it in the URL
@@ -790,17 +806,17 @@ function processRequest(req, res, next) {
             host: baseHostUrl,
             port: baseHostPort,
             method: httpMethod,
-            path: apiConfig.publicPath ? apiConfig.publicPath + methodURL : apiConfig.info ?
+            path: apiConfig.publicPath ? apiConfig.publicPath + methodURL : isOpenApi(apiConfig) ?
 				apiConfig.basePath + methodURL : apisConfig[apiName].publicPath
         };
 
     if (['POST','PUT','PATCH'].indexOf(httpMethod) !== -1) {
         var requestBody;
-        requestBody = (options.headers['Content-Type'] === 'application/json')
+        requestBody = (getHeader(options.headers,'Content-Type') === 'application/json')
         ? JSON.stringify(bodyParams)
         : query.stringify(bodyParams);
         if (isOpenApi(apiConfig) && (Object.keys(bodyParams).length==1)) {
-            options.headers['Content-Type'] = 'application/json'; // TODO use consumes header, what about xml etc
+            options.headers["Content-Type"] = 'application/json'; // TODO use consumes header, what about xml etc
             requestBody = JSON.stringify(JSON.parse(bodyParams[Object.keys(bodyParams)[0]]));
         }
     }
@@ -909,7 +925,7 @@ function processRequest(req, res, next) {
                         res.statusCode = error.statusCode ? error.statusCode : 500;
 
                     } else {
-                        var responseContentType = response.headers['content-type'];
+                        var responseContentType = getHeader(response.headers,'Content-Type');
 
                         if (/application\/javascript/.test(responseContentType)
                             || /text\/javascript/.test(responseContentType)
@@ -1035,8 +1051,8 @@ function processRequest(req, res, next) {
                         } else {
                             req.resultHeaders = response.headers;
 
-                            // TODO: More robust content-type matching.
-                            if (response.headers['content-type'] == 'application/json') {
+                            var responseContentType = getHeader(response.headers,'Content-Type');
+                            if ((responseContentType == 'application/json') || (responseContentType.indexOf('+json')>=0)) {
                                 try {
                                     req.result = JSON.parse(data);
                                 }
@@ -1100,8 +1116,8 @@ function processRequest(req, res, next) {
 
         // Basic Auth support
         if (apiConfig.auth == 'basicAuth') {
-            options.headers['Authorization'] = 'Basic ' + new Buffer(reqQuery.apiUsername + ':' + reqQuery.apiPassword).toString('base64');
-            console.log(options.headers['Authorization'] );
+            options.headers["Authorization"] = 'Basic ' + new Buffer(reqQuery.apiUsername + ':' + reqQuery.apiPassword).toString('base64');
+            console.log(options.headers["Authorization"] );
         }
 
         //
@@ -1137,17 +1153,17 @@ function processRequest(req, res, next) {
         if (options.headers === void 0){
             options.headers = {}
         }
-        if (['POST','PUT'].indexOf(httpMethod) !== -1 && !options.headers['Content-Length']) {
+        if (['POST','PUT', 'PATCH'].indexOf(httpMethod) !== -1 && !getHeader(options.headers,'Content-Length')) {
             if (requestBody) {
-                options.headers['Content-Length'] = Buffer.byteLength(requestBody);
+                options.headers["Content-Length"] = Buffer.byteLength(requestBody);
             }
             else {
-                options.headers['Content-Length'] = 0;
+                options.headers["Content-Length"] = 0;
             }
         }
 
-        if (!options.headers['Content-Type'] && requestBody) {
-            options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        if (!getHeader(options.headers,'Content-Type') && requestBody) {
+            options.headers["Content-Type"] = 'application/x-www-form-urlencoded';
         }
 
         if (config.debug) {
@@ -1196,7 +1212,7 @@ function processRequest(req, res, next) {
             response.on('end', function() {
                 delete options.agent;
 
-                var responseContentType = response.headers['content-type'];
+                var responseContentType = getHeader(response.headers,'Content-Type');
 
                 if (/application\/javascript/.test(responseContentType)
                     || /application\/json/.test(responseContentType)) {
@@ -1327,8 +1343,8 @@ function dynamicHelpers(req, res, next) {
 		res.locals.md = markdown;
 
         // If the cookie says we're authed for this particular API, set the session to authed as well
-        if (req.session && req.session[req.query.api] && req.session[req.query.api]['authed']) {
-            req.session['authed'] = true;
+        if (req.session && req.session[req.query.api] && req.session[req.query.api]["authed"]) {
+            req.session["authed"] = true;
         }
     } else {
         res.locals.apiConfig = apisConfig;
