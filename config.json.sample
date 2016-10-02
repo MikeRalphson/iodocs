@@ -9,6 +9,7 @@
         "username" : "",
         "password" : ""
     },
+    "customSignersDir" : null,
     "redis" : {
         "host" : "localhost",
         "port" : 6379,

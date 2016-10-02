@@ -30,6 +30,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Fix -1 on optional numeric parameters [#208](https://github.com/mashery/iodocs/issues/208)
 * Remove dependency on deprecated compass scss framework
 * Use compression middleware
+* Implement custom signers, as per @rowanhill
 
 ### TODO / work in progress items
 
@@ -45,6 +46,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 	<summary>Other forks of interest</summary>
 * http://forked.yannick.io/mashery/iodocs
 * https://github.com/funmachine/iodocs
+* https://github.com/rowanhill/iodocs
 * https://github.com/adzerk/ratatoskr
 </details>
 
@@ -368,11 +370,13 @@ Line:
     (6) is set to "key".
 
 (8). "signature" is a JSON object that contains the details about
-   the API call signing requirements. The signature routine coded
-   in app.js is a hash of the string concatenation of API key, 
+   the API call signing requirements. The bundled signature
+   routines create a hash of the string concatenation of API key,
    API key secret and timestamp (epoch).
 
-(9). "type" key value is either *signed_md5* or *signed_sha256*.
+(9). "type" key value is a module in the `signers` directory, or in
+   the directory specified by `customSignersDir` in config.json.
+   By default this is either *signed_md5* or *signed_sha256*.
    More signature methods are available with crypto.js, but have
    not been included in the code as options.
 

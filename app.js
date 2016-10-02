@@ -41,7 +41,6 @@ var express     = require('express'),
     url         = require('url'),
     http        = require('http'),
     https       = require('https'),
-    crypto      = require('crypto'),
     clone       = require('clone'),
 	markdown    = require('markdown-it')({html:true, linkify: true}),
     yaml        = require('js-yaml'),
@@ -111,6 +110,14 @@ config.apiConfigDir = path.resolve(config.apiConfigDir || 'public/data');
 if (!fs.existsSync(config.apiConfigDir)) {
     console.error('Could not find API config directory: %s', config.apiConfigDir);
     process.exit(1);
+}
+
+if (config.customSignersDir) {
+    config.customSignersDir = path.resolve(config.customSignersDir);
+    if (!fs.existsSync(config.customSignersDir)) {
+        console.error("Could not find custom request signers directory: " + config.customSignersDir);
+        process.exit(1);
+    }
 }
 
 try {
@@ -1119,37 +1126,24 @@ function processRequest(req, res, next) {
             options.headers["Authorization"] = 'Basic ' + new Buffer(reqQuery.apiUsername + ':' + reqQuery.apiPassword).toString('base64');
             console.log(options.headers["Authorization"] );
         }
-
-        //
-        // Perform signature routine - force defaults on required configuration items.
-        //
-        if (checkObjVal(apiConfig,'auth','key','signature').exists) {
-            var timeStamp, sig;
-            var sig_param = checkObjVal(apiConfig,'auth','key','signature','param').value || 'sig';
-            var sig_type = checkObjVal(apiConfig,'auth','key','signature','type').value || 'signed_md5';
-            var sig_digest = checkObjVal(apiConfig,'auth','key','signature','digest').value || 'hex';
-            var sig_location = checkObjVal(apiConfig,'auth','key','signature','location').value || 'query';
-
-            if (sig_type == 'signed_md5') {
-                // Add signature parameter
-                timeStamp = Math.round(new Date().getTime()/1000);
-                sig = crypto.createHash('md5').update('' + apiKey + apiSecret + timeStamp + '').digest(sig_digest);
+        // Setup headers, if any
+        if (reqQuery.headerNames && reqQuery.headerNames.length > 0) {
+            if (config.debug) {
+                console.log('Setting headers');
             }
-            else if (sig_type == 'signed_sha256') {
-                // Add signature parameter
-                timeStamp = Math.round(new Date().getTime()/1000);
-                sig = crypto.createHash('sha256').update('' + apiKey + apiSecret + timeStamp + '').digest(sig_digest);
+            var headers = {};
+
+            for (var x = 0, len = reqQuery.headerNames.length; x < len; x++) {
+                if (config.debug) {
+                  console.log('Setting header: ' + reqQuery.headerNames[x] + ':' + reqQuery.headerValues[x]);
+                }
+                if (reqQuery.headerNames[x] != '') {
+                    headers[reqQuery.headerNames[x]] = reqQuery.headerValues[x];
+                }
             }
 
-            if (sig_location == 'query') {
-                options.path += '&' + sig_param + '=' + sig;
-            }
-            else if (sig_location == 'header') {
-                options.headers = (options.headers === void 0) ? {} : options.headers;
-                options.headers[sig_param] = sig;
-            }
+            options.headers = headers;
         }
-
         if (options.headers === void 0){
             options.headers = {}
         }
@@ -1190,6 +1184,27 @@ function processRequest(req, res, next) {
             doRequest = http.request;
             options.protocol = 'http:';
 			console.log(JSON.stringify(options,null,2));
+        }
+
+        // Perform signature routine, if any.
+        if (apiConfig.signature) {
+            var signerModuleName = null;
+            if (fs.existsSync(path.join(config.customSignersDir, apiConfig.signature.type + '.js'))) {
+                signerModuleName = config.customSignersDir + '/' + apiConfig.signature.type + '.js';
+            } else if (fs.existsSync(path.join('./signers', apiConfig.signature.type + '.js'))) {
+                signerModuleName = './signers/' + apiConfig.signature.type + '.js';
+            }
+
+            if (signerModuleName != null) {
+                var signer = require(signerModuleName);
+                if (signer.signRequest) {
+                    signer.signRequest(httpMethod, url, requestBody, options, apiKey, apiSecret, apiConfig.signature);
+                } else {
+                    console.error('Signer "' + apiConfig.signature.type + '" does not have a signRequest() method');
+                }
+            } else {
+                console.error('Could not find signer "' + apiConfig.signature.type + '"');
+            }
         }
 
         // API Call. response is the response from the API, res is the response we will send back to the user.
