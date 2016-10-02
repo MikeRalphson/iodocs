@@ -1188,6 +1188,7 @@ function processRequest(req, res, next) {
 
         // Perform signature routine, if any.
         if (apiConfig.signature) {
+            options.sig_location = checkObjVal(apiConfig,'auth','key','signature','location').value || 'query';
             var signerModuleName = null;
             if (fs.existsSync(path.join(config.customSignersDir, apiConfig.signature.type + '.js'))) {
                 signerModuleName = config.customSignersDir + '/' + apiConfig.signature.type + '.js';
