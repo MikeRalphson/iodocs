@@ -22,20 +22,22 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Support for [LiveDocs](https://github.com/simonmcmanus/livedocs) specification format
 * Drop support for comments in .json files, for speed
 * If you want to use comments, use yaml (support added)
-* Load from URL mode, from env. var or user input
+* Optional load from URL mode, from env. var or user input
 * Server-side cacheing of specs
 * Ability to export iodocs/LiveDocs spec as OpenAPI (Swagger). *auth needs translating*
 * Report meaningful text for HTTP status codes
-* Update jQuery
+* Updated jQuery and jQuery-ui
 * Fix -1 on optional numeric parameters [#208](https://github.com/mashery/iodocs/issues/208)
 * Remove dependency on deprecated compass scss framework
 * Use compression middleware
-* Implement custom signers, as per @rowanhill
+* Implement custom signers, as per @rowanhill [#138](https://github.com/mashery/iodocs/pull/138)
+* Implement oAuth2 password flow as per @hoyo [#233](https://github.com/mashery/iodocs/pull/233)
 
 ### TODO / work in progress items
 
-* Port pull-requests from Mashery repository
-* Support for GraphQL APIs
+* Port remaining` pull-requests from Mashery repository
+* Support for GraphQL APIs ?
+* Support for gRPC APIs ?
 * Support for OpenApi 3.x when ratified
 
 ### Creating / editing IO Docs specs
@@ -478,7 +480,9 @@ The site for the beta API is: "http://www.rdio.com/developers/"
 API-LEVEL CONFIG DETAILS
 ========================
 For every API that is configured in *apiconfig.json* a JSON config file must exist.
-You should look at the *./public/data/* directory for examples.  
+You should look at the *./public/data/* directory for examples.
+
+There is a full specification definition [here](http://support.mashery.com/docs/read/IO_Docs)
 
 ### Example #1 - Explanation of each field in an example API-level configuration
 

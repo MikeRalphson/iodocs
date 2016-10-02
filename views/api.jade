@@ -69,6 +69,7 @@ block content
                      input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth', class='button')
               - else if (oAuthVersion == '2.0')
                   div
+                     label(for='oauth') &nbsp;
                      input(name='oauth', value='Authenticate with OAuth2', type='submit', id='oauth-auth', class='button')
               div(id='oauthAuthenticated', style='display:none')
                   br
