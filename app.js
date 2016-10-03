@@ -196,7 +196,6 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 // create a rotating write stream
-
 var logStream = rotator('iodocs.log', {
     size:     '10M', // rotate every 10 MegaBytes written
     interval: '1d',  // rotate daily

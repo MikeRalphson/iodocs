@@ -43,7 +43,8 @@ Copyright 2011-2016 Mashery, Inc., and others
 
 ### Creating / editing IO Docs specs
 
-* [IO Doctor](https://io-doctor.herokuapp.com)
+* [IO Doctor Ruby version](https://io-doc.herokuapp.com/)
+* [IO Doctor Javascript version](https://mikeralphson.github.io/iodoctor/)
 
 <details>
 	<summary>Other forks of interest</summary>
