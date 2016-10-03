@@ -76,7 +76,7 @@ $head: #ffe97f;
 }
 
 /* Bookmark css */
-/* http://blog.avtex.com/2012/01/27/how-to-make-an-entire-div-clickable-with-css/ */
+/* https://web.archive.org/web/20150302053801/http://blog.avtex.com/2012/01/27/how-to-make-an-entire-div-clickable-with-css/ */
 div.clickable { /* Containing div must have a position value */
     position:relative;
 }
@@ -386,6 +386,11 @@ h2 {
     font-weight: normal;
     font-size: 18px;
     margin-bottom: 15px;
+}
+
+h3 {
+  font-weight: normal;
+  font-size: 14px;
 }
 
 h4 {

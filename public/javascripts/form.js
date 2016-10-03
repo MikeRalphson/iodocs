@@ -6,6 +6,8 @@ $(document).ready(function() {
 
     $('.tabSet').tabs();
 
+    var PWIDTH = 25;
+
     var apiName = $('.apiName').attr('id');
     if (apiName && apiJson) {
 
@@ -100,7 +102,7 @@ $(document).ready(function() {
                     parameterOptions = {
                         "name": "values_" + paramCount,
                         "toolbarSticky": true,
-                        "size": 20,
+                        "size": PWIDTH,
                         "number": paramCount,
                         "paramName": parameter,
                         "items": {
@@ -111,7 +113,7 @@ $(document).ready(function() {
                         },
                         "fields": {
                             "item": {
-                                "size": 20,
+                                "size": PWIDTH,
                                 "number": paramCount
                             }
                         }
@@ -147,7 +149,7 @@ $(document).ready(function() {
                             var fieldsOptions = {
                                 "item": {
                                     "placeholder": "required",
-                                    "size": 20
+                                    "size": PWIDTH
                                 }
                             }
                             parameterOptions["fields"] = fieldsOptions;
@@ -184,7 +186,7 @@ $(document).ready(function() {
                         //Sets options to textarea if necessary
                         if ((paramReference.type == "textarea") || (paramReference.location == 'body')) {
                             parameterOptions["type"] = "textarea";
-                            parameterOptions["cols"] = 20;
+                            parameterOptions["cols"] = PWIDTH;
                             paramReference.type = "string";
                         }
 
@@ -204,7 +206,7 @@ $(document).ready(function() {
                             if ((paramReference.location && paramReference.location == "body") || !paramReference.location) addLocationBody(paramReference);
                             for (subParam in paramReference.properties) {
                                 parameterOptions["fields"][subParam] = {
-                                    "size": 20,
+                                    "size": PWIDTH,
                                     "number": paramCount,
                                     "paramName": parameter
                                 };
