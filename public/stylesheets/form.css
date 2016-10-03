@@ -1,6 +1,7 @@
 .container {
 	display: table;
 	width: 99%;
+    font-size: 12px;
 }
 
 .alpaca-item-container-last {
