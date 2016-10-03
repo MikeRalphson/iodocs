@@ -26,7 +26,8 @@
 //
 var express     = require('express'),
     session     = require('express-session'),
-	logger      = require('express-logger'), // the official express middleware is 'morgan'
+	logger      = require('morgan'),
+    rotator     = require('rotating-file-stream'),
 	bodyParser  = require('express-busboy'),
 	cookie      = require('cookie-parser'),
 	override    = require('express-method-override'),
@@ -37,7 +38,7 @@ var express     = require('express'),
     path        = require('path'),
     OAuth       = require('oauth').OAuth,
     OAuth2      = require('oauth/lib/oauth2').OAuth2,
-    query       = require('querystring'),
+    query       = require('querystring'), // see also qs
     url         = require('url'),
     http        = require('http'),
     https       = require('https'),
@@ -193,7 +194,18 @@ var app = module.exports = express();
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(logger({path: './iodocs.log'}));
+
+// create a rotating write stream
+
+var logStream = rotator('iodocs.log', {
+    size:     '10M', // rotate every 10 MegaBytes written
+    interval: '1d',  // rotate daily
+    compress: 'gzip' // compress rotated files
+});
+
+// setup the logger
+app.use(logger('combined', {stream: logStream}));
+
 bodyParser.extend(app);
 app.use(override());
 app.use(cookie());
@@ -869,7 +881,6 @@ function processRequest(req, res, next) {
             headers[customHeader] = customHeaders[customHeader];
         }
     }
-    // TODO add openApi consumes header?
 
     var paramString = query.stringify(params),
         privateReqURL = (apiConfig.privatePath) ? apiConfig.basePath + apiConfig.privatePath + methodURL +
@@ -885,12 +896,21 @@ function processRequest(req, res, next) {
 
     if (['POST','PUT','PATCH'].indexOf(httpMethod) !== -1) {
         var requestBody;
-        requestBody = (getHeader(options.headers,'Content-Type') === 'application/json')
-        ? JSON.stringify(bodyParams)
-        : query.stringify(bodyParams);
+        var reqContentType = getHeader(options.headers,'Content-Type');
+        requestBody = ((reqContentType === 'application/json') || (reqContentType.indexOf('+json')>=0))
+            ? JSON.stringify(bodyParams)
+            : query.stringify(bodyParams);
         if (isOpenApi(apiConfig) && (Object.keys(bodyParams).length==1)) {
-            options.headers["Content-Type"] = 'application/json'; // TODO use consumes header, what about xml etc
-            requestBody = JSON.stringify(JSON.parse(bodyParams[Object.keys(bodyParams)[0]]));
+            requestBody = bodyParams[Object.keys(bodyParams)[0]];
+            if (requestBody.startsWith('<xml ')) {
+                // TODO add most json-like header from consumes
+                options.headers["Content-Type"] = 'application/xml';
+            }
+            else {
+                // TODO add most json-like header from consumes
+                options.headers["Content-Type"] = 'application/json';
+            }
+            // yaml etc?
         }
     }
 

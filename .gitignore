@@ -5,7 +5,7 @@ config.json
 pids/*
 *.rdb
 *.zip
-*.pdf
+docs/*.pdf
 
 # Ignore project files
 .idea/*

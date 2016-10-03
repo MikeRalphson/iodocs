@@ -36,6 +36,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 ### TODO / work in progress items
 
 * Port remaining` pull-requests from Mashery repository
+* HTTP/2 support
 * Support for GraphQL APIs ?
 * Support for gRPC APIs ?
 * Support for OpenApi 3.x when ratified
