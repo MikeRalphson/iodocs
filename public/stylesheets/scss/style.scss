@@ -763,6 +763,16 @@ li {
     }
 }
 
+.buttonBox {
+    & form {
+        display: inline;
+    }
+    & input {
+        display: inline;
+        margin: 10px 10px 0px 0px;
+    }
+}
+
 .tabSet {
     ul {
         float: left;

@@ -188,9 +188,9 @@ block content
                               - if (!method['read-only'])
                                   input(type='submit', class='button', id=method.MethodName, value='Try it!')
   br
-  form.export(method='post', action='/export')
-    input(type='hidden', name='exportApi', id='exportApi', value=apiName)
-    input(type='submit', value='Export to OpenApi', class='button')
-  br
-  form.export(method='get', action='/codegen/'+apiName)
-    input(type='submit', value='Code Generation', class='button')
+  div.buttonBox
+    form.export(method='post', action='/export')
+      input(type='hidden', name='exportApi', id='exportApi', value=apiName)
+      input(type='submit', value='Export to OpenApi', class='button')
+    form.export(method='get', action='/codegen/'+apiName)
+      input(type='submit', value='Code Generation', class='button')

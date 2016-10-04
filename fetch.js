@@ -1,6 +1,7 @@
 var http = require('http');
 var https = require('https');
 var url = require('url');
+var util = require('util');
 
 function get(inputUrl,options,config,callback) {
     var u = url.parse(inputUrl);
@@ -22,7 +23,6 @@ function get(inputUrl,options,config,callback) {
         console.log('error: %s', e.message);
         if (callback) callback(e, null, null);
         if (config.debug) {
-            console.log('HEADERS: ' + JSON.stringify(res.headers));
             console.log('Got error: ' + e.message);
             console.log('Error: ' + util.inspect(e));
         }
@@ -32,7 +32,7 @@ function get(inputUrl,options,config,callback) {
 function post(inputUrl,options,postData,config,callback) {
     console.log('post '+inputUrl);
     var u = url.parse(inputUrl);
-    var doRequest = (u.protocol && u.protocol.startsWith('https')) ? https : http;
+    var proto = (u.protocol && u.protocol.startsWith('https')) ? https : http;
     options.hostname = u.host;
     options.port = u.port;
     options.path = u.path;
@@ -41,7 +41,7 @@ function post(inputUrl,options,postData,config,callback) {
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(postData)
     };
-    var post_req = http.request(options, function(res) {
+    var postReq = proto.request(options, function(res) {
         res.setEncoding('utf8');
         var body = '';
         res.on('data', function (data) {
@@ -54,18 +54,17 @@ function post(inputUrl,options,postData,config,callback) {
         console.log('error: %s', e.message);
         if (callback) callback(e, null, null);
         if (config.debug) {
-            console.log('HEADERS: ' + JSON.stringify(res.headers));
             console.log('Got error: ' + e.message);
             console.log('Error: ' + util.inspect(e));
         }
     });
 
     // post the data
-    post_req.write(postData);
-    post_req.end();
+    postReq.write(postData);
+    postReq.end();
 }
 
 module.exports = {
-    get : get,
-    post : post
+    get: get,
+    post: post
 };

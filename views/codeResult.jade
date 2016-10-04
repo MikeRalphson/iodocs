@@ -2,7 +2,8 @@ extends layout
 block content
   - if (results.link)
     h1 You can download your SDK from the following url
-    a(href=results.link) Courtesy of Swagger.io
+	h2
+      a(href=results.link) Courtesy of Swagger.io
   - else
     h1 Something went wrong...
     h2='Code '+results.code
