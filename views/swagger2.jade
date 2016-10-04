@@ -21,8 +21,9 @@ block content
 
   h3='Version '+apiInfo.info.version
 
-  h3
-    a#externalDocs(href=apiInfo.externalDocs.url)!=md.render(apiInfo.externalDocs.description)
+  - if (apiInfo.externalDocs)
+    h3
+      a#externalDocs(href=apiInfo.externalDocs.url)!=md.render(apiInfo.externalDocs.description)
 
   h3
     - if (apiInfo.info.contact.url)

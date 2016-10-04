@@ -33,6 +33,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Implement custom signers, as per @rowanhill [#138](https://github.com/mashery/iodocs/pull/138)
 * Implement oAuth2 password flow as per @hoyo [#233](https://github.com/mashery/iodocs/pull/233)
 * Code-generation courtesy of [Swagger.io](https://generator.swagger.io/)
+* Cookie proxying [#131](https://github.com/mashery/iodocs/issues/131)
 
 ### TODO / work in progress items
 

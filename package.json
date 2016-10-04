@@ -8,8 +8,8 @@
     "iodocs",
     "documentation",
     "api",
-	"swagger",
-	"openapi"
+    "swagger",
+    "openapi"
   ],
   "author": "Mashery, Inc. <nmansilla@mashery.com>",
   "contributors": [
@@ -29,6 +29,7 @@
     "clone": "0.1.1",
     "compression": "^1.6.2",
     "connect-redis": "^3.1.0",
+    "cookie": "^0.3.1",
     "cookie-parser": "^1.4.3",
     "express": "^4.13.3",
     "express-busboy": "^4.0.0",

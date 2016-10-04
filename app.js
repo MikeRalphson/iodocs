@@ -29,7 +29,8 @@ var express     = require('express'),
 	logger      = require('morgan'),
     rotator     = require('rotating-file-stream'),
 	bodyParser  = require('express-busboy'),
-	cookie      = require('cookie-parser'),
+    cookie      = require('cookie'),
+	cookieParse = require('cookie-parser'),
 	override    = require('express-method-override'),
 	errorHndlr  = require('express-error-handler'),
     compression = require('compression'),
@@ -149,6 +150,10 @@ function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
                 catch (ex) {}
             }
             if (obj) {
+                if (isOpenApi(obj) && (!obj.host)) {
+                    var u = url.parse(dynamicUrl);
+                    obj.host = u.host;
+                }
                 var result = {};
                 result.name = dynName;
                 result.definition = obj;
@@ -215,12 +220,13 @@ app.use(logger('combined', {stream: logStream}));
 
 bodyParser.extend(app);
 app.use(override());
-app.use(cookie());
+app.use(cookieParse());
 app.use(compression());
 
 if (config.redis) {
     app.use(session({
         secret: config.sessionSecret,
+        key: 'iodocs.connect.sid',
         store:  new RedisStore({
             'host':   config.redis.host,
             'port':   config.redis.port,
@@ -791,7 +797,7 @@ function oauth2Success(req, res, next) {
 }
 
 
-function getHeader(header, headers) {
+function getHeader(headers, header) {
 	// snaffled from request module
 	var headers = Object.keys(headers || this.headers),
 		lheaders = headers.map(function (h) {return h.toLowerCase();});
@@ -1252,6 +1258,10 @@ function processRequest(req, res, next) {
             options.headers["Content-Type"] = 'application/x-www-form-urlencoded';
         }
 
+        // cookie proxying, TODO put this behind a config guard option?
+        // TODO strip out iodocs session cookie
+        options.headers['Cookie'] = req.headers.cookie;
+
         if (config.debug) {
             console.log(util.inspect(options));
         }
@@ -1333,6 +1343,15 @@ function processRequest(req, res, next) {
                 req.resultHeaders = response.headers;
                 var u = url.parse(options.protocol + '//' + options.host + options.path);
                 req.call = url.format(u);
+
+                // TODO cookie proxying, see https://github.com/outsideris/iodocs/commit/0d0bcb6
+                var newCookie = getHeader(response.headers,'Set-Cookie');
+                if (newCookie) {
+                    responseCookies = cookie.parse(newCookie);
+                    for (var c in responseCookies) {
+                        res.cookie(c, responseCookies[c]);
+                    }
+                }
 
                 // Response body
                 req.result = body;
