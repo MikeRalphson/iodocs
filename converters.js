@@ -65,7 +65,8 @@ function iodocsUpgrade(data){
 * this is purely to render the schema, but could be the start of a spec converter if needed
 * auth is handled server side TODO check client-side knows auth requirements
 */
-function convertSwagger(apiInfo){
+function convertSwagger(source){
+    var apiInfo = clone(source,false);
     apiInfo.resources = {};
     for (var p in apiInfo.paths) {
         for (var m in apiInfo.paths[p]) {

@@ -1,0 +1,13 @@
+extends layout
+block content
+  - if (results.link)
+    h1 You can download your SDK from the following url
+    a(href=results.link) Courtesy of Swagger.io
+  - else
+    h1 Something went wrong...
+    h2='Code '+results.code
+    h4=results.message
+  br
+  br
+  form.return(method='get', action='/'+apiName)
+    input(type='submit', value='Return to API', class='button')

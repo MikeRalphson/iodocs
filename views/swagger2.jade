@@ -184,3 +184,6 @@ block content
                                       br
                                       .container
                                         h3 Code samples etc
+  br
+  form.export(method='get', action='/codegen/'+apiName)
+    input(type='submit', value='Code Generation', class='button')

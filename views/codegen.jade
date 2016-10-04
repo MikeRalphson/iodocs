@@ -1,0 +1,22 @@
+extends layout
+block content
+  h1 Code Generation powered by Swagger.io
+  form.languageSelection(method='post')
+    input(type='hidden', value=apiName, name='apiName')
+    label(for='selectServer') Select server language&nbsp;
+    select(id='selectServer', name='selectServer')
+      - each language in codeGenInfo.serverLanguages
+        option=language
+    br
+    button(type='submit', id='btnGenServer', name='btnGenServer', class='button') Generate Server
+    br
+    br
+    label(for='selectClient') Select client language&nbsp;
+    select(id='selectClient', name='selectClient')
+      - each language in codeGenInfo.clientLanguages
+        option=language
+    br
+    button(type='submit', id='btnGenClient', name='btnGenClient', class='button') Generate Client
+  br
+  form.return(method='get', action='/'+apiName)
+    input(type='submit', value='Return to API', class='button')

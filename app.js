@@ -45,11 +45,13 @@ var express     = require('express'),
     clone       = require('clone'),
 	markdown    = require('markdown-it')({html:true, linkify: true}),
     yaml        = require('js-yaml'),
+    //rootCAs     = require('ssl-root-cas/latest').inject(),
     redis       = require('redis'),
     RedisStore  = require('connect-redis')(session),
     server;
 
 var converters  = require('./converters.js');
+var fetch = require('./fetch.js');
 
 const MAXAGE = 1209600000; // 14 days
 
@@ -84,7 +86,7 @@ try {
 // Redis connection
 //
 var defaultDB = '0';
-if(config.redis) {
+if (config.redis) {
     config.redis.database = config.redis.database || defaultDB;
 
     if (process.env.REDISTOGO_URL || process.env.REDIS_URL) {
@@ -134,52 +136,31 @@ try {
 
 function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
     if (dynamicUrl) {
-        var u = url.parse(dynamicUrl);
-        var doRequest = (u.protocol && u.protocol.startsWith('https')) ? https.get : http.get;
-        var options = {};
-        options.hostname = u.host;
-        options.port = u.port;
-        options.path = u.path;
         console.log('Loading dynamic API from %s', dynamicUrl);
-        doRequest(options, function(response){
-            var body = '';
-
-            response.on('data', function(data) {
-                body += data;
-            });
-
-            response.on('end', function() {
-                var obj = {};
+        fetch.get(dynamicUrl,{},config,function(err, response, body){
+            var obj = {};
+            try {
+                obj = JSON.parse(body);
+            }
+            catch (ex) {
                 try {
-                    obj = JSON.parse(body);
+                    obj = yaml.safeLoad(body);
                 }
-                catch (ex) {
-                    try {
-                        obj = yaml.safeLoad(body);
-                    }
-                    catch (ex) {}
+                catch (ex) {}
+            }
+            if (obj) {
+                var result = {};
+                result.name = dynName;
+                result.definition = obj;
+                result.converted = convertApi(obj);
+                if (sessionID) {
+                    //db.set(sessionID+':remote',JSON.stringify(result)); // for when we have async loadApi
+                    apisConfig[sessionID] = result;
                 }
-                if (obj) {
-                    var result = {};
-                    result.name = dynName;
-                    result.definition = obj;
-                    result.converted = convertApi(obj);
-                    if (sessionID) {
-                        //db.set(sessionID+':remote',JSON.stringify(result)); // for when we have async loadApi
-                        apisConfig[sessionID] = result;
-                    }
-                    else {
-                        apisConfig[dynName] = result;
-                    }
-                    if (callback) callback(result);
+                else {
+                    apisConfig[dynName] = result;
                 }
-            });
-        }).on('error', function(e) {
-            console.log('error: %s', e.message);
-            if (config.debug) {
-                console.log('HEADERS: ' + JSON.stringify(res.headers));
-                console.log('Got error: ' + e.message);
-                console.log('Error: ' + util.inspect(e));
+                if (callback) callback(null,result);
             }
         });
     }
@@ -189,6 +170,33 @@ function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
 // Remote API config
 //
 loadDynamicUrl(process.env["IODOCS_DYNAMIC_URL"] || config.dynamicUrl, process.env["IODOCS_DYNAMIC_NAME"] || 'dynamic', false);
+
+//
+// Code-generation languages
+//
+
+var codeGenInfo = {};
+codeGenInfo.clientLanguages = [];
+codeGenInfo.serverLanguages = [];
+var options = {};
+options.headers = {};
+options.headers.Accept = 'application/json';
+fetch.get('http://generator.swagger.io/api/gen/clients',options,config,function(err, response, body){
+    try {
+        var obj = JSON.parse(body);
+        codeGenInfo.clientLanguages = obj;
+        console.log('Found %s code-generation client languages', obj.length);
+    }
+    catch (ex) {}
+});
+fetch.get('http://generator.swagger.io/api/gen/servers',options,config,function(err, response, body){
+    try {
+        var obj = JSON.parse(body);
+        codeGenInfo.serverLanguages = obj;
+        console.log('Found %s code-generation server languages', obj.length);
+    }
+    catch (ex) {}
+});
 
 var app = module.exports = express();
 
@@ -561,7 +569,6 @@ function convertApi(obj){
 function loadApi(apiName){
     // TODO cacheing with redis would make us entirely async
     if (apisConfig[apiName].definition) {
-        console.log('Cache hit');
         return apisConfig[apiName].definition;
     }
     var stat, obj;
@@ -1353,37 +1360,70 @@ function processRequest(req, res, next) {
 
 function loadUrl(req,res,next){
     console.log('Into loadUrl with '+JSON.stringify(req.body));
-    loadDynamicUrl(req.body.userLoadUrl,'remote',req.sessionID,function(obj){
+    loadDynamicUrl(req.body.userLoadUrl,'remote',req.sessionID,function(err,obj){
        res.redirect('/'+req.sessionID);
     });
 }
 
+function getSwagger(apiName){
+    if (!apisConfig[apiName].definition) {
+        loadApi(apiName);
+    }
+    var source = apisConfig[apiName].definition;
+    if (isOpenApi(source)) return source;
+    if (isLiveDocs(source)) {
+        source = apisConfig[apiName].converted;
+    }
+    else if (source.endpoints) {
+        source = clone(apisConfig[apiName],false);
+        delete source.definition;
+        delete source.converted; // isn't stored in .converted as we're still using the old renderer
+        source.basePath = source.protocol + '://' + source.baseURL;
+        source = Object.assign({},source,converters.iodocsUpgrade(apisConfig[apiName].definition)); // merge old header info
+
+        delete source.baseURL;
+        delete source.protocol;
+        delete source.keyParam; //?
+    }
+    return converters.exportIodocs(source);
+}
+
 function exportSpec(req,res,next){
-    if (req.body.exportApi && apisConfig[req.body.exportApi]) {
-        if (!apisConfig[req.body.exportApi].definition) {
-            loadApi(req.body.exportApi);
-        }
-        var source = apisConfig[req.body.exportApi].definition;
-        if (isLiveDocs(source)) {
-            source = apisConfig[req.body.exportApi].converted;
-        }
-        else if (source.endpoints) {
-            source = clone(apisConfig[req.body.exportApi],false);
-            delete source.definition;
-            delete source.converted; // isn't stored in .converted as we're still using the old renderer
-            source.basePath = source.protocol + '://' + source.baseURL;
-            source = Object.assign({},source,converters.iodocsUpgrade(apisConfig[req.body.exportApi].definition)); // merge old header info
-
-            delete source.baseURL;
-            delete source.protocol;
-            delete source.keyParam; //?
-
-        }
-        res.send(JSON.stringify(converters.exportIodocs(source),null,2));
+    var apiName = req.body.exportApi || req.query.exportApi;
+    if (apiName && apisConfig[apiName]) {
+        res.send(JSON.stringify(getSwagger(apiName),null,2));
     }
     else {
         res.render('error');
     }
+}
+
+function codeGen(req, res, next){
+    console.log(req.body.apiName);
+    if (!apisConfig[req.body.apiName].definition) {
+        loadApi(req.body.apiName);
+    }
+    var submission = {
+        spec: getSwagger(req.body.apiName)
+    };
+
+    var endpoint;
+    if (typeof req.body.btnGenServer !== 'undefined') {
+        endpoint = 'http://generator.swagger.io/api/gen/servers/'+req.body.selectServer;
+    }
+    else {
+        endpoint = 'http://generator.swagger.io/api/gen/clients/'+req.body.selectClient;
+    }
+
+    var postData = JSON.stringify(submission);
+    console.log('Generate SDK for %s',req.body.selectServer);
+    fetch.post(endpoint,options,postData,config,function(err, response, body){
+        console.log(body);
+        res.locals.results = JSON.parse(body);
+        res.locals.hideLoad = true;
+        res.locals.apiName = req.body.apiName;
+        res.render('codeResult');
+    });
 }
 
 function checkPathForAPI(req, res, next) {
@@ -1484,6 +1524,13 @@ app.all('/auth2', oauth2);
 
 app.all('/load', loadUrl);
 app.all('/export', exportSpec);
+app.get('/codegen/:spec', function(req,res,next){
+   res.locals.hideLoad = true;
+   res.locals.apiName = req.params.spec;
+   res.locals.codeGenInfo = codeGenInfo;
+   res.render('codegen');
+});
+app.post('/codegen/:spec', codeGen);
 
 // OAuth callback page, closes the window immediately after storing access token/secret
 app.get('/authSuccess/:api', oauth1Success, function(req, res) {

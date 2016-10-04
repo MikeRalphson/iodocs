@@ -137,3 +137,6 @@ block content
   form.export(method='post', action='/export')
     input(type='hidden', name='exportApi', id='exportApi', value=apiName)
     input(type='submit', value='Export to OpenApi', class='button')
+  br
+  form.export(method='get', action='/codegen/'+apiName)
+    input(type='submit', value='Code Generation', class='button')

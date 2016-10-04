@@ -32,6 +32,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Use compression middleware
 * Implement custom signers, as per @rowanhill [#138](https://github.com/mashery/iodocs/pull/138)
 * Implement oAuth2 password flow as per @hoyo [#233](https://github.com/mashery/iodocs/pull/233)
+* Code-generation courtesy of [Swagger.io](https://generator.swagger.io/)
 
 ### TODO / work in progress items
 
