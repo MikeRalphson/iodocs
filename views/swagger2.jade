@@ -188,5 +188,7 @@ block content
                                       .container
                                         h3 Code samples etc
   br
+  h4='[ Host = '+apiInfo.host + ', Base URL = '+apiInfo.basePath+' ]'
+  br
   form.export(method='get', action='/codegen/'+apiName)
     input(type='submit', value='Code Generation', class='button')

@@ -178,7 +178,7 @@
             })
         }
     });
-    
+
     // $.('#access_token').val(foo);
 
 
@@ -202,7 +202,7 @@
         //Accounts for array values
         for (i in params) {
             if (params[i].name.split("_")[0] == "values") {
-                params[i].name = params[i].name.split("_")[0] + "[" + params[i].name.split("_")[1] + "]"; 
+                params[i].name = params[i].name.split("_")[0] + "[" + params[i].name.split("_")[1] + "]";
             }
         }
 
@@ -305,7 +305,6 @@
                 $('pre.requestHeaders', resultContainer).hide();
                 $('h4.reqHeadText').hide();
             }
-
 
             if (response.requestBody) {
                 var requestBody;

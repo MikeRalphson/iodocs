@@ -204,6 +204,7 @@ $(document).ready(function() {
 
                         if (paramReference.type == "object") {
                             if ((paramReference.location && paramReference.location == "body") || !paramReference.location) addLocationBody(paramReference);
+                            // TODO this probably needs to be recursive to set the widths on all sub-parameters
                             for (subParam in paramReference.properties) {
                                 parameterOptions["fields"][subParam] = {
                                     "size": PWIDTH,
@@ -214,10 +215,10 @@ $(document).ready(function() {
                         }
 
                         if (paramReference.enum && paramReference.type != "boolean") {
-                                parameterOptions["type"] = "select";
-                                parameterOptions["optionLabels"] = paramReference.enumDescription;
-                                parameterOptions["size"] = null;
-                            }
+                            parameterOptions["type"] = "select";
+                            parameterOptions["optionLabels"] = paramReference.enumDescription;
+                            parameterOptions["size"] = null;
+                        }
 
                         //Default parameter location is query
                         if (!paramReference.location) {
