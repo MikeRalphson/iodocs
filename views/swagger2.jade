@@ -159,16 +159,18 @@ block content
                                       li
                                         a(href='#tab4') Code
                                     div#tab1
-                                      - if (method.parameters && Object.keys(method.parameters).length)
                                       br
                                       .container.header
+                                      - if (method.parameters && Object.keys(method.parameters).length)
                                         .row
                                           .col-description.header Description !{method.MethodName}
                                           .location.header Location
                                           .col-type.header Type
                                           .col-parameter.header Value
                                           .col-name.header Parameter
-                                      table(id=methodKey)
+                                        table(id=methodKey)
+                                      - else
+                                        h3 None
                                       - if (!method['read-only'])
                                         input(type='submit', id=method.name, value='Try it!', class='button '+methodKey)
                                     div#tab2
