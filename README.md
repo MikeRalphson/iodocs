@@ -48,6 +48,10 @@ Copyright 2011-2016 Mashery, Inc., and others
 * [IO Doctor Ruby version](https://io-doc.herokuapp.com/)
 * [IO Doctor Javascript version](https://mikeralphson.github.io/iodoctor/)
 
+### Performance tips
+
+* Don't forget to set `NODE_ENV=production` once you have finished testing / on your production server(s). On Heroku this is set for you by default.
+
 <details>
 	<summary>Other forks of interest</summary>
 * http://forked.yannick.io/mashery/iodocs

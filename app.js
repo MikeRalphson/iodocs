@@ -55,6 +55,7 @@ var converters  = require('./converters.js');
 var fetch = require('./fetch.js');
 
 const MAXAGE = 1209600000; // 14 days
+const SESSIONCOOKIE = 'iodocs.connect.sid';
 
 //
 // Parse arguments
@@ -226,7 +227,7 @@ app.use(compression());
 if (config.redis) {
     app.use(session({
         secret: config.sessionSecret,
-        key: 'iodocs.connect.sid',
+        key: SESSIONCOOKIE,
         store:  new RedisStore({
             'host':   config.redis.host,
             'port':   config.redis.port,
@@ -1259,8 +1260,14 @@ function processRequest(req, res, next) {
         }
 
         // cookie proxying, TODO put this behind a config guard option?
-        // TODO strip out iodocs session cookie
-        options.headers['Cookie'] = req.headers.cookie;
+        var clientCookies = cookie.parse(req.headers.cookie);
+        var requestCookies = '';
+        for (var c in clientCookies) {
+            if (c != SESSIONCOOKIE) {
+                requestCookies += ((requestCookies ? ';' : '') + cookie.serialize(c,clientCookies[c]));
+            }
+        }
+        options.headers['Cookie'] = requestCookies;
 
         if (config.debug) {
             console.log(util.inspect(options));
@@ -1344,10 +1351,10 @@ function processRequest(req, res, next) {
                 var u = url.parse(options.protocol + '//' + options.host + options.path);
                 req.call = url.format(u);
 
-                // TODO cookie proxying, see https://github.com/outsideris/iodocs/commit/0d0bcb6
-                var newCookie = getHeader(response.headers,'Set-Cookie');
-                if (newCookie) {
-                    responseCookies = cookie.parse(newCookie);
+                // cookie proxying, see https://github.com/outsideris/iodocs/commit/0d0bcb6
+                var newCookies = getHeader(response.headers,'Set-Cookie');
+                if (newCookies) {
+                    responseCookies = cookie.parse(newCookies);
                     for (var c in responseCookies) {
                         res.cookie(c, responseCookies[c]);
                     }
