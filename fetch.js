@@ -6,7 +6,7 @@ var util = require('util');
 function get(inputUrl,options,config,callback) {
     var u = url.parse(inputUrl);
     var doRequest = (u.protocol && u.protocol.startsWith('https')) ? https.get : http.get;
-    options.hostname = u.host;
+    options.hostname = u.hostname;
     options.port = u.port;
     options.path = u.path;
     doRequest(options, function(response){
@@ -33,7 +33,7 @@ function post(inputUrl,options,postData,config,callback) {
     console.log('post '+inputUrl);
     var u = url.parse(inputUrl);
     var proto = (u.protocol && u.protocol.startsWith('https')) ? https : http;
-    options.hostname = u.host;
+    options.hostname = u.hostname;
     options.port = u.port;
     options.path = u.path;
     options.method = 'post';

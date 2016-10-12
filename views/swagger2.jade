@@ -190,5 +190,10 @@ block content
   br
   h4='[ Host = '+apiInfo.host + ', Base URL = '+apiInfo.basePath+' ]'
   br
-  form.export(method='get', action='/codegen/'+apiName)
-    input(type='submit', value='Code Generation', class='button')
+  div.buttonBox
+    form.export(method='get', action='/codegen/'+apiName)
+      input(type='submit', value='Code Generation', class='button')
+    - if (config.shinsUrl)
+      form.export(method='post', action='/shins')
+        input(type='hidden', name='apiName', id='apiName', value=apiName)
+        input(type='submit', value='Slate docs', class='button')

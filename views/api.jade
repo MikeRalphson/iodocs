@@ -57,7 +57,7 @@ block content
                   - if (apiInfo.auth.signature)
                       label(for='secret') Shared Secret
                       input(id='secret', name='secret', type='text', value=defaultSecret, class='auth-entry')
-              - if (apiInfo.auth.oauth.type == 'password')
+              - if (apiInfo.auth.oauth && apiInfo.auth.oauth.type == 'password')
                   div
                       label(for='username') User Name
                       input(id='username', name='username', type='text', class='auth-entry')
@@ -140,3 +140,7 @@ block content
       input(type='submit', value='Export to OpenApi', class='button')
     form.export(method='get', action='/codegen/'+apiName)
       input(type='submit', value='Code Generation', class='button')
+    - if (config.shinsUrl)
+      form.export(method='post', action='/shins')
+        input(type='hidden', name='apiName', id='apiName', value=apiName)
+        input(type='submit', value='Slate docs', class='button')

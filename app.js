@@ -1452,6 +1452,18 @@ function codeGen(req, res, next){
     });
 }
 
+function shins(req, res, next) {
+    if (!apisConfig[req.body.apiName].definition) {
+        loadApi(req.body.apiName);
+    }
+    var obj = getSwagger(req.body.apiName);
+    var postData = JSON.stringify(obj);
+    fetch.post('http://localhost:5678/openapi',{},postData,config,function(err, response, body){
+        res.header('Content-Type','text/html');
+        res.send(body);
+    });
+}
+
 function checkPathForAPI(req, res, next) {
     if (!req.params) req.params = {};
     if (!req.query) req.query = {};
@@ -1550,6 +1562,7 @@ app.all('/auth2', oauth2);
 
 app.all('/load', loadUrl);
 app.all('/export', exportSpec);
+
 app.get('/codegen/:spec', function(req,res,next){
    res.locals.hideLoad = true;
    res.locals.apiName = req.params.spec;
@@ -1557,6 +1570,12 @@ app.get('/codegen/:spec', function(req,res,next){
    res.render('codegen');
 });
 app.post('/codegen/:spec', codeGen);
+
+if (config.shinsUrl) {
+    app.post('/shins', shins);
+    app.get('/source/*', function(req,res,next){res.redirect(307,config.shinsUrl+req.path)});
+    app.get('/pub/*', function(req,res,next){res.redirect(307,config.shinsUrl+req.path)});
+}
 
 // OAuth callback page, closes the window immediately after storing access token/secret
 app.get('/authSuccess/:api', oauth1Success, function(req, res) {

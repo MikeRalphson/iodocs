@@ -1,6 +1,5 @@
 extends layout
 block content
-  h1!=JSON.stringify(apConfig,null,2)
   h1=apiConfig.name
   - if (session && session.authed && apiConfig.oauth && apiConfig.oauth.type == 'three-legged')
       - var authed ='authed'
@@ -42,9 +41,11 @@ block content
                       input(id='secret', class='auth-entry', name='secret', value=defaultSecret)
               - if (apiConfig.oauth && apiConfig.oauth.type !='two-legged')
                   div
+                     label(for='oauth') &nbsp;
                      input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth', class='button')
               - else if (apiConfig.oauth2)
                   div
+                     label(for='oauth') &nbsp;
                      input(name='oauth', value='Authenticate with OAuth2', type='submit', id='oauth-auth', class='button')
               div(id='oauthAuthenticated', style='display:none')
                   br
@@ -194,3 +195,7 @@ block content
       input(type='submit', value='Export to OpenApi', class='button')
     form.export(method='get', action='/codegen/'+apiName)
       input(type='submit', value='Code Generation', class='button')
+    - if (config.shinsUrl)
+      form.export(method='post', action='/shins')
+        input(type='hidden', name='apiName', id='apiName', value=apiName)
+        input(type='submit', value='Slate docs', class='button')
