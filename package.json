@@ -36,7 +36,7 @@
     "express-error-handler": "^1.1.0",
     "express-method-override": "0.0.3",
     "express-session": "^1.14.1",
-    "jade": "^0.32.0",
+    "jade": "^1.8.0",
     "js-yaml": "^3.6.1",
     "markdown-it": "^8.0.0",
     "morgan": "^1.7.0",
@@ -46,7 +46,8 @@
     "redis": "^2.6.2",
     "rotating-file-stream": "^1.0.5",
     "supervisor": ">= 0.5.x",
-    "yargs": ">= 1.2.1"
+    "yargs": ">= 1.2.1",
+    "snyk": "^1.19.1"
   },
   "devDependencies": {
     "node-sass": "^3.10.0"
@@ -58,6 +59,9 @@
   },
   "scripts": {
     "start": "node_modules/.bin/supervisor -e 'js|json' app",
-    "startwin": "supervisor -e 'js' app"
-  }
+    "startwin": "supervisor -e 'js' app",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
