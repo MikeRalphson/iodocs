@@ -1,0 +1,194 @@
+{
+    "name": "OpenLifeData API",
+    "version": "1.0",
+    "title": "OpenLifeData API",
+    "description": "API to retrieve data from OpenLifeData.org.",
+    "protocol": "rest",
+    "basePath": "http://api.openlifedata.org",
+    "publicPath": "",
+    "privatePath": "",
+	"headers": {
+		"Accept": [  "application/rdf+json", "application/rdf+xml", "application/x-trig", "text/turtle", "text/plain" ]
+	},
+    "resources": {
+        "OpenLifeData API": {
+            "methods": {
+                "describe": {
+                    "name": "Describe",
+                    "description": "gets triples for a resource",
+                    "httpMethod": "GET",
+                    "path": "/describe/",
+                    "parameters": {
+                        "q": {
+                            "title": "URI",
+                            "required": "true",
+                            "default": "",
+                            "type": "string",
+                            "description": "Obtains the set of statements about a resource identified by a Uniform Resource Identifier."
+                        },
+                        "format": {
+                            "title": "Format",
+                            "required": "false",
+                            "default": "",
+                            "type": "string",
+                            "description": "Specifies the return format"
+                        },
+                        "Accept": {
+                            "type": "string",
+                            "required": "true",
+                            "description": "Content type of the payload",
+                            "default": "application/json",
+							"enum": ["application/json","text/turtle","text/plain","application/x-trig","application/x-json+ld","application/rdf+json","application/rdf+xml","text/csv","text/tab-separated-values"],
+                            "location": "header"
+                        }
+                    }
+                },
+                "label": {
+                    "name": "Search",
+                    "description": "search labels",
+                    "httpMethod": "GET",
+                    "path": "/label/",
+                    "parameters": {
+                        "q": {
+                            "title": "query string",
+                            "required": "true",
+                            "default": "",
+                            "type": "string",
+                            "description": "The label search string."
+                        }
+					}
+				},
+                "outlinks": {
+                    "name": "Outlinks",
+                    "description": "Get the resources that are linked to the specified URI",
+                    "httpMethod": "GET",
+                    "path": "/outlinks/",
+                    "parameters": {
+                        "q": {
+                            "title": "id",
+                            "required": "true",
+                            "default": "drugbank:DB00001",
+                            "type": "string",
+                            "description": "The query identifier as a fully-qualified URI (http://bio2rdf.org/drugbank:DB00001) or CURIE (e.g. drugbank:DB00001)."
+                        },
+						"limit": {
+                            "title": "Limit",
+                            "required": "false",
+                            "default": "50",
+                            "type": "integer",
+                            "description": "Limit the number of results returned."
+                        },
+						"offset": {
+                            "title": "Offset",
+                            "required": "false",
+                            "default": "0",
+                            "type": "integer",
+                            "description": "Offset the returned results."
+                        }						
+					}
+				},		
+                "inlinks": {
+                    "name": "Inlinks",
+                    "description": "Get the resources that link to the specified URI",
+                    "httpMethod": "GET",
+                    "path": "/inlinks/",
+                    "parameters": {
+                        "q": {
+                            "title": "the query URI",
+                            "required": "true",
+                            "default": "drugbank:DB00001",
+                            "type": "string",
+                            "description": "The query URI."
+                        },
+						"limit": {
+                            "title": "Limit",
+                            "required": "false",
+                            "default": "50",
+                            "type": "integer",
+                            "description": "Limit the number of results returned."
+                        },
+						"offset": {
+                            "title": "Offset",
+                            "required": "false",
+                            "default": "0",
+                            "type": "integer",
+                            "description": "Offset the returned results."
+                        }	
+					}
+				},
+                "instances": {
+                    "name": "Instances",
+                    "description": "Get the instances of (e.g. rdf:type) the specified URI",
+                    "httpMethod": "GET",
+                    "path": "/instances/",
+                    "parameters": {
+                        "q": {
+                            "title": "Class URI",
+                            "required": "true",
+                            "default": "http://bio2rdf.org/drugbank_vocabulary:Drug",
+                            "type": "string",
+                            "description": "The query URI."
+                        },
+						"limit": {
+                            "title": "Limit",
+                            "required": "false",
+                            "default": "50",
+                            "type": "integer",
+                            "description": "Limit the number of results returned."
+                        },
+						"offset": {
+                            "title": "Offset",
+                            "required": "false",
+                            "default": "0",
+                            "type": "integer",
+                            "description": "Offset the returned results."
+                        }						
+					}
+				},				
+                "sparql": {
+                    "name": "SPARQL",
+                    "description": "Execute a SPARQL query",
+                    "httpMethod": "GET",
+                    "path": "/sparql/",
+                    "parameters": {
+                        "Authorization": {
+                            "title": "Authorization",
+                            "required": "true",
+                            "default": "",
+                            "type": "string",
+                            "description": "OAuth2 access token",
+                            "location": "header"
+                        },
+                        "Query": {
+                            "required": "true",
+                            "default": "",
+                            "type": "string",
+                            "description": "A valid SPARQL query"
+                        },
+                        "requestBody": {
+                            "required": "true",
+                            "default": "{\"query\":\"contents\"}",
+                            "type": "string",
+                            "description": "provide a URL encoded SPARQL as the value for the query parameter",
+                            "location": "body"
+                        },
+                        "Content-Type": {
+                            "type": "string",
+                            "required": "true",
+                            "description": "Content type of the payload",
+                            "default": "text/plain",
+                            "location": "header"
+                        },
+                        "Content-Length": {
+                            "type": "string",
+                            "required": "true",
+                            "description": "Content length of the payload",
+                            "default": "",
+                            "location": "header"
+                        }
+                    }
+				}
+            }
+        }
+    }
+}

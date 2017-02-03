@@ -210,7 +210,11 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 // create a rotating write stream
-var logStream = rotator('iodocs.log', {
+var logStream = rotator(function(time, index) {
+    if (!time) time = new Date();
+	return 'iodocs-' + time.toISOString().substr(0,10) + '.log';
+}, {
+    path:     path.join(__dirname, '/logs'),
     size:     '10M', // rotate every 10 MegaBytes written
     interval: '1d',  // rotate daily
     compress: 'gzip' // compress rotated files

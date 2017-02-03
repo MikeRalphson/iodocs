@@ -42,7 +42,6 @@
     "morgan": "^1.7.0",
     "oauth": "0.9.14",
     "openapi_optimise": "latest",
-    "querystring": "0.1.0",
     "redis": "^2.6.2",
     "rotating-file-stream": "^1.0.5",
     "supervisor": ">= 0.5.x",

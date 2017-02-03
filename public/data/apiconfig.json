@@ -11,6 +11,9 @@
   "omdb": {
     "name": "oMDB (Swagger in Yaml)"
   },
+  "iplayer": {
+    "name": "BBC iPlayer API"
+  },
   "arista": {
     "name": "AristaMD",
 	"css": "arista.css"
@@ -45,23 +48,23 @@
   },
   "klout": {
         "name": "Klout v2"
-    },
-    "egnyte": {
-        "name": "Egnyte"
-    },
-    "usatoday": {
-        "name": "USA TODAY Census"
-    },
-    "foursquare": {
-        "name": "Foursquare (OAuth 2.0 Auth Code)"
-    },
-    "rdio": {
-        "name": "Rdio Beta (OAuth 2.0 Client Credentials)"
-    },
-    "rdio2": {
-        "name": "Rdio Beta (OAuth 2.0 Implicit Grant)"
-    },
-    "requestbin": {
-        "name": "Requestb.in"
-    }
+  },
+  "egnyte": {
+      "name": "Egnyte"
+  },
+  "usatoday": {
+      "name": "USA TODAY Census"
+  },
+  "foursquare": {
+      "name": "Foursquare (OAuth 2.0 Auth Code)"
+  },
+  "rdio": {
+      "name": "Rdio Beta (OAuth 2.0 Client Credentials)"
+  },
+  "rdio2": {
+      "name": "Rdio Beta (OAuth 2.0 Implicit Grant)"
+  },
+  "requestbin": {
+      "name": "Requestb.in"
+  }
 }
