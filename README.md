@@ -15,7 +15,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Reinstate support for pre-Summer 2014 schema iodocs specs
 * Improve speed by not fetching {apiname}.json again via AJAX
 * Ability to import spec from static iodocs sites (see [mashery2openapi](https://github.com/mermade/mashery2openapi))
-* Renderer for OpenAPI (Swagger) 2.0 specs
+* Renderers for OpenAPI (Swagger) 2.0 and 3.0.x specs
 * Markdown support in descriptions
 * Required parameter validation
 * Variable CSS / logos per specification hosted
@@ -24,7 +24,7 @@ Copyright 2011-2016 Mashery, Inc., and others
 * If you want to use comments, use yaml (support added)
 * Optional load from URL mode, from env. var or user input
 * Server-side cacheing of specs
-* Ability to export iodocs/LiveDocs spec as OpenAPI (Swagger). *auth needs translating*
+* Ability to export iodocs/LiveDocs spec as OpenAPI (Swagger v2). *auth needs translating*
 * Report meaningful text for HTTP status codes
 * Updated jQuery and jQuery-ui
 * Fix -1 on optional numeric parameters [#208](https://github.com/mashery/iodocs/issues/208)
@@ -37,11 +37,12 @@ Copyright 2011-2016 Mashery, Inc., and others
 
 ### TODO / work in progress items
 
+* Further support for OpenApi 3.0.x
 * Port remaining` pull-requests from Mashery repository
 * HTTP/2 support
+* Support for schema.org WebAPI discovery format
 * Support for GraphQL APIs ?
 * Support for gRPC APIs ?
-* Support for OpenApi 3.x when ratified
 
 ### Creating / editing IO Docs specs
 

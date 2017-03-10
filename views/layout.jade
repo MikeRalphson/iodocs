@@ -23,7 +23,7 @@ html
     body
         - if (config.allowLoadFromUrl && !hideLoad)
           form.userload(method='post', action='/load')
-            label(for='userLoadUrl') Load spec from URL (IO Docs v1/v2, Swagger v2, LiveDocs)
+            label(for='userLoadUrl') Load spec from URL (IO Docs v1/v2, Swagger v2, OpenAPI v3, LiveDocs)
             input(name='userLoadUrl', type='text', id='userLoadUrl')
             input(type='submit', value='Load', class='button')
 

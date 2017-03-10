@@ -70,7 +70,7 @@ function convertSwagger(source){
     apiInfo.resources = {};
     for (var p in apiInfo.paths) {
         for (var m in apiInfo.paths[p]) {
-            if (m != 'parameters') {
+            if ('.get.post.put.delete.head.patch.options.trace.'.indexOf(m)>=0) {
                 var sMethod = apiInfo.paths[p][m];
                 var ioMethod = {};
                 ioMethod.httpMethod = m.toUpperCase();
@@ -91,8 +91,15 @@ function convertSwagger(source){
                         ptr = ptr.replace('#/parameters/','');
                         param = clone(apiInfo.parameters[ptr],false);
                     }
+                    if (ptr && ptr.startsWith('#/components/parameters/')) {
+                        ptr = ptr.replace('#/components/parameters/','');
+                        param = clone(apiInfo.components.parameters[ptr],false);
+                    }
                     param.location = param["in"];
                     delete param["in"];
+					if (!param.type && param.schema && param.schema.type) {
+						param.type = param.schema.type;
+					}
                     ioMethod.parameters[param.name] = param;
                 }
                 ioMethod.path = p;
@@ -119,7 +126,8 @@ function convertSwagger(source){
         }
     }
     delete apiInfo.paths; // to keep size down
-    rename(apiInfo,'definitions','schemas');
+    if (apiInfo.definitions) rename(apiInfo,'definitions','schemas');
+    if (apiInfo.components && apiInfo.components.schemas) rename(apiInfo,'components.schemas','schemas');
     return apiInfo;
 }
 

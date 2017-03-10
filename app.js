@@ -138,7 +138,7 @@ try {
 
 function loadDynamicUrl(dynamicUrl,dynName,sessionID,callback){
     if (dynamicUrl) {
-        console.log('Loading dynamic API from %s', dynamicUrl);
+        console.log('Loading dynamic API to %s from %s', dynName, dynamicUrl);
         fetch.get(dynamicUrl,{},config,function(err, response, body){
             var obj = {};
             try {
@@ -1390,8 +1390,9 @@ function processRequest(req, res, next) {
 
 function loadUrl(req,res,next){
     console.log('Into loadUrl with '+JSON.stringify(req.body));
-    loadDynamicUrl(req.body.userLoadUrl,'remote',req.sessionID,function(err,obj){
-       res.redirect('/'+req.sessionID);
+	var session = (req.sessionID||'remote');
+    loadDynamicUrl(req.body.userLoadUrl,'remote',session,function(err,obj){
+       res.redirect('/'+session);
     });
 }
 
