@@ -68,6 +68,15 @@ function iodocsUpgrade(data){
 function convertSwagger(source){
     var apiInfo = clone(source,false);
     apiInfo.resources = {};
+
+	if (apiInfo.servers && apiInfo.servers.length) {
+		var u = url.parse(apiInfo.servers[0].url);
+		apiInfo.host = u.host;
+		apiInfo.basePath = u.path;
+		apiInfo.schemes = [];
+		apiInfo.schemes.push(u.protocol.replace(':',''));
+	}
+
     for (var p in apiInfo.paths) {
         for (var m in apiInfo.paths[p]) {
             if ('.get.post.put.delete.head.patch.options.trace.'.indexOf(m)>=0) {
