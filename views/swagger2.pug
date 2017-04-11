@@ -104,7 +104,7 @@ block content
               a#toggle-methods(href='#') Toggle All Methods
 
   ul
-      - each resource, resourceName in apiInfo.resources
+      each resource, resourceName in apiInfo.resources
           li.resource
               h3.title
                   span.name
@@ -122,7 +122,7 @@ block content
 
               - if (Object.keys(resource).length)
               ul.methods.hidden
-                  - each method, methodKey in resource.methods
+                  each method, methodKey in resource.methods
                       - var httpmethod = method.httpMethod.toLowerCase()
                       - if (httpmethod != 'parameters')
                           div(id = method.httpMethod)
@@ -181,7 +181,7 @@ block content
                                       br
                                       .container
                                         h3 Example responses etc
-                                        - each response, r in method.responses
+                                        each response, r in method.responses
                                           h4=(r+' '+response.description)
                                     div#tab4
                                       br

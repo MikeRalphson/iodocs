@@ -5,7 +5,7 @@ block content
     input(type='hidden', value=apiName, name='apiName')
     label(for='selectServer') Select server language&nbsp;
     select(id='selectServer', name='selectServer')
-      - each language in codeGenInfo.serverLanguages
+      each language in codeGenInfo.serverLanguages
         option=language
     br
     button(type='submit', id='btnGenServer', name='btnGenServer', class='button') Generate Server
@@ -13,7 +13,7 @@ block content
     br
     label(for='selectClient') Select client language&nbsp;
     select(id='selectClient', name='selectClient')
-      - each language in codeGenInfo.clientLanguages
+      each language in codeGenInfo.clientLanguages
         option=language
     br
     button(type='submit', id='btnGenClient', name='btnGenClient', class='button') Generate Client

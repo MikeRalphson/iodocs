@@ -88,7 +88,7 @@ block content
               a#toggle-methods(href='#') Toggle All Methods
 
   ul
-      - each resource, resourceName in apiInfo.resources
+      each resource, resourceName in apiInfo.resources
           li.resource
               h3.title
                   span.name
@@ -100,7 +100,7 @@ block content
                           a(href='#') Expand Methods
               - if (Object.keys(resource).length)
               ul.methods.hidden
-                  - each method, methodKey in resource.methods
+                  each method, methodKey in resource.methods
                       div(id = method.httpMethod)
                       - var httpmethod = method.httpMethod.toLowerCase()
                       li(class='method ' + httpmethod + ' ' + secure)

@@ -34,11 +34,12 @@ Copyright 2011-2016 Mashery, Inc., and others
 * Implement oAuth2 password flow as per @hoyo [#233](https://github.com/mashery/iodocs/pull/233)
 * Code-generation courtesy of [Swagger.io](https://generator.swagger.io/)
 * Cookie proxying [#131](https://github.com/mashery/iodocs/issues/131)
+* Upgrade from Jade 1.11.0 to Pug 2.0.0 beta
 
 ### TODO / work in progress items
 
 * Further support for OpenApi 3.0.x
-* Port remaining` pull-requests from Mashery repository
+* Port remaining pull-requests from Mashery repository
 * HTTP/2 support
 * Support for schema.org WebAPI discovery format
 * Support for GraphQL APIs ?

@@ -207,7 +207,7 @@ fetch.get('http://generator.swagger.io/api/gen/servers',options,config,function(
 var app = module.exports = express();
 
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // create a rotating write stream
 var logStream = rotator(function(time, index) {

@@ -36,7 +36,7 @@
     "express-error-handler": "^1.1.0",
     "express-method-override": "0.0.3",
     "express-session": "^1.14.1",
-    "jade": "^1.8.0",
+    "pug": "^2.0.0-beta11",
     "js-yaml": "^3.6.1",
     "markdown-it": "^8.0.0",
     "morgan": "^1.7.0",

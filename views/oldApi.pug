@@ -64,7 +64,7 @@ block content
               a#toggle-methods(href='#') Toggle All Methods
 
   ul
-      - each endpoint in apiInfo.endpoints
+      each endpoint in apiInfo.endpoints
           li.resource
               h3.title
                   span.name
@@ -76,7 +76,7 @@ block content
                           a(href='#') Expand Methods
               - if (endpoint.methods.length)
               ul.methods.hidden
-                  - each method in endpoint.methods
+                  each method in endpoint.methods
                       - var httpmethod =method.HTTPMethod.toLowerCase()
                       - if (method.RequiresOAuth ==='Y' || method.RequiresOAuth ===true)
                           - var secure ='authrequired'
@@ -109,7 +109,7 @@ block content
                                               th Description
                                       tbody
                                           - var paramCount =0
-                                          - each parameter in method.parameters
+                                          each parameter in method.parameters
                                               - paramCount++
                                               div(id='param' + paramCount)
                                                 input(type='hidden', name='keys['+paramCount+']', value=parameter.Name)
@@ -128,7 +128,7 @@ block content
                                                             select(name=input_name, placeholder=className)
                                                               - if (parameter.Default =='')
                                                                   option(value='')
-                                                              - each choice in parameter.EnumeratedList
+                                                              each choice in parameter.EnumeratedList
                                                                   - if (parameter.Default ==choice)
                                                                           option(value=choice, selected=true) #{choice}
                                                                   - else
@@ -137,7 +137,7 @@ block content
                                                              select(name=input_name, placeholder=className)
                                                                   - if (parameter.Default =='')
                                                                           option(value='')
-                                                                  - each choice in [apiInfo.booleanTrueVal,apiInfo.booleanFalseVal]
+                                                                  each choice in [apiInfo.booleanTrueVal,apiInfo.booleanFalseVal]
                                                                      - if (parameter.Default ==choice)
                                                                              option(value=choice, selected=true) #{choice}
                                                                      - else
@@ -158,7 +158,7 @@ block content
                                                         p!=parameter.Description || 'No description'
                                                         - if (parameter.Type =='enumerated' && parameter.EnumeratedDescription)
                                                             dl.clearfix
-                                                                - each description, choice in parameter.EnumeratedDescription
+                                                                each description, choice in parameter.EnumeratedDescription
                                                                     dt #{choice}
                                                                     dd #{description}
                               - if (method.headers && method.headers.length > 0)
