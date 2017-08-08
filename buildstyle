@@ -1,3 +1,0 @@
-#!/bin/sh
-./sass public/stylesheets/scss/style.scss > public/stylesheets/style.css
-git add public/stylesheets/scss public/stylesheets/style.css
