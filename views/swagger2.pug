@@ -23,7 +23,7 @@ block content
 
   - if (apiInfo.externalDocs)
     h3
-      a#externalDocs(href=apiInfo.externalDocs.url)!=md.render(apiInfo.externalDocs.description)
+      a#externalDocs(href=apiInfo.externalDocs.url)!=md.render(apiInfo.externalDocs.description||'External docs')
 
   h3
     - if (apiInfo.info.contact.url)

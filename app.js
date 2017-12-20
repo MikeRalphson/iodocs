@@ -579,6 +579,7 @@ function convertApi(obj){
 
 function loadApi(apiName){
     // TODO cacheing with redis would make us entirely async
+    if (!apisConfig[apiName]) apisConfig[apiName] = {};
     if (apisConfig[apiName].definition) {
         return apisConfig[apiName].definition;
     }
@@ -1520,7 +1521,7 @@ function checkObjVal(obj /*, val, level1, level2, ... levelN*/) {
 function dynamicHelpers(req, res, next) {
     res.locals.config = config;
     if (req.query.api) {
-        if (req.query.api == 'remote') req.query.api = req.sessionID;
+        if ((req.query.api === 'remote') && req.sessionID) req.query.api = req.sessionID;
         res.locals.apiInfo = loadApi(req.query.api);
         res.locals.apiName = req.query.api;
 		res.locals.apiConfig = apisConfig[req.query.api];
