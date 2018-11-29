@@ -187,7 +187,7 @@ codeGenInfo.serverLanguages = [];
 var options = {};
 options.headers = {};
 options.headers.Accept = 'application/json';
-fetch.get('http://generator.swagger.io/api/gen/clients',options,config,function(err, response, body){
+fetch.get('https://api.openapi-generator.tech/api/gen/clients',options,config,function(err, response, body){
     try {
         var obj = JSON.parse(body);
         codeGenInfo.clientLanguages = obj;
@@ -195,7 +195,7 @@ fetch.get('http://generator.swagger.io/api/gen/clients',options,config,function(
     }
     catch (ex) {}
 });
-fetch.get('http://generator.swagger.io/api/gen/servers',options,config,function(err, response, body){
+fetch.get('https://api.openapi-generator.tech/api/gen/servers',options,config,function(err, response, body){
     try {
         var obj = JSON.parse(body);
         codeGenInfo.serverLanguages = obj;
@@ -1441,10 +1441,10 @@ function codeGen(req, res, next){
 
     var endpoint;
     if (typeof req.body.btnGenServer !== 'undefined') {
-        endpoint = 'http://generator.swagger.io/api/gen/servers/'+req.body.selectServer;
+        endpoint = 'https://api.openapi-generator.tech/api/gen/servers/'+req.body.selectServer;
     }
     else {
-        endpoint = 'http://generator.swagger.io/api/gen/clients/'+req.body.selectClient;
+        endpoint = 'https://api.openapi-generator.tech/api/gen/clients/'+req.body.selectClient;
     }
 
     var postData = JSON.stringify(submission);

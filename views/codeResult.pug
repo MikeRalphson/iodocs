@@ -3,7 +3,7 @@ block content
   - if (results.link)
     h1 You can download your SDK from the following url
     h2
-      a(href=results.link) Courtesy of Swagger.io
+      a(href=results.link.replace('localhost:8080','api.openapi-generator.tech')) Courtesy of OpenAPI-Generator.tech
   - else
     h1 Something went wrong...
     h2='Code '+results.code
