@@ -38,7 +38,7 @@
     "express-session": "^1.14.1",
     "pug": "^2.0.0-beta11",
     "js-yaml": "^3.6.1",
-    "markdown-it": "^8.0.0",
+    "markdown-it": "^10.0.0",
     "morgan": "^1.7.0",
     "oauth": "0.9.14",
     "openapi_optimise": "latest",
